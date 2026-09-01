@@ -28,7 +28,7 @@
 */
 body {
     background-color: #ffffff; /* page background = white, as required */
-    color: #363B8B;            /* primary text color = navy blue theme */
+    color: #0B0E52;            /* primary text color = navy blue theme */
 }
 
 /* ==========================================================
@@ -46,13 +46,13 @@ body {
     padding-bottom: 15px;
     padding-left: 30px;
     padding-right: 30px;
-    border-bottom: 1px solid #363B8B; /* separates nav from page body */
+    border-bottom: 1px solid #0B0E52; /* separates nav from page body */
 }
 
 /* Logo text block */
 .logo {
     font-size: 22px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 /*
@@ -80,7 +80,7 @@ body {
 */
 .navLinks a {
     text-decoration: none;
-    color: #363B8B;
+    color: #0B0E52;
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 10px;
@@ -104,14 +104,14 @@ body {
 .activeLink {
     background-color: #EDEEF8; /* lighter tint of #363B8B for the pill */
     border-radius: 20px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 /* "Get Started" button, built with <a> (a link) styled to
    look like a button, since <a> is in our allowed tag list
    and works fine as a call-to-action button. */
 .btnGetStarted {
-    background-color: #363B8B;
+    background-color: #0B0E52;
     color: #ffffff;
     text-decoration: none;
     padding-top: 10px;
@@ -148,7 +148,7 @@ body {
 
 .hero h1 {
     font-size: 40px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 /* Because there is no "max-width" allowed, we give the hero
@@ -161,7 +161,7 @@ body {
 
 .heroImage {
     border-radius: 12px;
-    border: 1px solid #363B8B;
+    border: 1px solid #0B0E52;
 }
 
 /* ==========================================================
@@ -182,7 +182,7 @@ body {
 
 .sectionHeading {
     font-size: 28px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 .sectionText {
@@ -230,19 +230,19 @@ body {
     padding-bottom: 20px;
     padding-left: 15px;
     padding-right: 15px;
-    border: 1px solid #363B8B;
+    border: 1px solid #0B0E52;
     border-radius: 12px;
     background-color: #ffffff;
 }
 
 .card h3 {
     font-size: 18px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 .card p {
     font-size: 14px;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 /* ==========================================================
@@ -258,7 +258,7 @@ body {
    CALL TO ACTION (final section before footer)
 ========================================================== */
 .ctaSection {
-    background-color: #363B8B;
+    background-color: #0B0E52;
 }
 
 .ctaSection h2 {
@@ -271,7 +271,7 @@ body {
 
 .ctaSection .btnGetStarted {
     background-color: #ffffff;
-    color: #363B8B;
+    color: #0B0E52;
 }
 
 .ctaSection .btnGetStarted:hover {
@@ -286,7 +286,7 @@ body {
    and easy to explain (fewer distinct patterns to justify).
 ========================================================== */
 footer {
-    background-color: #363B8B;
+    background-color: #0B0E52;
     padding-top: 30px;
     padding-bottom: 20px;
     padding-left: 30px;
