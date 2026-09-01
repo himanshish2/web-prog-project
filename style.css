@@ -1,0 +1,337 @@
+/* ==================================================================
+   STYLE.CSS — CampusCarry About Us page
+   ------------------------------------------------------------------
+   This is EXTERNAL CSS (linked from about.html via
+   <link rel="stylesheet" href="style.css">), one of the three
+   allowed CSS-inclusion methods in the assignment rules.
+   Every selector and property here is checked against the allowed
+   lists — comments explain WHY each one was picked.
+================================================================== */
+
+/* ==========================================================
+   GLOBAL RESET
+   We only have the universal selector (*) and a small set of
+   box-model properties available, so we use * to zero out
+   margin/padding on every element. This keeps spacing fully
+   under our control using margin/padding utilities later,
+   instead of relying on browser default spacing.
+========================================================== */
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+/*
+   We cannot use font-family (not in allowed list), so the
+   page will render in the browser's default font. This is
+   expected and acceptable under the given constraints.
+*/
+body {
+    background-color: #ffffff; /* page background = white, as required */
+    color: #363B8B;            /* primary text color = navy blue theme */
+}
+
+/* ==========================================================
+   NAVIGATION BAR
+   display:flex + justify-content + align-items are used
+   instead of "position" or "float" (both disallowed) to
+   place the logo on the left, links in the middle, and the
+   button on the right.
+========================================================== */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* pushes logo / links / button apart */
+    align-items: center;            /* vertically centers all nav items */
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    border-bottom: 1px solid #363B8B; /* separates nav from page body */
+}
+
+/* Logo text block */
+.logo {
+    font-size: 22px;
+    color: #363B8B;
+}
+
+/*
+   Nav links list: ul is a list tag (allowed), and we turn it
+   into a horizontal row using display:flex + gap.
+   "list-style" is NOT in our allowed property list, so we
+   cannot remove the default bullet styling on <li> — that is
+   fine, since only tags/properties from the given lists may
+   be used, and the semantic <ul><li> structure is still correct.
+*/
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.navLinks li {
+    display: flex; /* lets each li center its link content */
+}
+
+/*
+   Links use text-decoration:none instead of any "reset"
+   trick, because text-decoration IS in our allowed list.
+   This removes the default underline from <a> tags.
+*/
+.navLinks a {
+    text-decoration: none;
+    color: #363B8B;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+/* :hover pseudo-class is explicitly allowed, so we use it for
+   a simple interactive/hover effect instead of "cursor" or
+   "transition" (both disallowed). */
+.navLinks a:hover {
+    text-decoration: underline;
+}
+
+/*
+   Highlighting the CURRENT page (About Us) in the nav.
+   We use a class selector (.activeLink) instead of any kind
+   of ":current" pseudo-class (which does not exist / is not
+   allowed) to visually mark the active page, matching the
+   reference image's highlighted "Home" pill.
+*/
+.activeLink {
+    background-color: #EDEEF8; /* lighter tint of #363B8B for the pill */
+    border-radius: 20px;
+    color: #363B8B;
+}
+
+/* "Get Started" button, built with <a> (a link) styled to
+   look like a button, since <a> is in our allowed tag list
+   and works fine as a call-to-action button. */
+.btnGetStarted {
+    background-color: #363B8B;
+    color: #ffffff;
+    text-decoration: none;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 25px;
+}
+
+.btnGetStarted:hover {
+    background-color: #2A2E6E; /* darker navy shade on hover */
+}
+
+/* ==========================================================
+   HERO SECTION
+   Since "text-align" is NOT in our allowed property list, we
+   cannot center text the usual way. Instead we wrap the
+   heading/paragraph in a flex container and use
+   justify-content:center + align-items:center to visually
+   center the content — this is the allowed replacement.
+========================================================== */
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* centers children horizontally in a column flex */
+    justify-content: center;
+    gap: 15px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #EDEEF8; /* light navy tint keeps us inside the color theme */
+}
+
+.hero h1 {
+    font-size: 40px;
+    color: #363B8B;
+}
+
+/* Because there is no "max-width" allowed, we give the hero
+   paragraph a fixed width (px) instead, so long text does not
+   stretch across the whole screen. */
+.heroText {
+    width: 600px;
+    font-size: 16px;
+}
+
+.heroImage {
+    border-radius: 12px;
+    border: 1px solid #363B8B;
+}
+
+/* ==========================================================
+   GENERIC SECTION WRAPPER
+   Used for "Introduction", "How It Works", "Why CampusCarry"
+   and "Mission" so spacing stays consistent across sections.
+========================================================== */
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.sectionHeading {
+    font-size: 28px;
+    color: #363B8B;
+}
+
+.sectionText {
+    width: 650px;
+    font-size: 16px;
+}
+
+/* ==========================================================
+   HOW IT WORKS — ordered list
+   <ol> is a semantic, meaningful way to show sequential
+   steps (this matches "Request -> Accept -> ... " flow in
+   the reference image) instead of manually numbering <div>s.
+========================================================== */
+.stepsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 650px;
+}
+
+.stepsList li {
+    font-size: 16px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+/* ==========================================================
+   WHY CAMPUSCARRY — feature cards
+   Built with <article> in the HTML, because each card is an
+   independent, self-contained piece of content (a semantic
+   reason to pick <article> over a plain <div>).
+========================================================== */
+.cardRow {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 200px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: 1px solid #363B8B;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+.card h3 {
+    font-size: 18px;
+    color: #363B8B;
+}
+
+.card p {
+    font-size: 14px;
+    color: #363B8B;
+}
+
+/* ==========================================================
+   MISSION SECTION
+   Slightly lighter tint used only to visually separate this
+   section — still built from the same navy theme.
+========================================================== */
+.missionSection {
+    background-color: #EDEEF8;
+}
+
+/* ==========================================================
+   CALL TO ACTION (final section before footer)
+========================================================== */
+.ctaSection {
+    background-color: #363B8B;
+}
+
+.ctaSection h2 {
+    color: #ffffff;
+}
+
+.ctaSection p {
+    color: #ffffff;
+}
+
+.ctaSection .btnGetStarted {
+    background-color: #ffffff;
+    color: #363B8B;
+}
+
+.ctaSection .btnGetStarted:hover {
+    background-color: #EDEEF8;
+}
+
+/* ==========================================================
+   FOOTER
+   display:flex + justify-content:space-between arranges the
+   three footer columns side by side, same technique as the
+   navbar — reused on purpose to keep the CSS beginner-simple
+   and easy to explain (fewer distinct patterns to justify).
+========================================================== */
+footer {
+    background-color: #363B8B;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.footerColumns {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.footerColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footerColumn h4 {
+    color: #ffffff;
+    font-size: 15px;
+}
+
+.footerColumn p {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.footerColumn a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.footerColumn a:hover {
+    text-decoration: underline;
+}
+
+.footerBottom {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.footerBottom p {
+    color: #ffffff;
+    font-size: 13px;
+}
