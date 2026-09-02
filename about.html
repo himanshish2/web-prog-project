@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!-- 
+  ABOUT US PAGE — CampusCarry (Campus Parcel Delivery System)
+  ---------------------------------------------------------------
+  This file follows a STRICT whitelist of HTML tags/attributes and
+  CSS selectors/properties (given as part of the assignment rules).
+  CSS lives in a SEPARATE file (style.css) and is linked below with
+  <link rel="stylesheet" href="style.css"> — one of the three
+  allowed CSS-inclusion methods. Keep about.html and style.css in
+  the SAME folder or the link will break.
+  Comments explain WHY each tag/attribute was picked, for the viva.
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - CampusCarry</title>
+
+    <!-- 
+        External CSS: rel="stylesheet" and href are both in our
+        allowed attribute list. This keeps HTML (structure) and CSS
+        (presentation) fully separated, which is good practice and
+        an easy thing to point out in a viva.
+    -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ======================================================
+         HEADER + NAVIGATION
+         <header> and <nav> are semantic tags, chosen (instead of
+         plain <div>) because this really is the page's top banner
+         and navigation area — this is exactly what these tags mean.
+    ======================================================= -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <b>CampusCarry</b>
+            </div>
+
+            <ul class="navLinks">
+                <li><a href="home.html">Home</a></li>
+                <!-- 
+                    The About Us link is marked with class="activeLink"
+                    to show the user which page they are currently on,
+                    matching the highlighted "Home" pill in the
+                    reference screenshot.
+                -->
+                <li><a href="about.html" class="activeLink">About Us</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="signup.html">Sign Up</a></li>
+            </ul>
+
+            <a href="signup.html" class="btnGetStarted">Get Started</a>
+        </nav>
+    </header>
+
+    <!-- ======================================================
+         MAIN CONTENT
+         <main> wraps all the primary content of this page (as
+         opposed to nav/footer, which are not "main" content) —
+         this is the semantically correct use of <main>.
+    ======================================================= -->
+    <main>
+
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <h1>About CampusCarry</h1>
+            <p class="heroText">
+                CampusCarry is a student-to-student parcel delivery platform
+                designed to make parcel collection easier within campus.
+            </p>
+            <!-- 
+                <img> is in our allowed tag list. alt text is added for
+                accessibility (screen readers), and width/height are
+                both allowed attributes, so we use them to control the
+                image size instead of any CSS max-width trick.
+            -->
+            <img src="5b26235d-8107-4193-b206-2f32f9f5fd5f.png"
+                 alt="Student handing a parcel to another student on campus"
+                 width="500" height="260" class="heroImage">
+        </section>
+
+        <!-- INTRODUCTION SECTION -->
+        <section class="section">
+            <p class="sectionText">
+                Students often receive parcels when they are attending classes,
+                busy with work, or unable to reach the collection point.
+                CampusCarry connects these students with other students who
+                are already travelling around campus and can collect and
+                deliver their parcels.
+            </p>
+        </section>
+
+        <!-- HOW IT WORKS SECTION -->
+        <section class="section">
+            <h2 class="sectionHeading">How It Works</h2>
+            <div class="cardRow">
+                <article class ="card">
+                    <h3> 1. Create Pickup Request</h3>
+                </article>
+                <article class ="card">
+                    <h3> 2. Provide Details and Set Payment Amount</h3>
+                </article>
+                <article class ="card">
+                    <h3> 3. Delivery Partners View Request</h3>
+                </article>
+                <article class ="card">
+                    <h3> 4. Delivery Partner Accepts Request</h3>
+                </article>
+                <article class ="card">
+                    <h3> 5. Parcel is Collected and Delivered</h3>
+                </article>
+            </div>
+            <!-- 
+                <ol> (ordered list) is used because the steps genuinely
+                happen in a fixed sequence — this is more meaningful
+                than numbering plain <div>s by hand.<
+                    ol class="stepsList">
+                <li>A student creates a parcel pickup request.</li>
+                <li>The student provides the pickup and delivery details.</li>
+                <li>The student sets the amount they are willing to pay.</li>
+                <li>Available delivery partners can view the request.</li>
+                <li>A delivery partner accepts the request.</li>
+                <li>The parcel is collected and delivered to the student.</li>
+            </ol>
+            -->
+           
+        </section>
+
+        <!-- WHY CAMPUSCARRY SECTION -->
+        <section class="section">
+            <h2 class="sectionHeading">Why CampusCarry</h2>
+            <div class="cardRow">
+                <!-- 
+                    Each <article> is a self-contained "reason" card —
+                    this is exactly the kind of independent content
+                    block the <article> tag is meant for.
+                -->
+                <article class="card">
+                    <h3>Convenient</h3>
+                    <p>Students can get their parcels collected without
+                        having to leave their classes, hostel, or other
+                        activities.</p>
+                </article>
+
+                <article class="card">
+                    <h3>Student Powered</h3>
+                    <p>Delivery partners can help other students while
+                        they are already travelling around campus.</p>
+                </article>
+
+                <article class="card">
+                    <h3>Verified Community</h3>
+                    <p>University email and student ID verification helps
+                        keep the platform limited to students on campus.</p>
+                </article>
+
+                <article class="card">
+                    <h3>Earn While You Help</h3>
+                    <p>Students can accept delivery requests and earn a
+                        small amount for helping with parcel collection.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- MISSION SECTION -->
+        <section class="section missionSection">
+            <h2 class="sectionHeading">Our Mission</h2>
+            <p class="sectionText">
+                Our mission is to make campus parcel collection simpler,
+                faster, and more convenient by using the existing movement
+                of students across campus.
+            </p>
+        </section>
+
+        <!-- FINAL CALL TO ACTION -->
+        <section class="section ctaSection">
+            <h2>Need someone to collect your parcel?</h2>
+            <p>Find a student who is already on the move.</p>
+            <a href="signup.html" class="btnGetStarted">Get Started</a>
+        </section>
+
+    </main>
+
+    <!-- ======================================================
+         FOOTER
+         <footer> is the semantic tag for the bottom section that
+         holds site-wide links and copyright info — again, matches
+         its actual meaning rather than being a plain <div>.
+    ======================================================= -->
+    <footer>
+        <div class="footerColumns">
+            <div class="footerColumn">
+                <h4><b>CampusCarry</b></h4>
+                <p>Making campus deliveries easier, one parcel at a time.</p>
+            </div>
+
+            <div class="footerColumn">
+                <h4>PLATFORM</h4>
+                <a href="home.html">Home</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="about.html">About Us</a>
+            </div>
+
+            <div class="footerColumn">
+                <h4>STUDENTS</h4>
+                <a href="login.html">Login</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+
+        <div class="footerBottom">
+            <p>&copy; 2026 CampusCarry. Academic project.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
