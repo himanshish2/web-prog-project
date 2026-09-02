@@ -28,7 +28,7 @@
 */
 body {
     background-color: #ffffff; /* page background = white, as required */
-    color: #0B0E52;            /* primary text color = navy blue theme */
+    color: #363B8B;            /* primary text color = navy blue theme */
 }
 
 /* ==========================================================
@@ -46,13 +46,13 @@ body {
     padding-bottom: 15px;
     padding-left: 30px;
     padding-right: 30px;
-    border-bottom: 1px solid #0B0E52; /* separates nav from page body */
+    border-bottom: 1px solid #363B8B; /* separates nav from page body */
 }
 
 /* Logo text block */
 .logo {
     font-size: 22px;
-    color: #0B0E52;
+    color: #363B8B;
 }
 
 /*
@@ -80,7 +80,7 @@ body {
 */
 .navLinks a {
     text-decoration: none;
-    color: #0B0E52;
+    color: #363B8B;
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 10px;
@@ -104,14 +104,14 @@ body {
 .activeLink {
     background-color: #EDEEF8; /* lighter tint of #363B8B for the pill */
     border-radius: 20px;
-    color: #0B0E52;
+    color: #363B8B;
 }
 
 /* "Get Started" button, built with <a> (a link) styled to
    look like a button, since <a> is in our allowed tag list
    and works fine as a call-to-action button. */
 .btnGetStarted {
-    background-color: #0B0E52;
+    background-color: #363B8B;
     color: #ffffff;
     text-decoration: none;
     padding-top: 10px;
@@ -123,45 +123,6 @@ body {
 
 .btnGetStarted:hover {
     background-color: #2A2E6E; /* darker navy shade on hover */
-}
-
-/* ==========================================================
-   HERO SECTION
-   Since "text-align" is NOT in our allowed property list, we
-   cannot center text the usual way. Instead we wrap the
-   heading/paragraph in a flex container and use
-   justify-content:center + align-items:center to visually
-   center the content — this is the allowed replacement.
-========================================================== */
-.hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;      /* centers children horizontally in a column flex */
-    justify-content: center;
-    gap: 15px;
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-left: 20px;
-    padding-right: 20px;
-    background-color: #EDEEF8; /* light navy tint keeps us inside the color theme */
-}
-
-.hero h1 {
-    font-size: 40px;
-    color: #0B0E52;
-}
-
-/* Because there is no "max-width" allowed, we give the hero
-   paragraph a fixed width (px) instead, so long text does not
-   stretch across the whole screen. */
-.heroText {
-    width: 600px;
-    font-size: 16px;
-}
-
-.heroImage {
-    border-radius: 12px;
-    border: 1px solid #0B0E52;
 }
 
 /* ==========================================================
@@ -182,7 +143,7 @@ body {
 
 .sectionHeading {
     font-size: 28px;
-    color: #0B0E52;
+    color: #363B8B;
 }
 
 .sectionText {
@@ -191,58 +152,212 @@ body {
 }
 
 /* ==========================================================
-   HOW IT WORKS — ordered list
-   <ol> is a semantic, meaningful way to show sequential
-   steps (this matches "Request -> Accept -> ... " flow in
-   the reference image) instead of manually numbering <div>s.
+   ABOUT + HOW IT WORKS — two-column split
+   Matches the hand-drawn wireframe: left column (About text +
+   image) and right column (boxed steps), divided by a vertical
+   line. display:flex on the row + border-left on the right
+   column gives us that divider without using "position".
 ========================================================== */
-.stepsList {
+.aboutSplit {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 650px;
+    flex-direction: row;
+    gap: 40px;
+    width: 940px;
 }
 
-.stepsList li {
-    font-size: 16px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+/* .aboutLeft (600px) : .aboutRight (300px) = 2:1, so "About"
+   stays visually twice as wide as "How It Works" while both
+   columns still sit side by side in the same flex row. */
+.aboutLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 600px;
+}
+
+/* Row that holds the big square image on the left and the short
+   text lines beside it on the right, matching the wireframe
+   (image = big square, text = a few lines next to its top). */
+.aboutLeftRow {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.aboutImage {
+    border-radius: 12px;
+    border: 1px solid #363B8B;
+}
+
+.aboutText {
+    width: 300px;
+    font-size: 15px;
+}
+
+/* Right column: border-left creates the vertical divider line
+   drawn in the wireframe between "About" and "How It Works". */
+.aboutRight {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 300px;
+    padding-left: 30px;
+    border-left: 1px solid #363B8B;
+}
+
+/* Each "How It Works" step is a bordered box (<article> in the
+   HTML), matching the rectangles drawn in the wireframe, instead
+   of a plain numbered list. */
+.howBox {
+    border: 1px solid #363B8B;
+    border-radius: 10px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #ffffff;
+}
+
+.howBox h3 {
+    font-size: 15px;
+    color: #363B8B;
+}
+
+.howBox p {
+    font-size: 13px;
+    color: #363B8B;
 }
 
 /* ==========================================================
-   WHY CAMPUSCARRY — feature cards
-   Built with <article> in the HTML, because each card is an
-   independent, self-contained piece of content (a semantic
-   reason to pick <article> over a plain <div>).
+   REWARDS & COMMISSION SECTION
+   This is the "Why Us" section from the wireframe — its actual
+   content is the reward/commission breakdown from the reference
+   screenshot.
 ========================================================== */
-.cardRow {
+
+/* Divider lines that bracket the whole Rewards & Commission
+   section — border-top / border-bottom are both in our allowed
+   property list, so this needs no extra <hr> markup. */
+.rewardsSection {
+    border-top: 1px solid #363B8B;
+    border-bottom: 1px solid #363B8B;
+}
+
+/* Pill tag label above the heading, e.g. "REWARDS & COMMISSION" */
+.pillWrap {
+    display: flex;
+    justify-content: center;
+}
+
+.pillTag {
+    background-color: #EDEEF8;
+    color: #363B8B;
+    border-radius: 20px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+    font-size: 12px;
+}
+
+/* 
+   Main heading: no font-weight used (not in allowed list) — <h2>
+   is already bold by default in every browser, so we only need
+   font-size + color here. Color matches the exact dark navy the
+   design spec asked for (#0B0E52), a deliberate darker shade
+   within the navy family rather than a random color.
+*/
+.rewardHeading {
+    font-size: 28px;
+    color: #0B0E52;
+    width: 650px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/*
+   Subtitle: a <p> tag is already normal (non-bold) weight by
+   default, so again only font-size + color are needed. Color
+   is the exact muted blue-gray from the design spec (#53677A).
+*/
+.rewardSubtitle {
+    font-size: 16px;
+    color: #53677A;
+    width: 600px;
+    padding-bottom: 20px;
+}
+
+/* Three stat cards, same card pattern reused from earlier in the
+   page for visual consistency. */
+.statCardRow {
     display: flex;
     flex-direction: row;
     gap: 20px;
 }
 
-.card {
+.statCard {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     width: 200px;
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 15px;
     padding-right: 15px;
-    border: 1px solid #0B0E52;
+    border: 1px solid #363B8B;
     border-radius: 12px;
     background-color: #ffffff;
 }
 
-.card h3 {
-    font-size: 18px;
+/* Highlighted card (the amount the Campus Runner actually
+   receives) uses a light navy tint instead of the green shown in
+   the reference, to keep the whole page inside one color family. */
+.statCardHighlight {
+    background-color: #EDEEF8;
+}
+
+.statLabel {
+    font-size: 13px;
+    color: #363B8B;
+}
+
+.statValue {
+    font-size: 22px;
     color: #0B0E52;
 }
 
-.card p {
-    font-size: 14px;
-    color: #0B0E52;
+/* 
+   Progress bar built from two flex children with fixed px
+   widths, since only px/vh/em/auto are allowed units — there is
+   no "%" in that list, so the 97.5% / 2.5% split is expressed as
+   682px : 18px out of a 700px-wide bar (682+18 = 700).
+*/
+.progressBar {
+    display: flex;
+    flex-direction: row;
+    width: 700px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.progressRunnerShare {
+    width: 682px;
+    height: 10px;
+    background-color: #363B8B;
+    border-radius: 6px;
+}
+
+.progressCommissionShare {
+    width: 18px;
+    height: 10px;
+    background-color: #9AA0D9;
+    border-radius: 6px;
+}
+
+.progressCaption {
+    font-size: 13px;
+    color: #53677A;
 }
 
 /* ==========================================================
@@ -258,7 +373,7 @@ body {
    CALL TO ACTION (final section before footer)
 ========================================================== */
 .ctaSection {
-    background-color: #0B0E52;
+    background-color: #363B8B;
 }
 
 .ctaSection h2 {
@@ -271,7 +386,7 @@ body {
 
 .ctaSection .btnGetStarted {
     background-color: #ffffff;
-    color: #0B0E52;
+    color: #363B8B;
 }
 
 .ctaSection .btnGetStarted:hover {
@@ -286,7 +401,7 @@ body {
    and easy to explain (fewer distinct patterns to justify).
 ========================================================== */
 footer {
-    background-color: #0B0E52;
+    background-color: #363B8B;
     padding-top: 30px;
     padding-bottom: 20px;
     padding-left: 30px;
