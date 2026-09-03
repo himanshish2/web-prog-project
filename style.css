@@ -106,26 +106,6 @@ body {
    ratio can't drift regardless of content width. flex-basis:0
    forces the split to be governed entirely by flex-grow.
 ========================================================== */
-.aboutSection {
-    align-items: flex-start;
-    padding-left: 80px;
-}
-
-.aboutSplit {
-    display: flex;
-    flex-direction: row;
-    gap: 40px;
-    width: 1000px;
-}
-
-.aboutLeft {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex-grow: 3;
-    flex-basis: 0px;
-}
-
 .aboutLeftRow {
     display: flex;
     flex-direction: row;
@@ -137,41 +117,9 @@ body {
     border-radius: 12px;
     border: 1px solid #363B8B;
 }
-
 .aboutText {
-    flex-grow: 1;
-    flex-basis: 0px;
-    font-size: 15px;
-}
-
-.aboutRight {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    flex-grow: 1;
-    flex-basis: 0px;
-    padding-left: 30px;
-    border-left: 1px solid #363B8B;
-}
-
-.howBox {
-    border: 1px solid #363B8B;
-    border-radius: 10px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 15px;
-    padding-right: 15px;
-    background-color: #ffffff;
-}
-
-.howBox h3 {
-    font-size: 15px;
-    color: #363B8B;
-}
-
-.howBox p {
-    font-size: 13px;
-    color: #363B8B;
+    width: 400px;
+    font-size: 25px;
 }
 
 /* ==========================================================
@@ -179,12 +127,12 @@ body {
 ========================================================== */
 .dividerWrap {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     padding-left: 80px;
 }
 
 .dividerLine {
-    width: 1000px;
+    width: 700px;
     height: 1px;
     background-color: #363B8B;
 }
