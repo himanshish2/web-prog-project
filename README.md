@@ -1,2 +1,4 @@
-"# web-prog-project" 
-1st step made a simple about page. changes to be made: increase font size and work on better font styles and to add another colour
+# CampusCarry - Web Programming Project
+
+## Interactive UI Prototype
+- **Figma Design Link:** [Click Here to Open CampusCarry Interactive Prototype](https://www.figma.com/design/Wsdj9TAmwNGWa5Wq5lbs61/Campus_carry?node-id=0-1&t=QQEOwSO5qbM21K9z-1)
