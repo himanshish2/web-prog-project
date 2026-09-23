@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CampusCarry</title>
+    <link rel="stylesheet" href="login-style.css">
+</head>
+<body>
+
+    <!-- ==================================================================
+         1. NAVIGATION BAR (FLEXBOX)
+         Identical to CampusCarry about.html header
+         ================================================================== -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <b>CampusCarry</b>
+            </div>
+
+            <ul class="navLinks">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="login.html" class="activeLink">Login / Sign Up</a></li>
+            </ul>
+
+            <a href="login.html" class="btnGetStarted">Get Started</a>
+        </nav>
+    </header>
+
+    <!-- State controller for Log In vs Sign Up tabs (Pure CSS) -->
+    <input type="radio" name="auth-tab" id="tab-login" class="tab-radio" checked>
+    <input type="radio" name="auth-tab" id="tab-signup" class="tab-radio">
+
+    <!-- ==================================================================
+         2. MAIN LOGIN SECTION FOR LAPTOP SCREEN (FLEXBOX & POSITION)
+         ================================================================== -->
+    <main class="login-wrapper">
+
+        <!-- Centered Laptop Login Card -->
+        <div class="login-card">
+
+            <!-- Card Top Header Arc (POSITION & FLEXBOX) -->
+            <div class="card-header-arc">
+                <div class="brand-logo-row">
+                    <div class="logo-icon-circle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5">
+                            <path d="M21 8L12 3L3 8V16L12 21L21 16V8Z"/>
+                            <path d="M3 8L12 13L21 8"/>
+                            <path d="M12 13V21"/>
+                        </svg>
+                    </div>
+                    <h1 class="brand-title">Campus<span class="gold-dot">Carry</span></h1>
+                </div>
+            </div>
+
+            <!-- Floating Form Box (POSITION & BOX MODEL) -->
+            <div class="form-box">
+
+                <!-- Tab Switcher Pills (FLEXBOX) -->
+                <div class="tab-pill-row">
+                    <label for="tab-login" class="tab-btn">Log In</label>
+                    <label for="tab-signup" class="tab-btn">Sign Up</label>
+                </div>
+
+                <!-- Auth Form (FLEXBOX & BOX MODEL) -->
+                <form class="auth-form" action="#" method="POST" onsubmit="return false;">
+                    
+                    <!-- Email / Username input -->
+                    <div class="input-field-group">
+                        <input type="text" class="input-underline" placeholder="Enter email or username" required>
+                    </div>
+
+                    <!-- Password input -->
+                    <div class="input-field-group">
+                        <input type="password" class="input-underline" placeholder="Password" required>
+                    </div>
+
+                    <!-- Confirm Password input (only visible in Sign Up tab) -->
+                    <div class="input-field-group signup-only">
+                        <input type="password" class="input-underline" placeholder="Confirm Password">
+                    </div>
+
+                    <!-- Forgot Password Link -->
+                    <div class="forgot-row">
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="submit-btn">Log In</button>
+                </form>
+
+                <!-- OR Divider (FLEXBOX) -->
+                <div class="or-divider">OR</div>
+
+                <!-- Social Login Buttons (FLEXBOX) -->
+                <div class="social-btn-row">
+                    <!-- Google -->
+                    <button class="social-btn" title="Login with Google">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.29v3.15C3.26 21.3 7.31 24 12 24z"/>
+                            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.29C.47 8.21 0 10.05 0 12s.47 3.79 1.29 5.42l3.99-3.15z"/>
+                            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.58l3.99 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                        </svg>
+                    </button>
+                    <!-- Facebook -->
+                    <button class="social-btn" title="Login with Facebook">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <rect width="24" height="24" rx="4" fill="#1877F2"/>
+                            <path fill="#FFFFFF" d="M16.5 12H14v8h-3v-8H9.5V9.5H11V8c0-2.2 1.3-3.5 3.5-3.5h2v2.5h-1.2c-1 0-1.3.4-1.3 1.2v1.3h2.5L16.5 12z"/>
+                        </svg>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ==================================================================
+         3. FOOTER (CSS GRID)
+         Matching CampusCarry about.html footer
+         ================================================================== -->
+    <footer>
+        <div class="footerColumns">
+            <div class="footerColumn">
+                <h4><b>CampusCarry</b></h4>
+                <p>Making campus deliveries easier, one parcel at a time.</p>
+            </div>
+
+            <div class="footerColumn">
+                <h4>PLATFORM</h4>
+                <a href="home.html">Home</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="about.html">About Us</a>
+            </div>
+
+            <div class="footerColumn">
+                <h4>STUDENTS</h4>
+                <a href="login.html">Login</a>
+                <a href="login.html">Sign Up</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+
+        <div class="footerBottom">
+            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
