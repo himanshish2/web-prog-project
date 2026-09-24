@@ -1,4 +1,17 @@
 
+:root {
+    --purple: #363B8B;
+    --purple-deep: #0B0E52;
+    --purple-light: #EDEEF8;
+    --muted: #53677A;
+    --border: #D9DCF2;
+    --bg-soft: #F7F8FC;
+
+    --radius-sm: 6px;
+    --radius-lg: 20px;
+    --radius-pill: 999px;
+}
+
 * {
     margin: 0px;
     padding: 0px;
@@ -7,8 +20,9 @@
 
 body {
     background-color: #ffffff;
-    color: #0B0E52;
-    padding-top: 66px; 
+    color: var(--purple-deep);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding-top: 66px;
 }
 
 .navbar {
@@ -20,11 +34,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 30px;
-    padding-right: 30px;
-    background-color: #363B8B;
+    padding: 16px 24px;
+    background-color: var(--purple);
 }
 
 .logo {
@@ -62,19 +73,58 @@ body {
     border-bottom: 2px solid #ffffff;
 }
 
-.btnGetStarted {
-    background-color: #ffffff;
-    color: #363B8B;
+.btnPrimary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--purple);
+    color: #ffffff;
     text-decoration: none;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    border-radius: 25px;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 14px;
 }
 
-.btnGetStarted:hover {
-    background-color: #EDEEF8;
+.btnPrimary:hover {
+    background-color: var(--purple-deep);
+}
+
+.btnSecondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: transparent;
+    color: var(--purple);
+    text-decoration: none;
+    border: 1px solid var(--purple);
+    border-radius: var(--radius-pill);
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btnSecondary:hover {
+    background-color: var(--purple-light);
+}
+
+.btnNav {
+    background-color: #ffffff;
+    color: var(--purple);
+    text-decoration: none;
+    border-radius: var(--radius-pill);
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btnNav:hover {
+    background-color: var(--purple-light);
+}
+
+.arrowIcon {
+    font-size: 18px;
 }
 
 .section {
@@ -82,15 +132,18 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    padding-top: 50px;
-    padding-bottom: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 64px 24px;
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 40px 24px;
+    }
 }
 
 .sectionHeading {
     font-size: 28px;
-    color: #363B8B;
+    color: var(--purple);
 }
 
 .sectionText {
@@ -110,12 +163,9 @@ body {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: 1160px;
     margin: 0 auto;
-    padding-top: 80px;
-    padding-bottom: 80px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 80px 24px;
     gap: 40px;
 }
 
@@ -132,9 +182,9 @@ body {
 }
 
 .heroPill {
-    background-color: #2EC4B6;
+    background-color: var(--purple);
     color: #ffffff;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 18px;
@@ -145,36 +195,13 @@ body {
 .heroHeading {
     font-size: 52px;
     line-height: 1.15;
-    color: #0B0E52;
+    color: var(--purple-deep);
 }
 
 .heroSubtitle {
     font-size: 18px;
-    color: #53677A;
+    color: var(--muted);
     max-width: 480px;
-}
-
-.btnDashboard {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #2EC4B6;
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 16px;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    padding-left: 26px;
-    padding-right: 26px;
-    border-radius: 30px;
-}
-
-.btnDashboard:hover {
-    background-color: #26A99D;
-}
-
-.arrowIcon {
-    font-size: 18px;
 }
 
 .heroRight {
@@ -190,13 +217,14 @@ body {
     position: absolute;
     width: 420px;
     height: 420px;
-    background-color: #EDEEF8;
+    background-color: var(--purple-light);
     border-radius: 50%;
 }
 
 .heroImage {
     position: relative;
     z-index: 1;
+    border-radius: var(--radius-sm);
 }
 
 .heroPin {
@@ -205,7 +233,7 @@ body {
     right: 20px;
     width: 40px;
     height: 40px;
-    background-color: #2EC4B6;
+    background-color: var(--purple);
     border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
     z-index: 2;
@@ -222,7 +250,7 @@ body {
     width: 700px;
     max-width: 100%;
     height: 1px;
-    background-color: #363B8B;
+    background-color: var(--border);
 }
 
 .pillWrap {
@@ -231,9 +259,9 @@ body {
 }
 
 .pillTag {
-    background-color: #EDEEF8;
-    color: #363B8B;
-    border-radius: 20px;
+    background-color: var(--purple-light);
+    color: var(--purple);
+    border-radius: var(--radius-pill);
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 16px;
@@ -243,7 +271,7 @@ body {
 
 .rewardHeading {
     font-size: 28px;
-    color: #0B0E52;
+    color: var(--purple-deep);
     max-width: 650px;
     text-align: center;
     padding-top: 10px;
@@ -252,7 +280,7 @@ body {
 
 .rewardSubtitle {
     font-size: 16px;
-    color: #53677A;
+    color: var(--muted);
     max-width: 600px;
     text-align: center;
     padding-bottom: 20px;
@@ -275,23 +303,23 @@ body {
     padding-bottom: 20px;
     padding-left: 15px;
     padding-right: 15px;
-    border: 1px solid #363B8B;
-    border-radius: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     background-color: #ffffff;
 }
 
 .statCardHighlight {
-    background-color: #EDEEF8;
+    background-color: var(--purple-light);
 }
 
 .statLabel {
     font-size: 13px;
-    color: #363B8B;
+    color: var(--purple);
 }
 
 .statValue {
     font-size: 22px;
-    color: #0B0E52;
+    color: var(--purple-deep);
 }
 
 .progressBar {
@@ -306,29 +334,28 @@ body {
 .progressRunnerShare {
     width: 97.5%;
     height: 10px;
-    background-color: #363B8B;
+    background-color: var(--purple);
     border-radius: 6px;
 }
 
 .progressCommissionShare {
     width: 2.5%;
     height: 10px;
-    background-color: #9AA0D9;
+    background-color: var(--purple-light);
     border-radius: 6px;
 }
 
 .progressCaption {
     font-size: 13px;
-    color: #53677A;
+    color: var(--muted);
 }
 
-
 .missionSection {
-    background-color: #EDEEF8;
+    background-color: var(--purple-light);
 }
 
 .ctaSection {
-    background-color: #363B8B;
+    background-color: var(--purple);
 }
 
 .ctaSection h2 {
@@ -339,65 +366,73 @@ body {
     color: #ffffff;
 }
 
-footer {
-    background-color: #363B8B;
-    padding-top: 30px;
-    padding-bottom: 20px;
-    padding-left: 30px;
-    padding-right: 30px;
+.siteFooter {
+    background-color: var(--purple);
+    padding: 48px 24px 24px;
 }
 
-.footerColumns {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
+.footerLayout {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 32px;
+    max-width: 1160px;
+    margin: 0 auto;
 }
 
-.footerColumn {
+@media (max-width: 640px) {
+    .footerLayout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.footerCol {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
 }
 
-.footerColumn h4 {
+.footerCol h4 {
     color: #ffffff;
     font-size: 15px;
 }
 
-.footerColumn p {
+.footerBrand p {
     color: #ffffff;
     font-size: 14px;
 }
 
-.footerColumn a {
+.footerCol a {
     color: #ffffff;
     text-decoration: none;
     font-size: 14px;
 }
 
-.footerColumn a:hover {
+.footerCol a:hover {
     text-decoration: underline;
 }
 
 .footerBottom {
-    display: flex;
-    justify-content: center;
+    max-width: 1160px;
+    margin: 24px auto 0;
     padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
 }
 
 .footerBottom p {
     color: #ffffff;
     font-size: 13px;
 }
-/* ================================================
-   HOW IT WORKS PAGE STYLES
-   ================================================ */
 
 .journey {
-    padding: 60px 80px;
-    background-color: #F5F7FC;
+    padding: 64px 24px;
+    background-color: var(--bg-soft);
+}
+
+@media (max-width: 768px) {
+    .journey {
+        padding: 40px 24px;
+    }
 }
 
 .journeyHeader {
@@ -405,23 +440,23 @@ footer {
 }
 
 .sectionLabel {
-    color: #363B8B;
-    background-color: #EDEEF8;
+    color: var(--purple);
+    background-color: var(--purple-light);
     padding: 8px 16px;
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
     display: inline-block;
     margin-bottom: 15px;
 }
 
 .journey h1 {
-    color: #0B0E52;
+    color: var(--purple-deep);
     font-size: 30px;
     line-height: 1.3;
     margin-bottom: 15px;
 }
 
 .subtitle {
-    color: #53677A;
+    color: var(--muted);
     font-size: 16px;
     line-height: 1.5;
 }
@@ -434,32 +469,32 @@ footer {
 
 .stepCard {
     background-color: white;
-    border-radius: 20px;
+    border-radius: var(--radius-lg);
     padding: 25px;
     flex: 1;
     min-height: 230px;
-    border: 1px solid #E0E5F0;
+    border: 1px solid var(--border);
 }
 
 .stepNumber {
-    color: #363B8B;
+    color: var(--purple);
     font-size: 14px;
     margin-bottom: 12px;
 }
 
 .stepCard h2 {
-    color: #0B0E52;
+    color: var(--purple-deep);
     font-size: 19px;
     margin-bottom: 12px;
 }
 
 .stepCard p {
-    color: #53677A;
+    color: var(--muted);
     font-size: 15px;
     line-height: 1.5;
 }
 
 .arrow {
-    color: #678AC9;
+    color: var(--purple);
     font-size: 24px;
 }
