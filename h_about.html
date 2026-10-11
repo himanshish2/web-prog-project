@@ -2,28 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - CampusCarry</title>
     <link rel="stylesheet" href="h_style.css">
 </head>
 <body>
 
     <header>
-        <nav class="navbar">
+        <nav class="navbar" aria-label="Main navigation">
             <div class="logo">
-                <b>CampusCarry</b>
+                <a href="home.html"><b>CampusCarry</b></a>
             </div>
 
-            <ul class="navLinks">
+            <!-- Menu button: only visible on small screens (see nav.js) -->
+            <button type="button" class="navToggle" id="navToggle"
+                    aria-expanded="false" aria-controls="navMenu">
+                <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
+                <span id="navToggleText">Menu</span>
+            </button>
+
+            <ul class="navLinks" id="navMenu">
                 <li><a href="home.html">Home</a></li>
-                <li><a href="about.html" class="activeLink">About Us</a></li>
+                <li><a href="about.html" class="activeLink" aria-current="page">About Us</a></li>
                 <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="tracking.html">Track Parcel</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
             </ul>
 
-            <a href="signup.html" class="btnNav">Sign Up</a>
+            <a href="login.html" class="btnNav">Sign Up</a>
         </nav>
     </header>
 
-    <main>
+    <main id="main">
 
         <!-- HERO -->
         <section class="section heroSection">
@@ -50,8 +60,8 @@
                 <div class="heroRight">
                     <img src="h_image2.png"
                          alt="Student walking with a parcel on campus"
-                         width="520" height="320" class="heroImage">
-                    <div class="heroPin"></div>
+                         width="520" height="347" class="heroImage">
+                    <div class="heroPin" aria-hidden="true"></div>
                 </div>
 
             </div>
@@ -112,11 +122,137 @@
             </p>
         </section>
 
+        <!-- HOW IT WORKS (interactive - see about.js) -->
+        <section class="section" id="how-it-works">
+            <div class="contentWrap">
+                <div class="pillWrap">
+                    <span class="pillTag">How It Works</span>
+                </div>
+                <h2 class="sectionHeading">From request to doorstep in four steps</h2>
+                <p class="sectionText">Select a step to see what happens at that stage.</p>
+
+                <div class="stepButtons">
+                    <button type="button" class="stepButton isActive" data-step="0"
+                            aria-pressed="true" aria-controls="stepPanel">
+                        <span class="stepButtonNum">01</span>
+                        <span class="stepButtonTitle">Request a Pickup</span>
+                    </button>
+                    <button type="button" class="stepButton" data-step="1"
+                            aria-pressed="false" aria-controls="stepPanel">
+                        <span class="stepButtonNum">02</span>
+                        <span class="stepButtonTitle">A Partner Accepts</span>
+                    </button>
+                    <button type="button" class="stepButton" data-step="2"
+                            aria-pressed="false" aria-controls="stepPanel">
+                        <span class="stepButtonNum">03</span>
+                        <span class="stepButtonTitle">Parcel Collection</span>
+                    </button>
+                    <button type="button" class="stepButton" data-step="3"
+                            aria-pressed="false" aria-controls="stepPanel">
+                        <span class="stepButtonNum">04</span>
+                        <span class="stepButtonTitle">Parcel Delivered</span>
+                    </button>
+                </div>
+
+                <div class="stepPanel" id="stepPanel" aria-live="polite">
+                    <p class="stepPanelKicker" id="stepPanelKicker">Step 1 of 4</p>
+                    <h3 class="stepPanelTitle" id="stepPanelTitle">Request a Pickup</h3>
+                    <p class="stepPanelText" id="stepPanelText">A student who can't collect a parcel creates a request. They enter the pickup location, the delivery location, a short parcel description, any instructions, and the reward they are willing to pay.</p>
+                    <a href="tracking.html" class="textLink">See how a parcel is tracked &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ (interactive - see about.js) -->
+        <section class="section faqSection" id="faq">
+            <div class="pillWrap">
+                <span class="pillTag">FAQ</span>
+            </div>
+            <h2 class="sectionHeading">Frequently Asked Questions</h2>
+
+            <div class="faqList">
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton1"
+                                aria-expanded="false" aria-controls="faqAnswer1">
+                            <span>Who can use CampusCarry?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer1" role="region"
+                         aria-labelledby="faqButton1" hidden>
+                        <p>CampusCarry is built for students of the BML Munjal University community. Any student can ask for a parcel to be collected, and any student can accept requests when they are already walking across campus.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton2"
+                                aria-expanded="false" aria-controls="faqAnswer2">
+                            <span>How are students verified?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer2" role="region"
+                         aria-labelledby="faqButton2" hidden>
+                        <p>CampusCarry is intended for university students, so accounts are meant to be tied to a student's university identity. Verification is not active in this prototype yet; it will be handled by the backend in a later phase of the project.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton3"
+                                aria-expanded="false" aria-controls="faqAnswer3">
+                            <span>Who decides the delivery price?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer3" role="region"
+                         aria-labelledby="faqButton3" hidden>
+                        <p>The student who needs the parcel sets the reward when creating the request. Runners see the reward before they accept. CampusCarry keeps a flat 2.5% platform commission and the rest goes to the runner.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton4"
+                                aria-expanded="false" aria-controls="faqAnswer4">
+                            <span>Can a pickup request be cancelled?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer4" role="region"
+                         aria-labelledby="faqButton4" hidden>
+                        <p>Yes, as long as the parcel has not been picked up yet. Once a runner has collected the parcel, or after it has been delivered, the request can no longer be cancelled.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton5"
+                                aria-expanded="false" aria-controls="faqAnswer5">
+                            <span>Who can see parcel details?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer5" role="region"
+                         aria-labelledby="faqButton5" hidden>
+                        <p>CampusCarry is designed so that the student who made the request and the runner who accepted it can see the full parcel details. Other students browsing requests only need the locations and the reward to decide whether to accept.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
         <!-- CTA -->
         <section class="section ctaSection">
             <h2>Need someone to collect your parcel?</h2>
             <p>Find a student who is already on the move.</p>
-            <a href="signup.html" class="btnPrimary">Get Started</a>
+            <div class="ctaButtons">
+                <a href="login.html" class="btnPrimary">Get Started</a>
+                <a href="tracking.html" class="btnSecondary">Track a Parcel</a>
+            </div>
         </section>
 
     </main>
@@ -133,13 +269,14 @@
                 <a href="home.html">Home</a>
                 <a href="about.html">About Us</a>
                 <a href="how-it-works.html">How It Works</a>
+                <a href="tracking.html">Track Parcel</a>
             </div>
 
             <div class="footerCol">
                 <h4>GET STARTED</h4>
-                <a href="request-delivery.html">Request Delivery</a>
-                <a href="become-runner.html">Become a Runner</a>
-                <a href="signup.html">Sign Up</a>
+                <a href="login.html">Request Delivery</a>
+                <a href="login.html">Become a Runner</a>
+                <a href="login.html">Sign Up</a>
             </div>
         </div>
 
@@ -148,5 +285,7 @@
         </div>
     </footer>
 
+    <script src="nav.js"></script>
+    <script src="about.js"></script>
 </body>
 </html>

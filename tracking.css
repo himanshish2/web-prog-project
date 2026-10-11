@@ -1,0 +1,554 @@
+/* ==========================================================
+   tracking.css - styles for tracking.html only.
+   Colours, buttons, navbar and footer come from h_style.css.
+   ========================================================== */
+
+/* Small extra colours used ONLY for errors and the Cancelled status */
+:root {
+    --danger: #9B1C1C;
+    --danger-soft: #FDEDED;
+}
+
+/* A [hidden] element must stay hidden even if a class sets display */
+[hidden] {
+    display: none !important;
+}
+
+.trackPage {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 24px 24px 64px 24px;
+}
+
+.backLink {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--purple);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.backLink:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Search area ---------- */
+.trackIntro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 24px 0px 32px 0px;
+    text-align: center;
+}
+
+.trackHeading {
+    font-size: 36px;
+    color: var(--purple-deep);
+}
+
+.trackLead {
+    max-width: 560px;
+    font-size: 16px;
+    color: var(--muted);
+}
+
+.trackForm {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.fieldLabel {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--purple-deep);
+}
+
+.trackFormRow {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.textInput {
+    flex: 1;
+    min-width: 0;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 16px;
+    color: var(--purple-deep);
+    background-color: #ffffff;
+}
+
+.textInput:hover {
+    border-color: var(--purple);
+}
+
+.textInput.hasError {
+    border-color: var(--danger);
+    background-color: var(--danger-soft);
+}
+
+.formMessage {
+    min-height: 22px;
+    font-size: 14px;
+    color: var(--purple);
+}
+
+.formMessage.isError {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.sampleIds {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.sampleLabel {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.chip {
+    padding: 6px 14px;
+    background-color: var(--purple-light);
+    color: var(--purple);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.chip:hover {
+    background-color: var(--purple);
+    color: #ffffff;
+}
+
+.demoBanner {
+    max-width: 560px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ---------- Empty state ---------- */
+.emptyState {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    text-align: center;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-soft);
+}
+
+.emptyState h2 {
+    font-size: 20px;
+    color: var(--purple);
+    margin-bottom: 8px;
+}
+
+.emptyState p {
+    color: var(--muted);
+}
+
+/* ---------- Result layout (CSS Grid with named areas) ---------- */
+.resultGrid {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    grid-template-areas:
+        "summary  summary"
+        "timeline controls"
+        "timeline partner"
+        "history  details";
+    gap: 20px;
+    align-items: start;
+}
+
+.areaSummary  { grid-area: summary; }
+.areaTimeline { grid-area: timeline; }
+.areaControls { grid-area: controls; }
+.areaPartner  { grid-area: partner; }
+.areaDetails  { grid-area: details; }
+.areaHistory  { grid-area: history; }
+
+.card {
+    min-width: 0;
+    padding: 24px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.card h2 {
+    font-size: 20px;
+    color: var(--purple-deep);
+    margin-bottom: 16px;
+}
+
+/* ---------- Summary + status badge ---------- */
+.summaryTop {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.summaryTop h2 {
+    margin-bottom: 0px;
+    color: var(--purple);
+}
+
+.statusMessage {
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.statusBadge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* One class per status: the navy gets stronger as the delivery progresses */
+.status-waiting    { background-color: var(--purple-light); color: var(--purple); border-color: var(--border); }
+.status-accepted   { background-color: #D9DCF2; color: var(--purple-deep); }
+.status-pickedup   { background-color: #B5BAE3; color: var(--purple-deep); }
+.status-outfor     { background-color: var(--purple); color: #ffffff; }
+.status-delivered  { background-color: var(--purple-deep); color: #ffffff; }
+.status-cancelled  { background-color: var(--danger-soft); color: var(--danger); border-color: var(--danger); }
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+}
+
+.infoGrid div,
+.detailList div {
+    min-width: 0;
+}
+
+dt {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 2px;
+}
+
+dd {
+    font-size: 16px;
+    color: var(--purple-deep);
+    overflow-wrap: anywhere;
+}
+
+.detailList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ---------- Timeline (vertical) ---------- */
+.timeline {
+    display: flex;
+    flex-direction: column;
+}
+
+.timelineItem {
+    position: relative;
+    padding: 0px 0px 28px 52px;
+    min-height: 56px;
+}
+
+.timelineItem:last-child {
+    padding-bottom: 0px;
+}
+
+/* the line joining one step to the next */
+.timelineItem::before {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: 2px;
+    width: 2px;
+    background-color: var(--border);
+}
+
+.timelineItem:last-child::before {
+    display: none;
+}
+
+.timelineItem.isCompleted::before {
+    background-color: var(--purple);
+}
+
+.timelineMarker {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background-color: #ffffff;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.timelineLabel {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--muted);
+    padding-top: 4px;
+}
+
+.timelineNote {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.timelineItem.isCompleted .timelineMarker {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: #ffffff;
+}
+
+.timelineItem.isCompleted .timelineLabel {
+    color: var(--purple-deep);
+}
+
+.timelineItem.isCurrent .timelineMarker {
+    border-color: var(--purple);
+    border-width: 3px;
+    color: var(--purple);
+    background-color: var(--purple-light);
+}
+
+.timelineItem.isCurrent .timelineLabel {
+    color: var(--purple);
+    font-weight: 700;
+}
+
+.timelineItem.isCurrent .timelineNote {
+    color: var(--purple);
+    font-weight: 600;
+}
+
+.timelineItem.isNotReached .timelineLabel {
+    text-decoration: line-through;
+}
+
+.timelineItem.isCancelled .timelineMarker {
+    background-color: var(--danger);
+    border-color: var(--danger);
+    color: #ffffff;
+}
+
+.timelineItem.isCancelled .timelineLabel,
+.timelineItem.isCancelled .timelineNote {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+/* ---------- Controls ---------- */
+.demoNote {
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    background-color: var(--purple-light);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--purple-deep);
+}
+
+.roleFieldset {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-bottom: 18px;
+    padding: 10px 14px 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.roleFieldset legend {
+    padding: 0px 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--purple);
+}
+
+.roleOption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.roleOption input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--purple);
+}
+
+.controlNote {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* ---------- Partner card ---------- */
+.partnerCard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+.partnerAvatar {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: var(--purple);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.partnerName {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--purple-deep);
+}
+
+.partnerBadge {
+    display: inline-block;
+    margin: 2px 0px;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    background-color: var(--purple-light);
+    color: var(--purple);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.partnerStats {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.mutedText {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* ---------- Status history ---------- */
+.historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.historyItem {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.historyItem:last-child {
+    padding-bottom: 0px;
+    border-bottom: none;
+}
+
+.historyTime {
+    flex-shrink: 0;
+    width: 76px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+}
+
+.historyText {
+    font-size: 15px;
+    color: var(--purple-deep);
+}
+
+.historyItem.isCancelledEvent .historyTime,
+.historyItem.isCancelledEvent .historyText {
+    color: var(--danger);
+}
+
+/* ---------- Tablet / mobile ---------- */
+@media (max-width: 900px) {
+    .resultGrid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "summary"
+            "timeline"
+            "controls"
+            "partner"
+            "details"
+            "history";
+    }
+}
+
+@media (max-width: 560px) {
+    .trackPage {
+        padding: 16px 16px 48px 16px;
+    }
+
+    .trackHeading {
+        font-size: 28px;
+    }
+
+    .trackFormRow {
+        flex-direction: column;
+    }
+
+    .card {
+        padding: 18px;
+    }
+
+    .historyTime {
+        width: 68px;
+    }
+
+    #receiverControls button,
+    #partnerControls button {
+        width: 100%;
+    }
+}
