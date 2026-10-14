@@ -11,24 +11,15 @@
     --radius-pill: 999px;
 }
 
+/* Reset & Base Defaults */
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
 html {
     scroll-behavior: smooth;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
-}
-
-ul,
-ol {
-    list-style: none;
 }
 
 body {
@@ -38,6 +29,32 @@ body {
     padding-top: 66px;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+ul, ol {
+    list-style: none;
+}
+
+/* Accessibility Focus States */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
+}
+
+.navbar a:focus-visible,
+.navbar button:focus-visible,
+.siteFooter a:focus-visible,
+.ctaSection a:focus-visible {
+    outline-color: #ffffff;
+}
+
+/* Navigation Bar */
 .navbar {
     position: fixed;
     top: 0;
@@ -55,17 +72,19 @@ body {
 
 .logo {
     font-size: 22px;
-    color: #ffffff;
 }
 
-.logo a {
+.logo a, .navLinks a, .footerCol a, .footerBottom p {
     color: #ffffff;
     text-decoration: none;
 }
 
+.logo a:hover, .navLinks a:hover, .footerCol a:hover {
+    text-decoration: underline;
+}
+
 .navLinks {
     display: flex;
-    flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
     gap: 25px;
@@ -76,38 +95,48 @@ body {
 }
 
 .navLinks a {
-    text-decoration: none;
-    color: #ffffff;
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-
-.navLinks a:hover {
-    text-decoration: underline;
+    padding: 6px 10px;
 }
 
 .activeLink {
-    color: #ffffff;
-    background-color: transparent;
     border-bottom: 2px solid #ffffff;
 }
 
-.btnPrimary {
+.navToggle {
+    display: none;
+    background-color: transparent;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.navToggle:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Buttons */
+.btnPrimary, .btnSecondary, .btnNav {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background-color: var(--purple);
-    color: #ffffff;
-    text-decoration: none;
-    border: none;
     border-radius: var(--radius-pill);
     padding: 10px 22px;
     font-weight: 600;
     font-size: 14px;
     font-family: inherit;
+    text-decoration: none;
     cursor: pointer;
+}
+
+.btnPrimary {
+    background-color: var(--purple);
+    color: #ffffff;
+    border: none;
 }
 
 .btnPrimary:hover {
@@ -120,19 +149,9 @@ body {
 }
 
 .btnSecondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
     background-color: transparent;
     color: var(--purple);
-    text-decoration: none;
     border: 1px solid var(--purple);
-    border-radius: var(--radius-pill);
-    padding: 10px 22px;
-    font-weight: 600;
-    font-size: 14px;
-    font-family: inherit;
-    cursor: pointer;
 }
 
 .btnSecondary:hover {
@@ -142,18 +161,12 @@ body {
 .btnSecondary:disabled {
     color: #8A8FC0;
     border-color: var(--border);
-    background-color: transparent;
     cursor: not-allowed;
 }
 
 .btnNav {
     background-color: #ffffff;
     color: var(--purple);
-    text-decoration: none;
-    border-radius: var(--radius-pill);
-    padding: 10px 22px;
-    font-weight: 600;
-    font-size: 14px;
 }
 
 .btnNav:hover {
@@ -164,18 +177,13 @@ body {
     font-size: 18px;
 }
 
+/* Common Section Layouts */
 .section {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
     padding: 64px 24px;
-}
-
-@media (max-width: 768px) {
-    .section {
-        padding: 40px 24px;
-    }
 }
 
 .sectionHeading {
@@ -189,15 +197,47 @@ body {
     text-align: center;
 }
 
+.pillWrap, .heroPillWrap {
+    display: flex;
+    justify-content: center;
+}
+
+.pillTag, .heroPill {
+    background-color: var(--purple-light);
+    color: var(--purple);
+    border-radius: var(--radius-pill);
+    padding: 6px 16px;
+    font-size: 12px;
+}
+
+.heroPill {
+    background-color: var(--purple);
+    color: #ffffff;
+    padding: 8px 18px;
+    font-size: 14px;
+}
+
+.dividerWrap {
+    display: flex;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+.dividerLine {
+    width: 700px;
+    max-width: 100%;
+    height: 1px;
+    background-color: var(--border);
+}
+
+/* Hero Section */
 .heroSection {
     align-items: stretch;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding: 0;
 }
 
 .heroSplit {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     width: 100%;
@@ -213,21 +253,6 @@ body {
     align-items: flex-start;
     gap: 20px;
     max-width: 550px;
-}
-
-.heroPillWrap {
-    display: flex;
-}
-
-.heroPill {
-    background-color: var(--purple);
-    color: #ffffff;
-    border-radius: var(--radius-pill);
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 18px;
-    padding-right: 18px;
-    font-size: 14px;
 }
 
 .heroHeading {
@@ -265,7 +290,6 @@ body {
     position: relative;
     z-index: 1;
     width: 100%;
-    height: auto;
     border-radius: var(--radius-sm);
 }
 
@@ -281,43 +305,13 @@ body {
     z-index: 2;
 }
 
-.dividerWrap {
-    display: flex;
-    justify-content: center;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.dividerLine {
-    width: 700px;
-    max-width: 100%;
-    height: 1px;
-    background-color: var(--border);
-}
-
-.pillWrap {
-    display: flex;
-    justify-content: center;
-}
-
-.pillTag {
-    background-color: var(--purple-light);
-    color: var(--purple);
-    border-radius: var(--radius-pill);
-    padding-top: 6px;
-    padding-bottom: 6px;
-    padding-left: 16px;
-    padding-right: 16px;
-    font-size: 12px;
-}
-
+/* Rewards & Commission */
 .rewardHeading {
     font-size: 28px;
     color: var(--purple-deep);
     max-width: 650px;
     text-align: center;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 0;
 }
 
 .rewardSubtitle {
@@ -330,7 +324,6 @@ body {
 
 .statCardRow {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
@@ -342,13 +335,16 @@ body {
     gap: 6px;
     width: 200px;
     max-width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 20px 15px;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     background-color: #ffffff;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.statCard:hover {
+    border-color: var(--purple);
+    transform: translateY(-3px);
 }
 
 .statCardHighlight {
@@ -367,11 +363,9 @@ body {
 
 .progressBar {
     display: flex;
-    flex-direction: row;
     width: 700px;
     max-width: 100%;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px 0;
 }
 
 .progressRunnerShare {
@@ -393,6 +387,7 @@ body {
     color: var(--muted);
 }
 
+/* Mission & CTA Sections */
 .missionSection {
     background-color: var(--purple-light);
 }
@@ -401,11 +396,7 @@ body {
     background-color: var(--purple);
 }
 
-.ctaSection h2 {
-    color: #ffffff;
-}
-
-.ctaSection p {
+.ctaSection h2, .ctaSection p {
     color: #ffffff;
 }
 
@@ -427,73 +418,17 @@ body {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-.siteFooter {
-    background-color: var(--purple);
-    padding: 48px 24px 24px;
-}
-
-.footerLayout {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 32px;
-    max-width: 1160px;
-    margin: 0 auto;
-}
-
-@media (max-width: 640px) {
-    .footerLayout {
-        grid-template-columns: 1fr;
-    }
-}
-
-.footerCol {
+.ctaButtons {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
 }
 
-.footerCol h4 {
-    color: #ffffff;
-    font-size: 15px;
-}
-
-.footerBrand p {
-    color: #ffffff;
-    font-size: 14px;
-}
-
-.footerCol a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.footerCol a:hover {
-    text-decoration: underline;
-}
-
-.footerBottom {
-    max-width: 1160px;
-    margin: 24px auto 0;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    text-align: center;
-}
-
-.footerBottom p {
-    color: #ffffff;
-    font-size: 13px;
-}
-
+/* Journey Section */
 .journey {
     padding: 64px 24px;
     background-color: var(--bg-soft);
-}
-
-@media (max-width: 768px) {
-    .journey {
-        padding: 40px 24px;
-    }
 }
 
 .journeyHeader {
@@ -560,182 +495,7 @@ body {
     font-size: 24px;
 }
 
-/* ==========================================================
-   PHASE 2 ADDITIONS
-   (responsive menu, focus states, interactive About sections,
-    responsive rules). Shared by about + tracking pages.
-   ========================================================== */
-
-/* ---------- Keyboard focus (visible on every control) ---------- */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible {
-    outline: 3px solid var(--purple);
-    outline-offset: 2px;
-}
-
-.navbar a:focus-visible,
-.navbar button:focus-visible,
-.siteFooter a:focus-visible,
-.ctaSection a:focus-visible {
-    outline-color: #ffffff;
-}
-
-/* ---------- Mobile menu button (hidden on desktop) ---------- */
-.navToggle {
-    display: none;
-    background-color: transparent;
-    color: #ffffff;
-    border: 1px solid #ffffff;
-    border-radius: var(--radius-sm);
-    padding: 8px 14px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.navToggle:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* The menu is only hidden when JavaScript has added "navReady",
-   so the links are still reachable if JavaScript fails to load. */
-@media (max-width: 960px) {
-    .navbar {
-        max-height: 100vh;
-        overflow-y: auto;
-    }
-
-    .navbar.navReady .navToggle {
-        display: inline-block;
-    }
-
-    .navbar.navReady .navLinks,
-    .navbar.navReady .btnNav {
-        display: none;
-    }
-
-    .navbar.navReady.menuOpen .navLinks {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        gap: 4px;
-    }
-
-    .navbar.navReady.menuOpen .navLinks a {
-        width: 100%;
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-
-    .navbar.navReady.menuOpen .btnNav {
-        display: block;
-        width: 100%;
-        text-align: center;
-    }
-}
-
-/* ---------- Interactive "How It Works" (About page) ---------- */
-.contentWrap {
-    width: 100%;
-    max-width: 960px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-.stepButtons {
-    display: flex;
-    flex-direction: row;
-    gap: 14px;
-    width: 100%;
-}
-
-.stepButton {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 16px;
-    background-color: #ffffff;
-    color: var(--purple-deep);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-
-.stepButton:hover {
-    background-color: var(--purple-light);
-    border-color: var(--purple);
-}
-
-.stepButtonNum {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--purple);
-}
-
-.stepButtonTitle {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.stepButton.isActive {
-    background-color: var(--purple);
-    border-color: var(--purple);
-    color: #ffffff;
-}
-
-.stepButton.isActive .stepButtonNum {
-    color: #ffffff;
-}
-
-.stepPanel {
-    width: 100%;
-    padding: 24px;
-    background-color: var(--bg-soft);
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--purple);
-    border-radius: var(--radius-sm);
-}
-
-.stepPanelKicker {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--purple);
-    margin-bottom: 6px;
-}
-
-.stepPanelTitle {
-    font-size: 22px;
-    color: var(--purple-deep);
-    margin-bottom: 10px;
-}
-
-.stepPanelText {
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--muted);
-    margin-bottom: 14px;
-}
-
-.textLink {
-    color: var(--purple);
-    font-weight: 600;
-}
-
-.textLink:hover {
-    color: var(--purple-deep);
-}
-
-/* ---------- FAQ accordion (About page) ---------- */
+/* FAQ Accordion */
 .faqSection {
     background-color: var(--bg-soft);
 }
@@ -764,7 +524,7 @@ select:focus-visible {
     background-color: transparent;
     color: var(--purple-deep);
     border: none;
-    font-family: inherit;
+    font: inherit;
     font-size: 16px;
     font-weight: 600;
     text-align: left;
@@ -783,7 +543,7 @@ select:focus-visible {
 }
 
 .faqAnswer {
-    padding: 0px 18px 18px 18px;
+    padding: 0 18px 18px;
     font-size: 15px;
     line-height: 1.6;
     color: var(--muted);
@@ -793,25 +553,83 @@ select:focus-visible {
     display: none;
 }
 
-.ctaButtons {
+/* Site Footer */
+.siteFooter {
+    background-color: var(--purple);
+    padding: 48px 24px 24px;
+}
+
+.footerLayout {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 32px;
+    max-width: 1160px;
+    margin: 0 auto;
+}
+
+.footerCol {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* ---------- Hover for cards ---------- */
-.statCard {
-    transition: border-color 0.2s ease, transform 0.2s ease;
+.footerCol h4 {
+    color: #ffffff;
+    font-size: 15px;
 }
 
-.statCard:hover {
-    border-color: var(--purple);
-    transform: translateY(-3px);
+.footerBrand p, .footerCol a {
+    font-size: 14px;
 }
 
-/* ---------- Tablet ---------- */
+.footerBottom {
+    max-width: 1160px;
+    margin: 24px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+}
+
+.footerBottom p {
+    font-size: 13px;
+}
+
+/* Media Queries */
+@media (max-width: 960px) {
+    .navbar {
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .navbar.navReady .navToggle {
+        display: inline-block;
+    }
+
+    .navbar.navReady .navLinks,
+    .navbar.navReady .btnNav {
+        display: none;
+    }
+
+    .navbar.navReady.menuOpen .navLinks {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 4px;
+    }
+
+    .navbar.navReady.menuOpen .navLinks a {
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .navbar.navReady.menuOpen .btnNav {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+}
+
 @media (max-width: 900px) {
     .heroSplit {
         flex-direction: column;
@@ -828,8 +646,17 @@ select:focus-visible {
     }
 }
 
-/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+    .section, .journey {
+        padding: 40px 24px;
+    }
+}
+
 @media (max-width: 640px) {
+    .footerLayout {
+        grid-template-columns: 1fr;
+    }
+
     .heroHeading {
         font-size: 34px;
     }
@@ -838,23 +665,11 @@ select:focus-visible {
         font-size: 16px;
     }
 
-    .rewardHeading,
-    .sectionHeading {
+    .rewardHeading, .sectionHeading {
         font-size: 24px;
     }
 
-    .statCard {
-        width: 100%;
-    }
-
-    .stepButtons {
-        flex-direction: column;
-    }
-
-    .stepPanel {
-        padding: 18px;
-    }
-
+    .statCard,
     .ctaSection .btnPrimary,
     .ctaSection .btnSecondary {
         width: 100%;
@@ -862,7 +677,6 @@ select:focus-visible {
     }
 }
 
-/* Respect people who ask their device for less motion */
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
