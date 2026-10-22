@@ -1,49 +1,12 @@
-// tracking.js - CampusCarry Parcel Tracking (frontend demo, plain JavaScript)
-// The mobile menu is handled separately in nav.js.
-//
-// HOW THIS FILE IS ORGANISED
-//   1. Data       - statuses and the sample parcels (the single source of truth)
-//   2. State      - which parcel and which demo role are selected
-//   3. DOM        - references to page elements
-//   4. Helpers    - small functions (find a parcel, format things)
-//   5. Rendering  - functions that draw one part of the page each
-//   6. Actions    - search, cancel, advance status
-//   7. Events     - connect buttons / form to the actions
+// tracking.js - CampusCarry Parcel Tracking (plain JavaScript, sample data only)
+// The mobile menu is in nav.js.
 
-// ============================================================
-// 1. DATA
-// ============================================================
-
-// The delivery stages, in order. The position (index) in this array matters:
-// "Accepted" is index 1, "Out for Delivery" is index 3, and so on.
-const statusFlow = [
-    "Waiting for Delivery Partner",
-    "Accepted",
-    "Picked Up",
-    "Out for Delivery",
-    "Delivered"
-];
-
-// Labels shown in the timeline (same order as statusFlow).
-const stageLabels = [
-    "Request Created",
-    "Delivery Partner Accepted",
-    "Parcel Picked Up",
-    "Out for Delivery",
-    "Delivered"
-];
-
-// Text used in the status history (same order as statusFlow).
-const historyText = [
-    "Pickup request created",
-    "Delivery partner accepted",
-    "Parcel picked up",
-    "Marked as out for delivery",
-    "Parcel delivered"
-];
-
-// Which CSS class styles each status badge.
-const statusClasses = {
+// ---------- 1. DATA ----------
+const statuses = ["Waiting for Delivery Partner", "Accepted", "Picked Up", "Out for Delivery", "Delivered"];
+const stepNames = ["Request Created", "Delivery Partner Accepted", "Parcel Picked Up", "Out for Delivery", "Delivered"];
+const eventText = ["Pickup request created", "Delivery partner accepted", "Parcel picked up", "Out for delivery", "Parcel delivered"];
+const nextLabels = ["", "Mark as Picked Up", "Mark as Out for Delivery", "Mark as Delivered"];
+const badgeClass = {
     "Waiting for Delivery Partner": "status-waiting",
     "Accepted": "status-accepted",
     "Picked Up": "status-pickedup",
@@ -52,613 +15,293 @@ const statusClasses = {
     "Cancelled": "status-cancelled"
 };
 
-// A short sentence for each status. These describe what has been
-// RECORDED, not where the parcel physically is (there is no GPS here).
-const statusMessages = {
-    "Waiting for Delivery Partner": "This request is waiting for a delivery partner to accept it.",
-    "Accepted": "A delivery partner has accepted this request. The parcel has not been picked up yet.",
-    "Picked Up": "The delivery partner has marked this parcel as picked up.",
-    "Out for Delivery": "The delivery partner has marked this parcel as out for delivery.",
-    "Delivered": "The delivery partner has marked this parcel as delivered.",
-    "Cancelled": "This request was cancelled. No delivery will take place."
-};
-
-// The button label that moves a parcel FROM a status to the next one.
-const advanceLabels = {
-    "Accepted": "Mark as Picked Up",
-    "Picked Up": "Mark as Out for Delivery",
-    "Out for Delivery": "Mark as Delivered"
-};
-
-// Sample parcels. Each parcel is an object.
-//   status : one of the statuses above (this is the ONE place the status is stored)
-//   times  : the time each stage happened (same order as statusFlow, null = not yet)
-//   partner: the delivery partner object, or null if nobody accepted yet
-const parcelData = [
+// The ONE place parcel information is stored. Each parcel is an object.
+const parcels = [
     {
-        id: "CC1024",
-        status: "Out for Delivery",
-        description: "Clothing order - small sealed box",
-        pickupLocation: "Main Gate Delivery Point",
-        deliveryLocation: "Hostels",
-        price: 30,
-        createdDate: "11 Oct 2026",
-        estimatedDelivery: "Around 6:45 PM",
-        instructions: "Hand the parcel over at the hostel entrance. Please keep it dry.",
+        id: "CC1024", status: "Out for Delivery", description: "Clothing order - small box",
+        pickup: "Main Gate Delivery Point", delivery: "Hostels", price: 30, date: "11 Oct 2026",
+        estimate: "Around 6:45 PM", instructions: "Hand over at the hostel entrance.",
         partner: { name: "Aarav S.", rating: 4.8, deliveries: 32 },
-        times: ["5:30 PM", "5:55 PM", "6:10 PM", "6:20 PM", null],
-        cancelledTime: null
+        history: [["5:30 PM", "Pickup request created"], ["5:55 PM", "Delivery partner accepted"],
+                  ["6:10 PM", "Parcel picked up"], ["6:20 PM", "Out for delivery"]]
     },
     {
-        id: "CC1025",
-        status: "Waiting for Delivery Partner",
-        description: "Two textbooks in a paper bag",
-        pickupLocation: "Main Gate Delivery Point",
-        deliveryLocation: "Academic Block",
-        price: 20,
-        createdDate: "11 Oct 2026",
-        estimatedDelivery: null,
-        instructions: "Meet outside the Academic Block entrance after 4 PM.",
+        id: "CC1025", status: "Waiting for Delivery Partner", description: "Two textbooks",
+        pickup: "Main Gate Delivery Point", delivery: "Academic Block", price: 20, date: "11 Oct 2026",
+        estimate: "Not available yet", instructions: "Meet outside the Academic Block after 4 PM.",
         partner: null,
-        times: ["3:40 PM", null, null, null, null],
-        cancelledTime: null
+        history: [["3:40 PM", "Pickup request created"]]
     },
     {
-        id: "CC1026",
-        status: "Accepted",
-        description: "Stationery - pen set and notebooks",
-        pickupLocation: "Library Help Desk",
-        deliveryLocation: "Hostels",
-        price: 22,
-        createdDate: "11 Oct 2026",
-        estimatedDelivery: "Around 2:30 PM",
-        instructions: "Pick up from the help desk and ask for the parcel by ID.",
+        id: "CC1026", status: "Accepted", description: "Stationery - pens and notebooks",
+        pickup: "Library Help Desk", delivery: "Hostels", price: 22, date: "11 Oct 2026",
+        estimate: "Around 2:30 PM", instructions: "Ask for the parcel by ID.",
         partner: { name: "Meera K.", rating: 4.9, deliveries: 51 },
-        times: ["1:15 PM", "1:40 PM", null, null, null],
-        cancelledTime: null
+        history: [["1:15 PM", "Pickup request created"], ["1:40 PM", "Delivery partner accepted"]]
     },
     {
-        id: "CC1027",
-        status: "Picked Up",
-        description: "Small package - phone accessories",
-        pickupLocation: "Main Gate Delivery Point",
-        deliveryLocation: "Cafeteria",
-        price: 18,
-        createdDate: "11 Oct 2026",
-        estimatedDelivery: "Around 5:00 PM",
-        instructions: "Hand over at the cafeteria entrance.",
-        partner: { name: "Rohan T.", rating: 4.6, deliveries: 14 },
-        times: ["4:05 PM", "4:20 PM", "4:35 PM", null, null],
-        cancelledTime: null
-    },
-    {
-        id: "CC1028",
-        status: "Delivered",
-        description: "Sports kit bag",
-        pickupLocation: "Sports Complex Reception",
-        deliveryLocation: "Hostels",
-        price: 25,
-        createdDate: "10 Oct 2026",
-        estimatedDelivery: "Around 12:00 PM",
-        instructions: "No special instructions.",
+        id: "CC1027", status: "Delivered", description: "Sports kit bag",
+        pickup: "Sports Complex Reception", delivery: "Hostels", price: 25, date: "10 Oct 2026",
+        estimate: "Delivered", instructions: "No special instructions.",
         partner: { name: "Ishita M.", rating: 4.7, deliveries: 27 },
-        times: ["11:00 AM", "11:12 AM", "11:30 AM", "11:42 AM", "11:55 AM"],
-        cancelledTime: null
+        history: [["11:00 AM", "Pickup request created"], ["11:12 AM", "Delivery partner accepted"],
+                  ["11:30 AM", "Parcel picked up"], ["11:42 AM", "Out for delivery"], ["11:55 AM", "Parcel delivered"]]
     },
     {
-        id: "CC1029",
-        status: "Cancelled",
-        description: "Paperback novel",
-        pickupLocation: "Library Help Desk",
-        deliveryLocation: "Academic Block",
-        price: 15,
-        createdDate: "10 Oct 2026",
-        estimatedDelivery: null,
-        instructions: "Deliver to the front desk.",
+        id: "CC1028", status: "Cancelled", description: "Paperback novel",
+        pickup: "Library Help Desk", delivery: "Academic Block", price: 15, date: "10 Oct 2026",
+        estimate: "Not applicable", instructions: "Deliver to the front desk.",
         partner: null,
-        times: ["9:05 AM", null, null, null, null],
-        cancelledTime: "9:40 AM"
+        history: [["9:05 AM", "Pickup request created"], ["9:40 AM", "Request cancelled"]]
     }
 ];
 
-// ============================================================
-// 2. STATE
-// ============================================================
+// ---------- 2. STATE ----------
+let current = null;         // the parcel being shown
+let role = "receiver";      // demo role: "receiver" or "partner"
+// Submitted form data is kept here and in localStorage (browser storage, not a database).
+function loadRecords() {
+    return JSON.parse(localStorage.getItem("campusCarryRecords") || "[]");
+}
 
-let currentParcel = null;      // the parcel object being shown (a reference into parcelData)
-let currentRole = "receiver";  // demo role: "receiver" or "partner"
-
-// ============================================================
-// 3. DOM ELEMENTS
-// ============================================================
-
-const trackForm = document.getElementById("trackForm");
-const parcelIdInput = document.getElementById("parcelId");
+// ---------- 3. PAGE ELEMENTS ----------
+const form = document.getElementById("trackForm");
+const idInput = document.getElementById("parcelId");
 const trackMessage = document.getElementById("trackMessage");
-const sampleChips = document.querySelectorAll(".chip");
-
 const emptyState = document.getElementById("emptyState");
-const trackResults = document.getElementById("trackResults");
-
-const summaryId = document.getElementById("summaryId");
-const statusBadge = document.getElementById("statusBadge");
-const statusMessage = document.getElementById("statusMessage");
-const summaryPickup = document.getElementById("summaryPickup");
-const summaryDelivery = document.getElementById("summaryDelivery");
-const summaryPrice = document.getElementById("summaryPrice");
-const summaryCreated = document.getElementById("summaryCreated");
-const summaryEstimate = document.getElementById("summaryEstimate");
-
+const results = document.getElementById("trackResults");
+const summaryBox = document.getElementById("summaryBox");
 const timelineList = document.getElementById("timelineList");
 const historyList = document.getElementById("historyList");
-
-const partnerCard = document.getElementById("partnerCard");
-const partnerAvatar = document.getElementById("partnerAvatar");
-const partnerName = document.getElementById("partnerName");
-const partnerStats = document.getElementById("partnerStats");
-const partnerEmpty = document.getElementById("partnerEmpty");
-
-const detailId = document.getElementById("detailId");
-const detailDescription = document.getElementById("detailDescription");
-const detailPickup = document.getElementById("detailPickup");
-const detailDelivery = document.getElementById("detailDelivery");
-const detailPrice = document.getElementById("detailPrice");
-const detailInstructions = document.getElementById("detailInstructions");
-
-const roleInputs = document.querySelectorAll("input[name='demoRole']");
-const receiverControls = document.getElementById("receiverControls");
-const partnerControls = document.getElementById("partnerControls");
+const partnerBox = document.getElementById("partnerBox");
+const detailsBox = document.getElementById("detailsBox");
 const cancelButton = document.getElementById("cancelButton");
-const advanceButton = document.getElementById("advanceButton");
-const receiverNote = document.getElementById("receiverNote");
-const partnerNote = document.getElementById("partnerNote");
+const nextButton = document.getElementById("nextButton");
+const controlNote = document.getElementById("controlNote");
 const actionMessage = document.getElementById("actionMessage");
+const recordCount = document.getElementById("recordCount");
+const downloadButton = document.getElementById("downloadButton");
+const roleInputs = document.querySelectorAll("input[name='demoRole']");
 
-// ============================================================
-// 4. HELPERS
-// ============================================================
+// ---------- 4. FUNCTIONS ----------
 
-// Look through parcelData with a loop and return the matching parcel (or null).
+// Loop through the array and return the matching parcel (or null).
 function findParcel(id) {
-    for (let i = 0; i < parcelData.length; i++) {
-        if (parcelData[i].id === id) {
-            return parcelData[i];
+    for (let i = 0; i < parcels.length; i++) {
+        if (parcels[i].id === id) {
+            return parcels[i];
         }
     }
     return null;
 }
 
-// Check what the user typed. Returns an error message, or "" if it looks fine.
-function validateParcelId(id) {
-    if (id === "") {
-        return "Please enter a parcel ID.";
-    }
-    // CC followed by exactly 4 digits, for example CC1024
-    const idPattern = /^CC[0-9]{4}$/;
-    if (!idPattern.test(id)) {
-        return "Parcel IDs look like CC1024 (the letters CC followed by 4 digits).";
-    }
-    return "";
+function showMessage(element, text, isError) {
+    element.textContent = text;
+    element.classList.toggle("isError", isError);
 }
 
-function formatPrice(amount) {
-    return "\u20B9" + amount;
-}
-
-// Current time such as "6:25 PM" (used when the status changes).
-function getCurrentTime() {
+function timeNow() {
     return new Date().toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit" }).toUpperCase();
 }
 
-// Show a message under the search box. isError turns it red.
-function showTrackMessage(text, isError) {
-    trackMessage.textContent = text;
-    if (isError) {
-        trackMessage.classList.add("isError");
-        parcelIdInput.classList.add("hasError");
-        parcelIdInput.setAttribute("aria-invalid", "true");
+// Save one form record (as an object) and update the counter.
+function saveRecord(action, parcelId, result) {
+    const records = loadRecords();      // read fresh, so a second open tab never overwrites it
+    records.push({ action: action, parcelId: parcelId, result: result, savedAt: new Date().toLocaleString("en-IN") });
+    localStorage.setItem("campusCarryRecords", JSON.stringify(records));
+    recordCount.textContent = records.length;
+}
+
+// Download all saved records as a .json file.
+function downloadRecords() {
+    const records = loadRecords();
+    if (records.length === 0) {
+        showMessage(trackMessage, "Nothing saved yet. Track a parcel first.", true);
+        return;
+    }
+    const blob = new Blob([JSON.stringify(records, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "campuscarry-tracking-data.json";
+    link.click();
+    URL.revokeObjectURL(link.href);
+}
+
+// Draw everything for the current parcel. Called after EVERY change.
+function showParcel() {
+    const p = current;
+    const index = statuses.indexOf(p.status);   // -1 when Cancelled
+
+    // Summary card
+    summaryBox.innerHTML =
+        '<div class="summaryTop"><h2>Parcel ' + p.id + '</h2>' +
+        '<span class="statusBadge ' + badgeClass[p.status] + '">' + p.status + '</span></div>' +
+        '<dl class="infoGrid">' +
+        '<div><dt>Pickup location</dt><dd>' + p.pickup + '</dd></div>' +
+        '<div><dt>Delivery location</dt><dd>' + p.delivery + '</dd></div>' +
+        '<div><dt>Offered price</dt><dd>\u20B9' + p.price + '</dd></div>' +
+        '<div><dt>Request created</dt><dd>' + p.date + '</dd></div>' +
+        '<div><dt>Estimated delivery</dt><dd>' + p.estimate + '</dd></div></dl>';
+
+    // Timeline (list items built in a loop)
+    let timeline = "";
+    if (p.status === "Cancelled") {
+        timeline = '<li class="timelineItem isCancelled"><span class="timelineMarker">\u2715</span>' +
+            '<p class="timelineLabel">Request Cancelled</p><p class="timelineNote">This parcel will not be delivered.</p></li>';
     } else {
-        trackMessage.classList.remove("isError");
-        parcelIdInput.classList.remove("hasError");
-        parcelIdInput.removeAttribute("aria-invalid");
-    }
-}
-
-// Show a message in the controls card (after cancel / status update).
-function showActionMessage(text, isError) {
-    actionMessage.textContent = text;
-    if (isError) {
-        actionMessage.classList.add("isError");
-    } else {
-        actionMessage.classList.remove("isError");
-    }
-}
-
-// Returns the next status a delivery partner may set, or null if none is allowed.
-// This is the rule that stops invalid transitions.
-function getNextStatus(parcel) {
-    if (parcel.partner === null) {
-        return null;                       // nobody has accepted the request
-    }
-    const index = statusFlow.indexOf(parcel.status);   // -1 for "Cancelled"
-    if (index >= 1 && index < statusFlow.length - 1) {
-        return statusFlow[index + 1];
-    }
-    return null;                           // waiting, delivered or cancelled
-}
-
-// A receiver may cancel only before pickup.
-function canCancel(parcel) {
-    return parcel.status === "Waiting for Delivery Partner" || parcel.status === "Accepted";
-}
-
-// ============================================================
-// 5. RENDERING (each function updates one part of the page)
-// ============================================================
-
-// Fill the summary card.
-function renderSummary(parcel) {
-    summaryId.textContent = parcel.id;
-    summaryPickup.textContent = parcel.pickupLocation;
-    summaryDelivery.textContent = parcel.deliveryLocation;
-    summaryPrice.textContent = formatPrice(parcel.price);
-    summaryCreated.textContent = parcel.createdDate;
-
-    statusBadge.textContent = parcel.status;
-    // Replace the old status class with the right one.
-    statusBadge.className = "statusBadge " + statusClasses[parcel.status];
-    statusMessage.textContent = statusMessages[parcel.status];
-
-    if (parcel.status === "Delivered") {
-        summaryEstimate.textContent = "Delivered at " + parcel.times[4];
-    } else if (parcel.status === "Cancelled") {
-        summaryEstimate.textContent = "Not applicable (request cancelled)";
-    } else if (parcel.estimatedDelivery !== null) {
-        summaryEstimate.textContent = parcel.estimatedDelivery;
-    } else {
-        summaryEstimate.textContent = "Available once a partner accepts";
-    }
-}
-
-// Build the timeline from scratch every time. One list item per stage.
-function updateTimeline(parcel) {
-    timelineList.innerHTML = "";
-
-    const isCancelled = parcel.status === "Cancelled";
-    const isDelivered = parcel.status === "Delivered";
-    const currentIndex = statusFlow.indexOf(parcel.status);
-
-    for (let i = 0; i < stageLabels.length; i++) {
-        let state;       // "isCompleted", "isCurrent", "isUpcoming" or "isNotReached"
-        let noteText;
-        let markerText = String(i + 1);
-
-        if (isCancelled) {
-            // Only stages that really happened before the cancellation count as done.
-            if (parcel.times[i] !== null) {
-                state = "isCompleted";
-            } else {
-                state = "isNotReached";
+        for (let n = 0; n < stepNames.length; n++) {
+            let state = "isUpcoming", note = "Upcoming", mark = n + 1;
+            if (p.status === "Delivered" || n < index) {
+                state = "isCompleted"; note = "Completed"; mark = "\u2713";
+            } else if (n === index) {
+                state = "isCurrent"; note = "Current step";
             }
-        } else if (isDelivered || i < currentIndex) {
-            state = "isCompleted";
-        } else if (i === currentIndex) {
-            state = "isCurrent";
-        } else {
-            state = "isUpcoming";
-        }
-
-        if (state === "isCompleted") {
-            markerText = "\u2713";
-            noteText = parcel.times[i] !== null ? "Completed at " + parcel.times[i] : "Completed";
-        } else if (state === "isCurrent") {
-            noteText = i === 0 ? "Current step - waiting for a delivery partner" : "Current step";
-        } else if (state === "isNotReached") {
-            noteText = "Not reached";
-        } else {
-            noteText = "Upcoming";
-        }
-
-        const item = document.createElement("li");
-        item.className = "timelineItem " + state;
-        if (state === "isCurrent") {
-            item.setAttribute("aria-current", "step");
-        }
-
-        const marker = document.createElement("span");
-        marker.className = "timelineMarker";
-        marker.setAttribute("aria-hidden", "true");
-        marker.textContent = markerText;
-
-        const label = document.createElement("p");
-        label.className = "timelineLabel";
-        label.textContent = stageLabels[i];
-
-        const note = document.createElement("p");
-        note.className = "timelineNote";
-        note.textContent = noteText;
-
-        item.appendChild(marker);
-        item.appendChild(label);
-        item.appendChild(note);
-        timelineList.appendChild(item);
-    }
-
-    // A cancelled parcel gets an extra, clearly marked final step.
-    if (isCancelled) {
-        const cancelItem = document.createElement("li");
-        cancelItem.className = "timelineItem isCancelled";
-
-        const marker = document.createElement("span");
-        marker.className = "timelineMarker";
-        marker.setAttribute("aria-hidden", "true");
-        marker.textContent = "\u2715";
-
-        const label = document.createElement("p");
-        label.className = "timelineLabel";
-        label.textContent = "Request Cancelled";
-
-        const note = document.createElement("p");
-        note.className = "timelineNote";
-        note.textContent = "Cancelled at " + parcel.cancelledTime;
-
-        cancelItem.appendChild(marker);
-        cancelItem.appendChild(label);
-        cancelItem.appendChild(note);
-        timelineList.appendChild(cancelItem);
-    }
-}
-
-// Status history: only events that have ALREADY happened (they have a time).
-function renderHistory(parcel) {
-    historyList.innerHTML = "";
-
-    for (let i = 0; i < statusFlow.length; i++) {
-        if (parcel.times[i] !== null) {
-            addHistoryItem(parcel.times[i], historyText[i], false);
+            timeline += '<li class="timelineItem ' + state + '"><span class="timelineMarker">' + mark + '</span>' +
+                '<p class="timelineLabel">' + stepNames[n] + '</p><p class="timelineNote">' + note + '</p></li>';
         }
     }
+    timelineList.innerHTML = timeline;
 
-    if (parcel.status === "Cancelled") {
-        addHistoryItem(parcel.cancelledTime, "Request cancelled", true);
+    // Status history (only events that already happened)
+    let history = "";
+    for (let n = 0; n < p.history.length; n++) {
+        history += '<li class="historyItem"><span class="historyTime">' + p.history[n][0] + '</span>' +
+            '<span class="historyText">' + p.history[n][1] + '</span></li>';
     }
-}
+    historyList.innerHTML = history;
 
-function addHistoryItem(time, text, isCancelledEvent) {
-    const item = document.createElement("li");
-    item.className = "historyItem";
-    if (isCancelledEvent) {
-        item.classList.add("isCancelledEvent");
-    }
-
-    const timeSpan = document.createElement("span");
-    timeSpan.className = "historyTime";
-    timeSpan.textContent = time;
-
-    const textSpan = document.createElement("span");
-    textSpan.className = "historyText";
-    textSpan.textContent = text;
-
-    item.appendChild(timeSpan);
-    item.appendChild(textSpan);
-    historyList.appendChild(item);
-}
-
-// Delivery partner card (or a message when there is none).
-function renderPartner(parcel) {
-    if (parcel.partner !== null && parcel.status !== "Cancelled") {
-        partnerCard.hidden = false;
-        partnerEmpty.hidden = true;
-        partnerAvatar.textContent = parcel.partner.name.charAt(0);
-        partnerName.textContent = parcel.partner.name;
-        partnerStats.textContent = "\u2605 " + parcel.partner.rating + " rating \u2022 " +
-            parcel.partner.deliveries + " completed deliveries";
+    // Delivery partner
+    if (p.partner !== null && p.status !== "Cancelled") {
+        partnerBox.innerHTML = '<div class="partnerCard"><div class="partnerAvatar">' + p.partner.name.charAt(0) + '</div>' +
+            '<div><p class="partnerName">' + p.partner.name + '</p><p class="partnerBadge">\u2713 Verified student</p>' +
+            '<p class="partnerStats">\u2605 ' + p.partner.rating + ' \u2022 ' + p.partner.deliveries + ' completed deliveries</p></div></div>';
     } else {
-        partnerCard.hidden = true;
-        partnerEmpty.hidden = false;
-        if (parcel.status === "Cancelled") {
-            partnerEmpty.textContent = "This request was cancelled, so no delivery partner is assigned.";
-        } else {
-            partnerEmpty.textContent = "No delivery partner has accepted this request yet.";
-        }
+        partnerBox.innerHTML = '<p class="mutedText">No delivery partner has accepted this request yet.</p>';
     }
-}
 
-function renderDetails(parcel) {
-    detailId.textContent = parcel.id;
-    detailDescription.textContent = parcel.description;
-    detailPickup.textContent = parcel.pickupLocation;
-    detailDelivery.textContent = parcel.deliveryLocation;
-    detailPrice.textContent = formatPrice(parcel.price);
-    detailInstructions.textContent = parcel.instructions;
-}
+    // Parcel details
+    detailsBox.innerHTML = '<dl class="detailList">' +
+        '<div><dt>Parcel ID</dt><dd>' + p.id + '</dd></div>' +
+        '<div><dt>Description</dt><dd>' + p.description + '</dd></div>' +
+        '<div><dt>Pickup / Delivery</dt><dd>' + p.pickup + ' \u2192 ' + p.delivery + '</dd></div>' +
+        '<div><dt>Offered price</dt><dd>\u20B9' + p.price + '</dd></div>' +
+        '<div><dt>Instructions</dt><dd>' + p.instructions + '</dd></div></dl>';
 
-// Show the correct controls for the selected demo role and the parcel's status.
-function updateControls(parcel) {
-    if (currentRole === "receiver") {
-        receiverControls.hidden = false;
-        partnerControls.hidden = true;
-
-        cancelButton.disabled = !canCancel(parcel);
-
-        if (canCancel(parcel)) {
-            receiverNote.textContent = "You can cancel this request until the parcel has been picked up.";
-        } else if (parcel.status === "Cancelled") {
-            receiverNote.textContent = "This request has already been cancelled.";
-        } else if (parcel.status === "Delivered") {
-            receiverNote.textContent = "This parcel has been delivered, so it can no longer be cancelled.";
-        } else {
-            receiverNote.textContent = "The parcel has already been picked up, so cancelling is no longer possible.";
-        }
-    } else {
-        receiverControls.hidden = true;
-        partnerControls.hidden = false;
-
-        const nextStatus = getNextStatus(parcel);
-
-        if (nextStatus !== null) {
-            advanceButton.hidden = false;
-            advanceButton.textContent = advanceLabels[parcel.status];
-            partnerNote.textContent = "Next status: " + nextStatus + ".";
-        } else {
-            advanceButton.hidden = true;
-            if (parcel.status === "Cancelled") {
-                partnerNote.textContent = "This request was cancelled, so there is nothing to update.";
-            } else if (parcel.status === "Delivered") {
-                partnerNote.textContent = "This parcel is already delivered. There are no more steps.";
-            } else {
-                partnerNote.textContent = "No delivery partner has accepted this request yet, so there are no delivery controls.";
-            }
-        }
-    }
-}
-
-// Redraw EVERY part of the page from the parcel object.
-// Every change to a parcel ends by calling this, so the page cannot get out of sync.
-function renderParcel(parcel) {
-    renderSummary(parcel);
-    updateTimeline(parcel);
-    renderHistory(parcel);
-    renderPartner(parcel);
-    renderDetails(parcel);
-    updateControls(parcel);
-
+    showControls();
     emptyState.hidden = true;
-    trackResults.hidden = false;
+    results.hidden = false;
 }
 
-// ============================================================
-// 6. ACTIONS
-// ============================================================
+// Show the buttons that match the demo role and the parcel's status.
+function showControls() {
+    const index = statuses.indexOf(current.status);
+    const canCancel = (index === 0 || index === 1);                       // before pickup only
+    const canMove = (current.partner !== null && index >= 1 && index <= 3);
 
-// Validate the ID, look it up, then show the parcel or an error.
-function searchParcel(rawId) {
-    const id = rawId.trim().toUpperCase();     // "cc1024 " becomes "CC1024"
-    parcelIdInput.value = id;
-    showActionMessage("", false);
+    cancelButton.hidden = (role === "partner");
+    nextButton.hidden = (role === "receiver" || !canMove);
+    cancelButton.disabled = !canCancel;
+    nextButton.textContent = canMove ? nextLabels[index] : "";
 
-    const problem = validateParcelId(id);
-    if (problem !== "") {
-        showError(problem);
-        return;
+    if (role === "receiver") {
+        controlNote.textContent = canCancel ? "You can cancel until the parcel is picked up."
+                                            : "This request can no longer be cancelled.";
+    } else {
+        controlNote.textContent = canMove ? "Next status: " + statuses[index + 1] + "."
+                                          : "No delivery action is available for this parcel.";
     }
-
-    const parcel = findParcel(id);
-    if (parcel === null) {
-        showError("No parcel found with ID " + id + ". Please check the ID and try again.");
-        return;
-    }
-
-    currentParcel = parcel;
-    showTrackMessage("Showing parcel " + id + ".", false);
-    renderParcel(parcel);
 }
 
-function showError(text) {
-    currentParcel = null;
-    showTrackMessage(text, true);
-    trackResults.hidden = true;
-    emptyState.hidden = false;
-}
-
-// Form submit (Track button OR Enter key).
+// Form submit: validate, search, then show the parcel or an error.
 function handleTrackingSubmit(event) {
-    event.preventDefault();                    // stop the page reloading
-    searchParcel(parcelIdInput.value);
-}
+    event.preventDefault();                                   // no page reload
+    const id = idInput.value.trim().toUpperCase();
+    idInput.value = id;
+    showMessage(actionMessage, "", false);
 
-// Delivery partner: move the parcel to the next valid status.
-function updateDeliveryStatus() {
-    if (currentParcel === null) {
-        return;
-    }
-    if (currentRole !== "partner") {
-        showActionMessage("Only a delivery partner can update the delivery status.", true);
-        return;
-    }
-
-    const nextStatus = getNextStatus(currentParcel);
-    if (nextStatus === null) {
-        showActionMessage("This parcel cannot be moved to another status right now.", true);
-        return;
-    }
-
-    if (nextStatus === "Delivered") {
-        const sure = confirm("Mark parcel " + currentParcel.id + " as delivered? This completes the delivery.");
-        if (!sure) {
-            return;
+    let error = "";
+    let parcel = null;
+    if (id === "") {
+        error = "Please enter a parcel ID.";
+    } else if (!/^CC[0-9]{4}$/.test(id)) {
+        error = "Parcel IDs look like CC1024 (CC followed by 4 digits).";
+    } else {
+        parcel = findParcel(id);
+        if (parcel === null) {
+            error = "No parcel found with ID " + id + ".";
         }
     }
 
-    currentParcel.status = nextStatus;
-    currentParcel.times[statusFlow.indexOf(nextStatus)] = getCurrentTime();
+    if (id !== "") {
+        saveRecord("search", id, parcel !== null ? "found" : "not found");
+    }
 
-    renderParcel(currentParcel);
-    showActionMessage("Status updated to \"" + nextStatus + "\".", false);
+    idInput.classList.toggle("hasError", error !== "");
+    if (error !== "") {
+        current = null;
+        showMessage(trackMessage, error, true);
+        results.hidden = true;
+        emptyState.hidden = false;
+        return;
+    }
+    current = parcel;
+    showMessage(trackMessage, "Showing parcel " + id + ".", false);
+    showParcel();
 }
 
-// Parcel receiver: cancel the request (only before pickup).
+// Delivery partner: move to the next valid status.
+function moveToNextStatus() {
+    const index = statuses.indexOf(current.status);
+    if (role !== "partner" || current.partner === null || index < 1 || index > 3) {
+        showMessage(actionMessage, "This update is not allowed.", true);
+        return;
+    }
+    if (index === 3 && !confirm("Mark parcel " + current.id + " as delivered?")) {
+        return;
+    }
+    current.status = statuses[index + 1];
+    current.history.push([timeNow(), eventText[index + 1]]);
+    if (current.status === "Delivered") {
+        current.estimate = "Delivered";
+    }
+    saveRecord("status update", current.id, current.status);
+    showParcel();
+    showMessage(actionMessage, "Status updated to " + current.status + ".", false);
+}
+
+// Parcel receiver: cancel, only before pickup.
 function cancelParcel() {
-    if (currentParcel === null) {
+    const index = statuses.indexOf(current.status);
+    if (role !== "receiver" || index < 0 || index > 1) {
+        showMessage(actionMessage, "This request cannot be cancelled.", true);
         return;
     }
-    if (currentRole !== "receiver") {
-        showActionMessage("Only the parcel receiver can cancel a request.", true);
+    if (!confirm("Cancel request " + current.id + "?")) {
         return;
     }
-    if (!canCancel(currentParcel)) {
-        showActionMessage("This request can no longer be cancelled.", true);
-        return;
-    }
-
-    const sure = confirm("Cancel request " + currentParcel.id + "? This cannot be undone.");
-    if (!sure) {
-        return;
-    }
-
-    currentParcel.status = "Cancelled";
-    currentParcel.cancelledTime = getCurrentTime();
-
-    renderParcel(currentParcel);
-    showActionMessage("Request " + currentParcel.id + " has been cancelled.", false);
+    current.status = "Cancelled";
+    current.estimate = "Not applicable";
+    current.history.push([timeNow(), "Request cancelled"]);
+    saveRecord("cancel", current.id, "Cancelled");
+    showParcel();
+    showMessage(actionMessage, "Request " + current.id + " has been cancelled.", false);
 }
 
-// Demo role radio buttons.
-function handleRoleChange(event) {
-    currentRole = event.target.value;
-    showActionMessage("", false);
-    if (currentParcel !== null) {
-        updateControls(currentParcel);
+function changeRole(event) {
+    role = event.target.value;
+    showMessage(actionMessage, "", false);
+    if (current !== null) {
+        showControls();
     }
 }
 
-// ============================================================
-// 7. EVENTS
-// ============================================================
-
-// Browsers sometimes restore a ticked radio button after a refresh,
-// so read the role from the page instead of assuming it.
-currentRole = document.querySelector("input[name='demoRole']:checked").value;
-
-trackForm.addEventListener("submit", handleTrackingSubmit);
-
-for (let i = 0; i < sampleChips.length; i++) {
-    sampleChips[i].addEventListener("click", function () {
-        searchParcel(sampleChips[i].dataset.id);
-    });
-}
-
-for (let i = 0; i < roleInputs.length; i++) {
-    roleInputs[i].addEventListener("change", handleRoleChange);
-}
-
-advanceButton.addEventListener("click", updateDeliveryStatus);
+// ---------- 5. EVENTS ----------
+form.addEventListener("submit", handleTrackingSubmit);
+nextButton.addEventListener("click", moveToNextStatus);
 cancelButton.addEventListener("click", cancelParcel);
-
-// If the page is opened as tracking.html?id=CC1024, search straight away.
-// (A dashboard "Track" link could use this later.)
-const urlParams = new URLSearchParams(window.location.search);
-const idFromUrl = urlParams.get("id");
-if (idFromUrl !== null) {
-    searchParcel(idFromUrl);
+downloadButton.addEventListener("click", downloadRecords);
+for (let i = 0; i < roleInputs.length; i++) {
+    roleInputs[i].addEventListener("change", changeRole);
 }
+role = document.querySelector("input[name='demoRole']:checked").value;
+recordCount.textContent = loadRecords().length;

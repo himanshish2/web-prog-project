@@ -107,37 +107,6 @@
     font-weight: 600;
 }
 
-.sampleIds {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-.sampleLabel {
-    font-size: 13px;
-    color: var(--muted);
-}
-
-.chip {
-    padding: 6px 14px;
-    background-color: var(--purple-light);
-    color: var(--purple);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-pill);
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.chip:hover {
-    background-color: var(--purple);
-    color: #ffffff;
-}
-
 .demoBanner {
     max-width: 560px;
     font-size: 13px;
@@ -213,12 +182,6 @@
 .summaryTop h2 {
     margin-bottom: 0px;
     color: var(--purple);
-}
-
-.statusMessage {
-    margin-bottom: 20px;
-    font-size: 15px;
-    color: var(--muted);
 }
 
 .statusBadge {
@@ -417,6 +380,11 @@ dd {
     width: 18px;
     height: 18px;
     accent-color: var(--purple);
+}
+
+#cancelButton,
+#nextButton {
+    margin-right: 8px;
 }
 
 .controlNote {
