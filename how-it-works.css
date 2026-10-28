@@ -9,7 +9,7 @@ body {
     margin: 0;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: #F7F8FC;
-    color: #0B0E52;
+    color: #0B0E52; /*default text color*/
 }
 
 
