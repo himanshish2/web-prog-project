@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Request Accepted | CampusCarry</title>
+
+    <link rel="stylesheet" href="s_accepted.css">
+</head>
+
+<body>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <b>CampusCarry</b>
+        </div>
+
+        <ul class="navLinks">
+            <li><a href="home.html">Home</a></li>
+            <li><a href="h_about.html">About Us</a></li>
+            <li><a href="how-it-works.html">How It Works</a></li>
+            <li><a href="tracking.html">Track Parcel</a></li>
+            <li><a href="dashboard.html" class="activeLink">Dashboard</a></li>
+        </ul>
+
+        <a href="login.html" class="btnGetStarted">Sign Up</a>
+
+    </nav>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="acceptedPage">
+
+        <!-- BACK TO DASHBOARD -->
+        <a href="dashboard.html" class="backLink">
+            ← Back to Dashboard
+        </a>
+
+
+        <!-- SUCCESS MESSAGE -->
+        <section class="successCard">
+
+            <div class="successIcon" aria-hidden="true">&#10003;</div>
+
+            <p class="sectionLabel">REQUEST CONFIRMED</p>
+
+            <h1>Your delivery has been accepted!</h1>
+
+            <p class="subtitle">
+                Your Campus Runner is ready to help.
+                You can check the parcel details below.
+            </p>
+
+            <div class="statusBadge">Accepted</div>
+
+        </section>
+
+
+        <!-- DELIVERY DETAILS -->
+        <section class="detailsCard">
+
+            <h2>Delivery Details</h2>
+
+            <div class="detailRow">
+                <span>Parcel ID</span>
+                <strong id="parcelId">CC1026</strong>
+            </div>
+
+            <div class="detailRow">
+                <span>Parcel</span>
+                <strong>Stationery - pens and notebooks</strong>
+            </div>
+
+            <div class="detailRow">
+                <span>Pickup Point</span>
+                <strong>Library Help Desk</strong>
+            </div>
+
+            <div class="detailRow">
+                <span>Delivery Location</span>
+                <strong>Hostels</strong>
+            </div>
+
+            <div class="detailRow">
+                <span>Delivery Reward</span>
+                <strong>₹22</strong>
+            </div>
+
+        </section>
+
+
+        <!-- CAMPUS RUNNER DETAILS -->
+        <section class="partnerCard">
+
+            <p class="sectionLabel">YOUR CAMPUS RUNNER</p>
+
+            <h2>Meera K.</h2>
+
+            <p class="partnerInfo">
+                Rating: 4.9/5 · 51 deliveries
+            </p>
+
+            <a href="tracking.html" class="primaryButton">
+                Track My Parcel
+            </a>
+
+            <p class="helperText">
+                Use parcel ID <strong>CC1026</strong> on the tracking page.
+            </p>
+
+        </section>
+
+
+        <!-- MESSAGE FORM -->
+        <section class="messageCard">
+
+            <h2>Contact Your Runner</h2>
+
+            <p class="subtitle">
+                Send a message to coordinate your parcel handoff.
+            </p>
+
+            <form id="messageForm">
+
+                <div class="formGroup">
+
+                    <label for="studentName">Your Name</label>
+
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="Enter your name"
+                        required
+                        maxlength="60"
+                    >
+
+                </div>
+
+
+                <div class="formGroup">
+
+                    <label for="message">Your Message</label>
+
+                    <textarea
+                        id="message"
+                        placeholder="e.g. I'll meet you near the hostel gate."
+                        required
+                        maxlength="300"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+
+                <button type="submit" class="primaryButton">
+                    Send Message
+                </button>
+
+
+                <button type="button" id="downloadJsonButton" class="downloadJsonButton">
+                     Click here to download JSON file
+                </button>
+
+                
+                <p
+                    id="formFeedback"
+                    class="formFeedback"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+                
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="siteFooter">
+
+        <!-- TOP CALL TO ACTION -->
+        <div class="footerCTA">
+
+            <h2>Need someone to collect your parcel?</h2>
+
+            <p>Find a student who is already on the move.</p>
+
+            <a href="login.html" class="footerCTAButton">
+                Get Started
+            </a>
+
+        </div>
+
+
+        <!-- FOOTER LINKS -->
+        <div class="footerLayout">
+
+            <div class="footerBrand">
+
+                <h3>CampusCarry</h3>
+
+                <p>
+                    Making campus deliveries easier, one parcel at a time.
+                </p>
+
+            </div>
+
+
+            <div class="footerColumn">
+
+                <h4>PLATFORM</h4>
+
+                <a href="home.html">Home</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="h_about.html">About Us</a>
+
+            </div>
+
+
+            <div class="footerColumn">
+
+                <h4>STUDENTS</h4>
+
+                <a href="login.html">Login</a>
+                <a href="login.html">Sign Up</a>
+                <a href="mailto:campuscarry@example.com">Contact</a>
+
+            </div>
+
+        </div>
+
+
+        <!-- COPYRIGHT -->
+        <div class="footerBottom">
+
+            <p>© 2026 CampusCarry. Web Programming Project.</p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="s_accepted.js"></script>
+
+</body>
+
+</html>

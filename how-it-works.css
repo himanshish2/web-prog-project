@@ -1,74 +1,104 @@
+
 /* =================================
    HOW IT WORKS PAGE
+   CAMPUSCARRY
    ================================= */
 
 
 /* ---------- GENERAL PAGE ---------- */
 
-body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #F7F8FC;
-    color: #0B0E52; /*default text color*/
-}
-
-
-/* ---------- NAVBAR ---------- */
-
-.navbar {
-    background-color: #363B8B;
-
-    display: flex;
-    align-items: center;
-
-    padding: 16px 24px;
-
+* {
     box-sizing: border-box;
 }
 
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+    background-color: #F7F8FC;
+    color: #0B0E52;
+}
+
+
+/* =================================
+   NAVIGATION BAR
+   ================================= */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 16px 30px;
+
+    background-color: #363B8B;
+
+    flex-wrap: wrap;
+    row-gap: 12px;
+}
+
+
+/* Logo */
+
 .logo {
     color: white;
-    font-size: 20px;
+    font-size: 25px;
     font-weight: 700;
+    white-space: nowrap;
 }
+
+
+/* Navigation Links */
 
 .navLinks {
     list-style: none;
 
     display: flex;
     align-items: center;
+    justify-content: center;
 
-    gap: 30px;
+    gap: 25px;
 
     margin: 0 auto;
     padding: 0;
 }
 
 .navLinks li {
+    display: flex;
     margin: 0;
 }
 
 .navLinks a {
     color: white;
     text-decoration: none;
-    font-size: 14px;
+
+    font-size: 16px;
+
+    padding: 6px 10px;
+
+    transition: border-color 0.2s ease;
 }
 
 .navLinks a:hover {
-    text-decoration: underline;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
 }
+
+
+/* Active Navigation Link */
 
 .navLinks .activeLink {
     color: white;
-
-    padding: 0 0 5px 0;
-
-    border-radius: 0;
-
     border-bottom: 2px solid white;
-
-    background-color: transparent;
 }
+
+
+/* Sign Up Button */
 
 .btnGetStarted {
     background-color: white;
@@ -76,25 +106,33 @@ body {
 
     text-decoration: none;
 
-    padding: 10px 22px;
+    padding: 12px 27px;
 
     border-radius: 999px;
 
     font-weight: 600;
-    font-size: 14px;
+    font-size: 15px;
+
+    white-space: nowrap;
+
+    transition: background-color 0.2s ease;
+}
+
+.btnGetStarted:hover {
+    background-color: #EDEEF8;
 }
 
 
-/* ---------- JOURNEY SECTION ---------- */
+/* =================================
+   JOURNEY SECTION
+   ================================= */
 
 .journey {
     max-width: 1160px;
 
     margin: 0 auto;
 
-    padding: 64px 24px;
-
-    box-sizing: border-box;
+    padding: 120px 24px 64px;
 }
 
 
@@ -133,8 +171,6 @@ body {
     line-height: 1.2;
 
     margin: 0 0 16px 0;
-
-    white-space: nowrap;
 }
 
 
@@ -150,15 +186,19 @@ body {
 }
 
 
-/* ---------- STEP CARDS ---------- */
+/* =================================
+   STEP CARDS
+   ================================= */
 
 .steps {
     display: flex;
-
     align-items: stretch;
 
     width: 100%;
 }
+
+
+/* Individual Cards */
 
 .stepCard {
     background-color: white;
@@ -172,10 +212,12 @@ body {
     flex: 1;
 
     min-width: 0;
-
     min-height: 250px;
 
-    box-sizing: border-box;
+    cursor: pointer;
+
+    transition: border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 
@@ -215,7 +257,33 @@ body {
 }
 
 
-/* ---------- ARROWS ---------- */
+/* ---------- EXPANDED CARD TEXT ---------- */
+
+.stepCard .stepExtra {
+    margin-top: 14px;
+    color: #363B8B;
+}
+
+
+/* ---------- CARD INTERACTION ---------- */
+
+.stepCard:hover,
+.stepCard:focus-visible,
+.stepCard[aria-expanded="true"] {
+    border-color: #363B8B;
+
+    box-shadow: 0 4px 14px rgba(54, 59, 139, 0.10);
+}
+
+.stepCard:focus-visible {
+    outline: 2px solid #363B8B;
+    outline-offset: 3px;
+}
+
+
+/* =================================
+   ARROWS BETWEEN CARDS
+   ================================= */
 
 .arrow {
     color: #363B8B;
@@ -223,7 +291,6 @@ body {
     font-size: 22px;
 
     width: 32px;
-
     flex: 0 0 32px;
 
     display: flex;
@@ -231,70 +298,292 @@ body {
     justify-content: center;
 
     margin: 0;
-
     padding: 0;
 }
 
 
-/* ---------- FOOTER ---------- */
+/* =================================
+   FOOTER
+   ================================= */
 
 .siteFooter {
     background-color: #363B8B;
-
     color: white;
 
-    padding: 48px 24px;
+    padding: 44px 27px 16px;
+
+    width: 100%;
 }
 
+
+/* ---------- TOP CALL TO ACTION ---------- */
+
+.footerCTA {
+    text-align: center;
+
+    margin-bottom: 70px;
+}
+
+.footerCTA h2 {
+    color: white;
+
+    font-size: 22px;
+
+    margin: 0 0 16px;
+}
+
+.footerCTA p {
+    color: white;
+
+    font-size: 14px;
+
+    margin: 0 0 20px;
+}
+
+
+/* Get Started Button */
+
+.footerCTAButton {
+    display: inline-block;
+
+    background-color: white;
+    color: #363B8B;
+
+    text-decoration: none;
+
+    padding: 10px 20px;
+
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: background-color 0.2s ease;
+}
+
+.footerCTAButton:hover {
+    background-color: #EDEEF8;
+}
+
+
+/* ---------- FOOTER LAYOUT ---------- */
+
 .footerLayout {
-    max-width: 1160px;
+    max-width: 100%;
 
     margin: 0 auto;
 
     display: grid;
 
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1.4fr auto;
 
-    gap: 40px;
+    gap: 32px;
+
+    align-items: start;
 }
 
-.footerBrand h3 {
-    margin: 0 0 14px 0;
 
-    font-size: 18px;
-    font-weight: 700;
+/* ---------- FOOTER BRAND ---------- */
+
+.footerBrand h3 {
+    color: white;
+
+    font-size: 16px;
+
+    margin: 0 0 6px;
 }
 
 .footerBrand p {
+    color: white;
+
+    font-size: 13px;
+
     margin: 0;
 
-    max-width: 300px;
-
-    color: #EDEEF8;
-
-    font-size: 14px;
     line-height: 1.5;
 }
 
+
+/* ---------- FOOTER COLUMNS ---------- */
+
+.footerColumn {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
 .footerColumn h4 {
-    margin: 0 0 14px 0;
+    color: white;
 
     font-size: 14px;
-    font-weight: 700;
+
+    margin: 0 0 2px;
 }
 
 .footerColumn a {
-    display: block;
-
-    color: #EDEEF8;
+    color: white;
 
     text-decoration: none;
 
-    font-size: 14px;
-
-    margin-bottom: 10px;
+    font-size: 13px;
 }
 
 .footerColumn a:hover {
     text-decoration: underline;
+}
+
+
+/* ---------- COPYRIGHT ---------- */
+
+.footerBottom {
+    text-align: center;
+
+    margin: 18px auto 0;
+
+    padding-top: 0;
+
+    border: none;
+}
+
+.footerBottom p {
+    color: white;
+
+    font-size: 12px;
+
+    margin: 0;
+}
+
+
+/* =================================
+   RESPONSIVE DESIGN
+   ================================= */
+
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .logo {
+        margin-right: auto;
+    }
+
+    .navLinks {
+        order: 3;
+
+        width: 100%;
+
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .navLinks a {
+        font-size: 14px;
+    }
+
+    .steps {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .stepCard {
+        flex: 1 1 40%;
+    }
+
+    .arrow {
+        display: none;
+    }
+
+}
+
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 600px) {
+
+    /* Navbar */
+
+    .navbar {
+        padding: 14px 18px;
+    }
+
+    .logo {
+        font-size: 21px;
+    }
+
+    .btnGetStarted {
+        padding: 9px 17px;
+        font-size: 13px;
+    }
+
+    .navLinks {
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    .navLinks a {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+
+    /* Journey */
+
+    .journey {
+        padding: 145px 18px 48px;
+    }
+
+    .journey h1 {
+        font-size: 28px;
+    }
+
+    .journey .subtitle {
+        font-size: 15px;
+    }
+
+
+    /* Cards */
+
+    .steps {
+        flex-direction: column;
+    }
+
+    .stepCard {
+        width: 100%;
+        min-height: auto;
+    }
+
+
+    /* Footer */
+
+    .siteFooter {
+        padding: 36px 20px 20px;
+    }
+
+    .footerCTA {
+        margin-bottom: 45px;
+    }
+
+    .footerCTA h2 {
+        font-size: 19px;
+    }
+
+    .footerLayout {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+    }
+
+    .footerBrand {
+        grid-column: 1 / -1;
+    }
+
+    .footerBottom {
+        margin-top: 28px;
+    }
+
 }

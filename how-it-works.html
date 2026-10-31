@@ -1,72 +1,96 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>How It Works</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>How It Works | CampusCarry</title>
+
     <link rel="stylesheet" href="how-it-works.css">
 </head>
 
 <body>
+
+    <!-- NAVIGATION BAR -->
     <nav class="navbar">
+
         <div class="logo">
             <b>CampusCarry</b>
         </div>
 
         <ul class="navLinks">
             <li><a href="home.html">Home</a></li>
-            <!-- 
-                    The How it works link is marked with class="activeLink"
-                    to show the user which page they are currently on,
-                    matching the highlighted "Home" pill in the
-                    reference screenshot.
-                -->
             <li><a href="h_about.html">About Us</a></li>
             <li><a href="how-it-works.html" class="activeLink">How It Works</a></li>
+            <li><a href="tracking.html">Track Parcel</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
         </ul>
 
         <a href="login.html" class="btnGetStarted">Sign Up</a>
+
     </nav>
+
+
+    <!-- HOW IT WORKS SECTION -->
     <section class="journey">
 
         <div class="journeyHeader">
 
             <p class="sectionLabel">THE JOURNEY</p>
 
-            <h1>Request → Accept → Chat → Pickup → Track → Deliver → Earn</h1>
+            <h1>Request → Accept → Connect → Deliver → Earn</h1>
 
             <p class="subtitle">
-                Four simple steps from a busy student to a delivered parcel.
+                Getting your parcel delivered across campus is just four simple steps.
             </p>
 
         </div>
 
+
+        <!-- FOUR STEP CARDS -->
         <div class="steps">
 
-            <div class="stepCard">
+            <!-- STEP 1 -->
+            <div class="stepCard" tabindex="0" role="button" aria-expanded="false">
 
                 <p class="stepNumber">01</p>
 
                 <h2>Create a Request</h2>
 
                 <p>
-                    Enter the parcel collection point, delivery location,
-                    parcel details, preferred time and offered reward.
+                    Need something delivered? Enter the pickup and drop-off
+                    locations, parcel details, preferred time and the reward
+                    you are offering.
+                </p>
+
+                <p class="stepExtra" hidden>
+                    Once submitted, your request becomes visible to Campus
+                    Runners who are available to complete the delivery.
                 </p>
 
             </div>
 
+
             <p class="arrow">→</p>
 
 
-            <div class="stepCard">
+            <!-- STEP 2 -->
+            <div class="stepCard" tabindex="0" role="button" aria-expanded="false">
 
                 <p class="stepNumber">02</p>
 
-                <h2>A Campus Runner Accepts</h2>
+                <h2>Get Matched with a Runner</h2>
 
                 <p>
-                    A student who is already heading in that direction
-                    accepts your delivery request.
+                    A fellow BMU student browsing available requests accepts
+                    your delivery and becomes your Campus Runner.
+                </p>
+
+                <p class="stepExtra" hidden>
+                    Once accepted, the request status is updated and you can
+                    view the runner and accepted request details.
                 </p>
 
             </div>
@@ -75,15 +99,23 @@
             <p class="arrow">→</p>
 
 
-            <div class="stepCard">
+            <!-- STEP 3 -->
+            <div class="stepCard" tabindex="0" role="button" aria-expanded="false">
 
                 <p class="stepNumber">03</p>
 
-                <h2>Connect &amp; Collect</h2>
+                <h2>Connect & Collect</h2>
 
                 <p>
-                    Connect with your Campus Runner, coordinate the
-                    handoff and collect the parcel.
+                    Coordinate with your Campus Runner through chat,
+                    confirm the pickup details and arrange a convenient
+                    handover for the parcel.
+                </p>
+
+                <p class="stepExtra" hidden>
+                    The runner collects the parcel from the specified
+                    pickup location and updates its status so you can
+                    follow the delivery progress.
                 </p>
 
             </div>
@@ -91,15 +123,24 @@
 
             <p class="arrow">→</p>
 
-            <div class="stepCard">
+
+            <!-- STEP 4 -->
+            <div class="stepCard" tabindex="0" role="button" aria-expanded="false">
 
                 <p class="stepNumber">04</p>
 
-                <h2>Deliver &amp; Earn</h2>
+                <h2>Track, Deliver & Earn</h2>
 
                 <p>
-                    The parcel is delivered safely and the Campus Runner
-                    receives the offered reward.
+                    Track your parcel until it reaches its destination.
+                    Once delivered, the requester receives the parcel
+                    and the Campus Runner earns the offered reward.
+                </p>
+
+                <p class="stepExtra" hidden>
+                    The runner marks the parcel as delivered, completing
+                    the request. A simple campus delivery that benefits
+                    both students!
                 </p>
 
             </div>
@@ -107,47 +148,79 @@
         </div>
 
     </section>
+
+
+    <!-- FOOTER -->
     <footer class="siteFooter">
 
+        <!-- TOP CALL TO ACTION -->
+        <div class="footerCTA">
+
+            <h2>Need someone to collect your parcel?</h2>
+
+            <p>Find a student who is already on the move.</p>
+
+            <a href="login.html" class="footerCTAButton">
+                Get Started
+            </a>
+
+        </div>
+
+
+        <!-- FOOTER LINKS -->
         <div class="footerLayout">
 
+            <!-- BRAND -->
             <div class="footerBrand">
 
                 <h3>CampusCarry</h3>
 
                 <p>
-                    Student-to-student parcel delivery for BMU.
+                    Making campus deliveries easier, one parcel at a time.
                 </p>
 
             </div>
 
 
+            <!-- PLATFORM LINKS -->
             <div class="footerColumn">
 
-                <h4>Platform</h4>
+                <h4>PLATFORM</h4>
 
                 <a href="home.html">Home</a>
-
-                <a href="about.html">About Us</a>
-
                 <a href="how-it-works.html">How It Works</a>
+                <a href="h_about.html">About Us</a>
 
             </div>
 
 
+            <!-- STUDENT LINKS -->
             <div class="footerColumn">
 
-                <h4>Get Started</h4>
-
-                <a href="login.html">Sign Up</a>
+                <h4>STUDENTS</h4>
 
                 <a href="login.html">Login</a>
+                <a href="login.html">Sign Up</a>
+                <a href="mailto:campuscarry@example.com">Contact</a>
 
             </div>
 
         </div>
 
+
+        <!-- COPYRIGHT -->
+        <div class="footerBottom">
+
+            <p>© 2026 CampusCarry. Web Programming Project.</p>
+
+        </div>
+
     </footer>
+
+
+    <!-- HOW IT WORKS JAVASCRIPT -->
+    <script src="how-it-works.js"></script>
+
 </body>
 
 </html>
