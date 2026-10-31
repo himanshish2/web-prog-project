@@ -817,6 +817,11 @@
 
             <!-- Grid / empty state -->
             <div id="requestGrid" class="requestGrid" aria-label="Available delivery requests"></div>
+            <div id="loadingState" class="emptyState" hidden>
+                <div class="emptyIcon" aria-hidden="true">⏳</div>
+                <p class="emptyTitle">Loading requests...</p>
+                <p class="emptyText">Fetching available delivery requests from the server.</p>
+            </div>
             <div id="emptyAvailable" class="emptyState" hidden>
                 <div class="emptyIcon" aria-hidden="true">📦</div>
                 <p class="emptyTitle">No requests match your search</p>
@@ -922,6 +927,13 @@
        2. LOAD DATA FROM JSON
     ═══════════════════════════════════════════════════════════ */
     function loadData() {
+        var loadingState = document.getElementById("loadingState");
+        var requestGrid = document.getElementById("requestGrid");
+
+        // Show loading state
+        loadingState.hidden = false;
+        requestGrid.innerHTML = "";
+
         fetch("available.json")
             .then(function (response) {
                 if (!response.ok) {
@@ -932,13 +944,15 @@
             .then(function (data) {
                 requests = data;
                 dataLoaded = true;
+                loadingState.hidden = true;
                 renderAvailable();
                 updateDeliveriesBadge();
             })
             .catch(function (error) {
                 console.error("Error loading request data:", error);
+                loadingState.hidden = true;
                 // Show error in the grid
-                document.getElementById("requestGrid").innerHTML =
+                requestGrid.innerHTML =
                     '<div style="padding:20px;color:var(--muted);text-align:center;">' +
                     '<p style="margin-bottom:8px;"><strong>Unable to load request data.</strong></p>' +
                     '<p style="font-size:13px;">This page requires a local server to load available.json. ' +
@@ -1071,6 +1085,7 @@
     const requestGrid     = document.getElementById("requestGrid");
     const emptyAvailable  = document.getElementById("emptyAvailable");
     const emptyAllTaken   = document.getElementById("emptyAllTaken");
+    const loadingState    = document.getElementById("loadingState");
     const resultsMeta     = document.getElementById("resultsMeta");
     const availableBadge  = document.getElementById("availableBadge");
 
@@ -1092,6 +1107,7 @@
 
         // Toggle empties
         requestGrid.innerHTML = "";
+        loadingState.hidden = true;
         emptyAvailable.hidden  = true;
         emptyAllTaken.hidden   = true;
 
