@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCarry — Dashboard</title>
+    <meta name="description" content="CampusCarry student dashboard — request or deliver parcels on campus.">
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+
+        /* =====================================================
+           HERO GREETING SECTION
+           Big welcome area at the top of the dashboard.
+           The gradient fades from the purple-light colour
+           down to the page background — gives it depth.
+        ===================================================== */
+        .dash-hero {
+            background: linear-gradient(160deg, var(--purple-light) 0%, var(--bg) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 56px 40px 48px;
+            margin-bottom: 0; /* stats row comes directly below */
+        }
+
+        .dash-hero-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .dash-greeting h1 {
+            font-size: clamp(28px, 3.5vw, 40px);
+            font-weight: 800;
+            color: var(--purple-deep);
+            letter-spacing: -0.6px;
+            margin-bottom: 8px;
+        }
+        .dash-greeting p {
+            font-size: 16px;
+            color: var(--muted);
+        }
+
+        /* Small quick-link buttons in the hero */
+        .dash-hero-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* =====================================================
+           ROLE CARDS — Request / Deliver
+           These are the two main action cards.
+           Each has:
+             - A top-coloured bar (accent)
+             - An icon
+             - Title + description
+             - A CTA link at the bottom
+        ===================================================== */
+        .role-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+        .role-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 48px 44px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: relative;
+            overflow: hidden;
+            /* Card entrance animation */
+            animation: cardIn .4s var(--ease) both;
+            transition: transform .22s var(--ease),
+                        box-shadow .22s var(--ease),
+                        border-color .22s;
+        }
+
+        .role-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(54,59,139,.28);
+        }
+
+        /* Top colour strip */
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 5px;
+            background: var(--accent, var(--purple));
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .role-card.deliver { --accent: #2563EB; }
+
+        /* Stagger the two cards */
+        .role-card:nth-child(1) { animation-delay: .08s; }
+        .role-card:nth-child(2) { animation-delay: .18s; }
+
+        /* Icon wrapper */
+        .role-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: grid;
+            place-items: center;
+            transition: transform .2s var(--ease);
+        }
+        .role-card.request .role-icon { background: var(--purple-light); }
+        .role-card.deliver .role-icon { background: var(--blue-light); }
+
+        /* Slight icon bounce on card hover */
+        .role-card:hover .role-icon { transform: scale(1.08); }
+
+        .role-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--purple-deep);
+            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+        }
+        .role-desc {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        /* CTA at the bottom of each card */
+        .role-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--purple);
+            margin-top: auto;
+        }
+        .role-card.deliver .role-cta { color: var(--blue); }
+
+        /* Arrow slides right on hover */
+        .cta-arrow {
+            display: inline-block;
+            transition: transform .2s var(--ease);
+        }
+        .role-card:hover .cta-arrow { transform: translateX(6px); }
+
+        /* =====================================================
+           STAT BOXES
+           These count open/my/running/completed requests.
+           The numbers are fetched from localStorage in JS.
+        ===================================================== */
+        .stats-row {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+        @media (max-width: 680px) {
+            .role-grid { grid-template-columns: 1fr; }
+            .dash-hero { padding: 40px 20px; }
+            .dash-hero-inner { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================================================
+         TOPBAR
+         Sticky purple header.
+         Logo | nav links | user avatar + logout
+    =================================================== -->
+    <header class="topbar">
+        <div class="tb-left">
+            <span class="tb-logo">Campus<span>Carry</span></span>
+        </div>
+        <div class="tb-right">
+            <!-- Link to My Activity page -->
+            <a href="my-requests.html" class="tb-link">My Activity</a>
+            <!-- Avatar shows first letter of user's name (set by JS) -->
+            <div class="tb-avatar" id="tbAvatar">S</div>
+            <span class="tb-name"  id="tbName">Student</span>
+            <!-- Logout button — calls CC.logout() from app.js -->
+            <button class="tb-logout" onclick="CC.logout()">Log out</button>
+        </div>
+    </header>
+
+    <!-- ===================================================
+         HERO GREETING
+         Big welcome section. Name is filled in by JS below.
+    =================================================== -->
+    <section class="dash-hero">
+        <div class="dash-hero-inner">
+            <div class="dash-greeting">
+                <h1>Welcome back, <span id="greetName">Student</span> 👋</h1>
+                <p>What would you like to do on campus today?</p>
+            </div>
+            <!-- Quick shortcuts -->
+            <div class="dash-hero-links">
+                <a href="request.html" class="btn btn-primary">+ New Request</a>
+                <a href="available-requests.html" class="btn btn-outline">Browse Requests</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================================
+         MAIN PAGE CONTENT
+    =================================================== -->
+    <div class="page-wrap">
+
+        <!-- STATS ROW
+             Numbers pulled from localStorage (cc_requests).
+             JS fills in the stat-num spans below.
+        -->
+        <div class="stats-row" style="padding:0;margin-bottom:36px;">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;">
+                <div class="stat-box card-anim">
+                    <div class="stat-num" id="statOpen">—</div>
+                    <div class="stat-label">Open Requests</div>
+                </div>
+                <div class="stat-box card-anim">
+                    <div class="stat-num" id="statMine">—</div>
+                    <div class="stat-label">My Requests</div>
+                </div>
+                <div class="stat-box card-anim">
+                    <div class="stat-num" id="statRunning">—</div>
+                    <div class="stat-label">I'm Delivering</div>
+                </div>
+                <div class="stat-box card-anim">
+                    <div class="stat-num" id="statDone">—</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROLE CARDS
+             Two big cards linking to the two main actions.
+             Clicking "Request a Parcel" → request.html
+             Clicking "Deliver a Parcel" → available-requests.html
+        -->
+        <div class="role-grid">
+
+            <!-- Card 1 — Request a Parcel -->
+            <a href="request.html" class="role-card request">
+                <div class="role-icon">
+                    <!-- Package / box icon -->
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                         stroke="#363B8B" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10"/>
+                        <path d="M23 7H1l2 3h18l2-3z"/>
+                        <path d="M12 7V3M9 3h6"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="role-title">Request a Parcel</div>
+                    <p class="role-desc">
+                        Need something collected and delivered to you on campus?
+                        Post a request with pickup location, drop-off point and a reward —
+                        a fellow student runner will accept and bring it to you.
+                    </p>
+                </div>
+                <span class="role-cta">
+                    Create a request <span class="cta-arrow">→</span>
+                </span>
+            </a>
+
+            <!-- Card 2 — Deliver a Parcel -->
+            <a href="available-requests.html" class="role-card deliver">
+                <div class="role-icon">
+                    <!-- Arrow / run icon -->
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
+                         stroke="#2563EB" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 8 16 12 12 16"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="role-title">Deliver a Parcel</div>
+                    <p class="role-desc">
+                        Already heading somewhere on campus? Browse open delivery requests
+                        that match your route, accept one you like and earn the reward
+                        for completing the drop-off. No fixed shifts needed.
+                    </p>
+                </div>
+                <span class="role-cta" style="color:#2563EB;">
+                    Browse requests <span class="cta-arrow">→</span>
+                </span>
+            </a>
+
+        </div><!-- end role-grid -->
+
+    </div><!-- end page-wrap -->
+
+
+    <!-- Load shared data layer first, then page logic -->
+    <script src="app.js"></script>
+    <script>
+
+        // Guard — if not logged in, go back to login page
+        if (!CC.requireLogin()) { /* redirected automatically */ }
+
+        // Fill in user's name everywhere
+        const user = CC.getUser();
+        document.getElementById('greetName').textContent = user.name;
+        document.getElementById('tbName').textContent    = user.name;
+        document.getElementById('tbAvatar').textContent  = user.name.charAt(0).toUpperCase();
+
+        // Count stats from localStorage
+        const all = CC.getRequests();
+        document.getElementById('statOpen').textContent    = all.filter(r => r.status === 'open').length;
+        document.getElementById('statMine').textContent    = all.filter(r => r.requester === user.name).length;
+        document.getElementById('statRunning').textContent = all.filter(r => r.runner === user.name && r.status !== 'completed').length;
+        document.getElementById('statDone').textContent    = all.filter(r => r.status === 'completed').length;
+
+    </script>
+</body>
+</html>

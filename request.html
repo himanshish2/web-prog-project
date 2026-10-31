@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCarry — Request a Parcel</title>
+    <meta name="description" content="Submit a new delivery request on CampusCarry.">
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+
+        /* =====================================================
+           FORM PAGE LAYOUT
+           Max-width is narrower here — forms look better
+           when they aren't stretched to full width.
+        ===================================================== */
+        .form-page-wrap {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 64px 32px 100px;
+        }
+
+        /* Section divider inside the form card */
+        .form-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            margin-bottom: 18px;
+            margin-top: 32px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .form-section-title:first-child { margin-top: 0; }
+
+        /* Submit button — full width + larger padding */
+        .submit-wrap {
+            margin-top: 36px;
+            padding-top: 28px;
+            border-top: 1px solid var(--border);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="tb-left">
+            <!-- Back arrow goes to dashboard -->
+            <a href="G_dashboard.html" class="tb-back">← Dashboard</a>
+            <span class="tb-logo">Campus<span>Carry</span></span>
+        </div>
+        <div class="tb-right">
+            <a href="my-requests.html" class="tb-link">My Activity</a>
+            <div class="tb-avatar" id="tbAvatar">S</div>
+            <span class="tb-name"  id="tbName">Student</span>
+            <button class="tb-logout" onclick="CC.logout()">Log out</button>
+        </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <div class="form-page-wrap">
+
+        <div class="page-head">
+            <h1>Request a Parcel</h1>
+            <p>Tell us what you need and where — a runner on campus will take care of the rest.</p>
+        </div>
+
+        <!-- The white form card -->
+        <div class="card">
+
+            <!-- Success message — hidden by default, shown after submit by JS -->
+            <div class="alert alert-success" id="successBanner">
+                ✅ Request submitted! Runners can now view and accept it.
+                <a href="my-requests.html">Track it →</a>
+            </div>
+
+            <!-- Error message — shown if user misses required fields -->
+            <div class="alert alert-error" id="errorBanner">
+                ⚠️ Please fill in all required fields.
+            </div>
+
+            <form id="requestForm" novalidate>
+
+                <!-- ── Parcel Info ── -->
+                <p class="form-section-title">Parcel Details</p>
+
+                <div class="form-group">
+                    <label for="itemName">Item Name *</label>
+                    <input type="text" id="itemName"
+                           placeholder="e.g. Books for CS101, Lab kit, Printed notes" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+                    <textarea id="description"
+                              placeholder="Anything the runner should know — size, colour, packaging, fragile items…"></textarea>
+                </div>
+
+                <!-- ── Locations ── -->
+                <p class="form-section-title">Pickup &amp; Drop-off</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pickupLocation">Pickup Location *</label>
+                        <select id="pickupLocation" required>
+                            <option value="">Select location</option>
+                            <option>Main Gate / Delivery Point</option>
+                            <option>Academic Block A</option>
+                            <option>Academic Block B</option>
+                            <option>Library</option>
+                            <option>Cafeteria</option>
+                            <option>Sports Complex</option>
+                            <option>Admin Block</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dropLocation">Drop-off Location *</label>
+                        <select id="dropLocation" required>
+                            <option value="">Select location</option>
+                            <option>Hostel Block A</option>
+                            <option>Hostel Block B</option>
+                            <option>Hostel Block C</option>
+                            <option>Academic Block A</option>
+                            <option>Academic Block B</option>
+                            <option>Library</option>
+                            <option>Cafeteria</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ── Reward & Urgency ── -->
+                <p class="form-section-title">Reward &amp; Priority</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reward">Reward (₹) *</label>
+                        <!-- min="0" stops negative values -->
+                        <input type="number" id="reward" placeholder="e.g. 20" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="urgency">Urgency</label>
+                        <select id="urgency">
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent 🔴</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ── Contact ── -->
+                <p class="form-section-title">Your Contact</p>
+
+                <div class="form-group">
+                    <label for="contactNum">Mobile Number *</label>
+                    <input type="tel" id="contactNum"
+                           placeholder="The runner will call/message you on this number" required>
+                </div>
+
+                <!-- Submit -->
+                <div class="submit-wrap">
+                    <button type="submit" class="btn btn-primary btn-lg btn-full">
+                        Submit Request
+                    </button>
+                </div>
+
+            </form>
+        </div><!-- end .card -->
+
+    </div><!-- end .form-page-wrap -->
+
+
+    <script src="app.js"></script>
+    <script>
+
+        // Redirect to login if no session
+        if (!CC.requireLogin()) { /* redirected */ }
+
+        const user = CC.getUser();
+        document.getElementById('tbName').textContent   = user.name;
+        document.getElementById('tbAvatar').textContent = user.name.charAt(0).toUpperCase();
+
+        // Form submission
+        document.getElementById('requestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Grab all field values
+            const itemName = document.getElementById('itemName').value.trim();
+            const pickup   = document.getElementById('pickupLocation').value;
+            const dropoff  = document.getElementById('dropLocation').value;
+            const reward   = document.getElementById('reward').value;
+            const contact  = document.getElementById('contactNum').value.trim();
+
+            // Simple validation — show error banner if something is missing
+            const err = document.getElementById('errorBanner');
+            if (!itemName || !pickup || !dropoff || !reward || !contact) {
+                err.classList.add('show');
+                return;
+            }
+            err.classList.remove('show');
+
+            // Save to localStorage via app.js
+            CC.addRequest({
+                itemName,
+                description : document.getElementById('description').value.trim(),
+                pickup,
+                dropoff,
+                reward      : Number(reward),
+                urgency     : document.getElementById('urgency').value,
+                contact
+            });
+
+            // Show success banner, reset form, scroll to top
+            document.getElementById('successBanner').classList.add('show');
+            this.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+    </script>
+</body>
+</html>

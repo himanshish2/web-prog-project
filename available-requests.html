@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCarry — Available Requests</title>
+    <meta name="description" content="Browse open parcel delivery requests on campus and earn rewards.">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="tb-left">
+            <a href="G_dashboard.html" class="tb-back">← Dashboard</a>
+            <span class="tb-logo">Campus<span>Carry</span></span>
+        </div>
+        <div class="tb-right">
+            <a href="my-requests.html" class="tb-link">My Activity</a>
+            <div class="tb-avatar" id="tbAvatar">S</div>
+            <span class="tb-name"  id="tbName">Student</span>
+            <button class="tb-logout" onclick="CC.logout()">Log out</button>
+        </div>
+    </header>
+
+    <!-- MAIN PAGE -->
+    <div class="page-wrap wide">
+
+        <div class="page-head">
+            <h1>Available Requests</h1>
+            <p>Pick a delivery that fits your route — accept it and earn the reward.</p>
+        </div>
+
+        <!-- ── Filter bar ──
+             Buttons filter by urgency.
+             Search box filters by item name or location.
+        -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All Requests</button>
+            <button class="filter-btn" data-filter="urgent">Urgent Only 🔴</button>
+            <!-- Search input — filtering happens on every keystroke (JS below) -->
+            <input class="filter-search" type="text" id="searchInput"
+                   placeholder="Search item, pickup, or drop-off…">
+        </div>
+
+        <!-- Live count of visible cards -->
+        <p class="req-count" id="reqCount">Loading…</p>
+
+        <!-- Cards are injected here by JS -->
+        <div class="cards-grid" id="cardsGrid"></div>
+
+    </div>
+
+    <!-- ===================================================
+         ACCEPT MODAL
+         Appears when user clicks "Accept Request".
+         Asks for confirmation before saving to localStorage.
+    =================================================== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h3>Accept this request?</h3>
+            <p>
+                You'll be responsible for collecting the parcel and delivering it
+                to the requester. They'll be able to track the status in real time.
+            </p>
+            <div class="modal-actions">
+                <!-- Cancel just closes the modal -->
+                <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+                <!-- Confirm calls the accept function in JS below -->
+                <button class="btn btn-primary" id="confirmAccept">Yes, Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+
+        // Guard — must be logged in
+        if (!CC.requireLogin()) { /* redirected */ }
+
+        const user = CC.getUser();
+        document.getElementById('tbName').textContent   = user.name;
+        document.getElementById('tbAvatar').textContent = user.name.charAt(0).toUpperCase();
+
+        // Which filter is active right now
+        let currentFilter  = 'all';
+        // ID of the request the user clicked "Accept" on
+        let pendingAcceptId = null;
+
+        /* --- Escape HTML to prevent XSS ---
+           Always escape user-provided strings before putting them in innerHTML */
+        function esc(s) {
+            return String(s)
+                .replace(/&/g,'&amp;')
+                .replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;');
+        }
+
+        /* --- Build and inject request cards --- */
+        function renderCards() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            // Filter requests:
+            //   1. Must be "open" (not yet accepted)
+            //   2. Must NOT be your own request (you can't deliver your own parcel)
+            //   3. Apply urgency filter if selected
+            //   4. Apply search term if typed
+            const list = CC.getRequests().filter(r => {
+                if (r.status !== 'open')              return false;
+                if (r.requester === user.name)         return false;
+                if (currentFilter === 'urgent' && r.urgency !== 'urgent') return false;
+                if (search &&
+                    !r.itemName.toLowerCase().includes(search) &&
+                    !r.pickup.toLowerCase().includes(search)   &&
+                    !r.dropoff.toLowerCase().includes(search))  return false;
+                return true;
+            });
+
+            // Update the count label
+            document.getElementById('reqCount').textContent =
+                list.length === 0
+                    ? 'No requests match your search'
+                    : `${list.length} request${list.length !== 1 ? 's' : ''} available`;
+
+            const grid = document.getElementById('cardsGrid');
+
+            // Empty state — shown when no cards
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📭</div>
+                        <h3>Nothing here right now</h3>
+                        <p>Check back soon — new requests appear here in real time.</p>
+                        <a href="G_dashboard.html" class="btn btn-outline">Back to Dashboard</a>
+                    </div>`;
+                return;
+            }
+
+            // Build one card per request
+            grid.innerHTML = list.map((r, i) => `
+                <div class="req-card card-anim ${r.urgency === 'urgent' ? 'urgent' : ''}"
+                     style="animation-delay:${i * 0.06}s">
+                    <div class="accent-bar"></div>
+
+                    <div class="req-header">
+                        <div>
+                            <div class="req-title">${esc(r.itemName)}</div>
+                            <div class="req-meta">
+                                <span>👤 ${esc(r.requester)}</span>
+                                <span>🕐 ${CC.timeAgo(r.createdAt)}</span>
+                                ${r.urgency === 'urgent'
+                                    ? '<span class="badge badge-urgent">Urgent</span>'
+                                    : ''}
+                            </div>
+                        </div>
+                        <!-- Reward — shown big on the right -->
+                        <div class="req-reward">₹${r.reward}</div>
+                    </div>
+
+                    <!-- Description if provided -->
+                    ${r.description
+                        ? `<p style="font-size:14px;color:var(--muted);">${esc(r.description)}</p>`
+                        : ''}
+
+                    <!-- Pickup → Drop-off route strip -->
+                    <div class="req-route">
+                        <span class="loc">📍 ${esc(r.pickup)}</span>
+                        <span class="arrow">——————→</span>
+                        <span class="loc">🏁 ${esc(r.dropoff)}</span>
+                    </div>
+
+                    <div class="req-footer">
+                        <span style="font-size:13px;color:var(--muted);">
+                            Contact: ${esc(r.contact)}
+                        </span>
+                        <!-- This button opens the confirmation modal -->
+                        <button class="btn btn-blue btn-sm"
+                                onclick="openModal(${r.id})">
+                            Accept Request
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* --- Filter buttons --- */
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Toggle active class
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards();
+            });
+        });
+
+        /* --- Search box --- */
+        document.getElementById('searchInput').addEventListener('input', renderCards);
+
+        /* --- Modal: open --- */
+        function openModal(id) {
+            pendingAcceptId = id;
+            document.getElementById('modal').classList.add('open');
+        }
+
+        /* --- Modal: close --- */
+        function closeModal() {
+            document.getElementById('modal').classList.remove('open');
+            pendingAcceptId = null;
+        }
+
+        // Close modal if user clicks the dark background
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        /* --- Confirm accept --- */
+        document.getElementById('confirmAccept').addEventListener('click', () => {
+            if (!pendingAcceptId) return;
+
+            const ok = CC.acceptRequest(pendingAcceptId); // saves to localStorage
+            closeModal();
+
+            if (ok) {
+                // Go to My Activity so the runner can see the delivery details
+                window.location.href = 'my-requests.html';
+            } else {
+                // Request was taken by someone else in the meantime
+                alert('This request was just accepted by someone else. Please pick another.');
+                renderCards();
+            }
+        });
+
+        // Initial render
+        renderCards();
+
+        // Auto-refresh every 10 seconds (simulates real-time updates)
+        setInterval(renderCards, 10000);
+
+    </script>
+</body>
+</html>
