@@ -405,5 +405,62 @@
         </div>
     </footer>
 
+    <!-- Scroll-to-top button -->
+    <button id="scrollTopBtn" aria-label="Scroll to top" style="
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 48px;
+        height: 48px;
+        background-color: #363B8B;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        box-shadow: 0 2px 8px rgba(11, 14, 82, 0.2);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+        z-index: 99;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">&uarr;</button>
+
+    <script>
+    (function() {
+        "use strict";
+
+        var scrollTopBtn = document.getElementById("scrollTopBtn");
+        var lastScrollTop = 0;
+
+        function toggleScrollButton() {
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 300) {
+                scrollTopBtn.style.opacity = "1";
+                scrollTopBtn.style.visibility = "visible";
+            } else {
+                scrollTopBtn.style.opacity = "0";
+                scrollTopBtn.style.visibility = "hidden";
+            }
+            lastScrollTop = scrollTop;
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        window.addEventListener("scroll", toggleScrollButton);
+        scrollTopBtn.addEventListener("click", scrollToTop);
+
+        // Initial check
+        toggleScrollButton();
+    })();
+    </script>
+
 </body>
 </html>
