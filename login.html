@@ -4,30 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CampusCarry</title>
+    <link rel="stylesheet" href="h_style.css">
     <link rel="stylesheet" href="login-style.css">
 </head>
 <body>
-
-    <!-- ==================================================================
-         1. NAVIGATION BAR (FLEXBOX)
-         ================================================================== -->
-    <header>
-        <nav class="navbar">
-            <div class="logo">
-                <b>CampusCarry</b>
-            </div>
-
-            <ul class="navLinks">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="request.html">Request</a></li> <!-- ADDED LINK HERE -->
-                <li><a href="login.html" class="activeLink">Login / Sign Up</a></li>
-            </ul>
-
-            <a href="login.html" class="btnGetStarted">Get Started</a>
-        </nav>
-    </header>
+    <header id="siteHeader"></header>
 
     <!-- State controller for Log In vs Sign Up tabs (Pure CSS) -->
     <input type="radio" name="auth-tab" id="tab-login" class="tab-radio" checked>
@@ -119,37 +100,8 @@
         </div>
 
     </main>
+    <div id="siteFooter"></div>
 
-    <!-- ==================================================================
-         3. FOOTER (CSS GRID & FLEXBOX)
-         ================================================================== -->
-    <footer>
-        <div class="footerColumns">
-            <div class="footerColumn">
-                <h4><b>CampusCarry</b></h4>
-                <p>Making campus deliveries easier, one parcel at a time.</p>
-            </div>
-
-            <div class="footerColumn">
-                <h4>PLATFORM</h4>
-                <a href="home.html">Home</a>
-                <a href="how-it-works.html">How It Works</a>
-                <a href="about.html">About Us</a>
-                <a href="request.html">Request Parcel</a> <!-- ADDED LINK HERE -->
-            </div>
-
-            <div class="footerColumn">
-                <h4>STUDENTS</h4>
-                <a href="login.html">Login</a>
-                <a href="login.html">Sign Up</a>
-                <a href="contact.html">Contact</a>
-            </div>
-        </div>
-
-        <div class="footerBottom">
-            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
-        </div>
-    </footer>
-
+    <script src="layout.js"></script>
 </body>
 </html>

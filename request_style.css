@@ -1,79 +1,24 @@
-* {
+/* ==========================================================
+   request_style.css - styles for the requests page ONLY.
+   Navbar, footer, buttons and colours come from h_style.css.
+   Do NOT style body, header, nav, footer, a or * in this file.
+   ========================================================== */
+
+/* Page container (replaces the old unused .main-content) */
+#main {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 40px 24px 80px 24px;
+}
+
+/* Reset applied to the request content only, not the navbar/footer */
+.hero,
+.hero *,
+.request-list,
+.request-list * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #F4F6FC;
-    color: #0F172A;
-    line-height: 1.5;
-    width: 100%;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button {
-    font-family: inherit;
-}
-
-.navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background-color: #384085;
-    color: #FFFFFF;
-    padding: 0 40px;
-    height: 72px;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-}
-
-.logo {
-    font-size: 20px;
-    font-weight: 800;
-    color: #FFFFFF;
-    justify-self: start;
-}
-
-.nav-links {
-    display: flex;
-    gap: 32px;
-}
-
-.nav-links a {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 8px 0;
-    position: relative;
-}
-
-.nav-links a.active {
-    color: #FFFFFF;
-    font-weight: 600;
-}
-
-.nav-links a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background-color: #FFFFFF;
-}
-
-.main-content {
-    width: 100%;
-    padding: 40px 40px 80px 40px;
 }
 
 .hero {
@@ -118,6 +63,7 @@ button {
     font-weight: 600;
     user-select: none;
     width: 100%;
+    list-style: none;
 }
 
 .title {
@@ -192,6 +138,7 @@ button {
     width: 100%;
     background-color: #0FA968;
     color: #FFFFFF;
+    font-family: inherit;
     font-size: 15px;
     font-weight: 700;
     padding: 12px;
@@ -200,104 +147,16 @@ button {
     cursor: pointer;
 }
 
-.footer {
-    background-color: #384085;
-    color: #FFFFFF;
-    padding: 50px 40px 30px 40px;
-    width: 100%;
-}
-
-.footer-cta {
-    text-align: left;
-    padding-bottom: 50px;
-}
-
-.footer-cta h2 {
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.footer-cta p {
-    font-size: 15px;
-    color: #CBD5E1;
-    margin-bottom: 20px;
-}
-
-.footer-btn {
-    background-color: #FFFFFF;
-    color: #384085;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 10px 24px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-}
-
-.footer-links {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 40px;
-    margin-bottom: 40px;
-}
-
-.footer-links h3 {
-    font-size: 18px;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.footer-links p {
-    font-size: 14px;
-    color: #CBD5E1;
-    line-height: 1.5;
-}
-
-.footer-links h4 {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-}
-
-.footer-links ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.footer-links a {
-    font-size: 14px;
-    color: #CBD5E1;
-}
-
-.copyright {
-    text-align: left;
-    font-size: 13px;
-    color: #CBD5E1;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 @media (max-width: 650px) {
-    .navbar {
-        padding: 0 20px;
-        grid-template-columns: auto 1fr;
+    #main {
+        padding-left: 16px;
+        padding-right: 16px;
     }
-    .main-content, .footer {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+
     .request-header {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 6px;
-    }
-    .footer-links {
-        grid-template-columns: 1fr;
     }
 }
