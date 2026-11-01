@@ -90,8 +90,8 @@
             <div class="form-box">
 
                 <div class="tab-pill-row">
-                    <label for="tab-login" class="tab-btn">Log In</label>
-                    <label for="tab-signup" class="tab-btn" onclick="redirectToSignup()">Sign Up</label>
+                    <label for="tab-login" class="tab-btn" onclick="switchToLoginTab()">Log In</label>
+                    <label for="tab-signup" class="tab-btn" onclick="openSignupModal(event)">Sign Up</label>
                 </div>
 
                 <form class="auth-form" id="loginForm" onsubmit="handleLoginSubmit(event)">
@@ -114,7 +114,7 @@
                 <div class="or-divider">OR</div>
 
                 <div class="social-btn-row">
-                    <button class="social-btn" title="Login with Google">
+                    <button class="social-btn" type="button" title="Login with Google">
                         <svg width="18" height="18" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
                             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.29v3.15C3.26 21.3 7.31 24 12 24z"/>
@@ -122,7 +122,7 @@
                             <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.58l3.99 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
                         </svg>
                     </button>
-                    <button class="social-btn" title="Login with Facebook">
+                    <button class="social-btn" type="button" title="Login with Facebook">
                         <svg width="18" height="18" viewBox="0 0 24 24">
                             <rect width="24" height="24" rx="4" fill="#1877F2"/>
                             <path fill="#FFFFFF" d="M16.5 12H14v8h-3v-8H9.5V9.5H11V8c0-2.2 1.3-3.5 3.5-3.5h2v2.5h-1.2c-1 0-1.3.4-1.3 1.2v1.3h2.5L16.5 12z"/>
@@ -139,8 +139,8 @@
     <!-- NEW USER POPUP MODAL -->
     <div class="modal-overlay" id="newUserModal">
         <div class="modal-card">
-            <h3>NEW USER, REGISTER ACCOUNT</h3>
-            <p>No registered account was found with this email or username. Would you like to set up your profile now?</p>
+            <h3>CONFIRM REGISTRATION OF NEW ACCOUNT</h3>
+            <p>Would you like to register a new CampusCarry profile and set up your student credentials?</p>
             <div class="modal-btn-row">
                 <button type="button" class="modal-btn btn-nothanks" onclick="closeModal()">NO THANKS</button>
                 <button type="button" class="modal-btn btn-continue" onclick="proceedToSignup()">CONTINUE</button>
@@ -151,12 +151,19 @@
     <div id="siteFooter"></div>
 
     <script>
-        function redirectToSignup() {
-            window.location.href = "b_signup.html";
+        function openSignupModal(event) {
+            if (event) event.preventDefault();
+            document.getElementById("tab-login").checked = true;
+            document.getElementById("newUserModal").style.display = "flex";
+        }
+
+        function switchToLoginTab() {
+            document.getElementById("tab-login").checked = true;
         }
 
         function closeModal() {
             document.getElementById("newUserModal").style.display = "none";
+            document.getElementById("tab-login").checked = true;
         }
 
         function proceedToSignup() {
@@ -172,7 +179,7 @@
             // Check if user exists in localStorage
             if (!savedProfile || (savedProfile.bmuEmail.toLowerCase() !== inputVal && savedProfile.studentName.toLowerCase() !== inputVal && savedProfile.enrollmentNo !== inputVal)) {
                 // User is NEW -> Show Pop-up Modal
-                document.getElementById("newUserModal").style.display = "flex";
+                openSignupModal();
             } else {
                 // User EXISTS -> Redirect to Profile
                 alert(`Welcome back, ${savedProfile.studentName}!`);

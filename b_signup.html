@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Sign Up - CampusCarry</title>
+    <title>Student Registration - CampusCarry</title>
     <link rel="stylesheet" href="b_signup.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <main class="signup-container">
         <div class="signup-card">
             <h2>Student Registration</h2>
-            <p class="card-subtitle">Enter your details below to create your CampusCarry account.</p>
+            <p class="card-subtitle">Set up your CampusCarry profile to start requesting and delivering parcels.</p>
 
             <form id="studentSignupForm" onsubmit="handleSignupSubmit(event)">
                 
@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group">
                         <label for="enrollmentNo">Enrollment Number (6 Digits)</label>
-                        <input type="text" id="enrollmentNo" pattern="\d{6}" title="Must be exactly 6 digits" placeholder="e.g. 250339" required>
+                        <input type="text" id="enrollmentNo" pattern="\d{6}" title="Must be 6 digits" placeholder="e.g. 250339" required>
                     </div>
                 </div>
 
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="bmuEmail">BMU Mail ID</label>
+                    <label for="bmuEmail">BMU Email ID</label>
                     <input type="email" id="bmuEmail" placeholder="student@bmu.edu.in" required>
                 </div>
 
@@ -51,7 +51,7 @@
                     <div class="form-group">
                         <label for="hostel">Hostel Block</label>
                         <select id="hostel" required>
-                            <option value="" disabled selected></option>
+                            <option value="" disabled selected>Select Hostel</option>
                             <option value="RTH">RTH</option>
                             <option value="KCH">KCH</option>
                             <option value="BSH">BSH</option>
@@ -64,17 +64,38 @@
                     </div>
                     <div class="form-group">
                         <label for="mobileNo">Mobile Number (10 Digits)</label>
-                        <input type="tel" id="mobileNo" pattern="\d{10}" title="Must be a 10-digit mobile number" placeholder="10-digit mobile number" required>
+                        <input type="tel" id="mobileNo" pattern="\d{10}" title="Must be 10 digits" placeholder="10-digit mobile number" required>
                     </div>
                 </div>
 
-                <button type="submit" class="submit-signup-btn">Complete Sign Up</button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" placeholder="Minimum 6 characters" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <input type="password" id="signupConfirmPassword" placeholder="Re-enter password" minlength="6" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-signup-btn">Complete Registration</button>
 
             </form>
         </div>
     </main>
 
     <script>
+        function downloadJSONFile(dataObj, filename) {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", filename);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
         function handleSignupSubmit(event) {
             event.preventDefault();
 
@@ -85,9 +106,16 @@
             const bmuEmail = document.getElementById("bmuEmail").value.trim();
             const hostel = document.getElementById("hostel").value;
             const mobileNo = document.getElementById("mobileNo").value.trim();
+            const password = document.getElementById("signupPassword").value;
+            const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match! Please check and try again.");
+                return;
+            }
 
             if (enrollmentNo.length !== 6 || isNaN(enrollmentNo)) {
-                alert("Enrollment number must be exactly 6 numerical digits.");
+                alert("Enrollment number must be exactly 6 digits.");
                 return;
             }
 
@@ -104,15 +132,21 @@
                 bmuEmail: bmuEmail,
                 hostel: hostel,
                 mobileNo: mobileNo,
+                password: password,
+                earnings: 0,
+                completedDeliveriesCount: 0,
                 registeredAt: new Date().toISOString()
             };
 
+            // 1. Save to Local Storage
             localStorage.setItem("studentProfile", JSON.stringify(profileData));
 
-            alert("Registration successful! Redirecting to your profile...");
+            // 2. Download JSON File for evaluation proof
+            downloadJSONFile(profileData, `student_profile_${enrollmentNo}.json`);
+
+            alert("Registration Successful! Default earnings set to ₹0. Local JSON file downloaded.");
             window.location.href = "b_profile.html";
         }
     </script>
-
 </body>
 </html>

@@ -4,22 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile - CampusCarry</title>
+    <link rel="stylesheet" href="h_style.css">
     <link rel="stylesheet" href="b_profile.css">
 </head>
 <body>
-
-    <header class="navbar">
-        <div class="nav-container">
-            <h1 class="logo">CampusCarry</h1>
-            <div class="live-clock-badge" id="liveClock">00:00:00 AM</div>
-            <div class="nav-right">
-                <a href="login.html" class="logout-btn">logout</a>
-            </div>
-        </div>
-    </header>
+    <header id="siteHeader"></header>
 
     <main class="profile-container">
-        
+
+        <div class="clock-banner">
+            <span>Current Time:</span>
+            <span class="live-clock-badge" id="liveClock">00:00:00 AM</span>
+        </div>
         <div class="profile-card">
             <div class="profile-header">
                 <div class="profile-avatar-container">
@@ -55,37 +51,12 @@
             </div>
             
             <div class="delivery-list hidden" id="deliveryList">
-                <div class="delivery-item success">
-                    <div class="delivery-info">
-                        <span class="delivery-route">RTH &rarr; APJH</span>
-                        <span class="delivery-date">Oct 28, 2026</span>
-                    </div>
-                    <div class="delivery-status-group">
-                        <span class="delivery-reward">+₹50</span>
-                        <span class="status-badge badge-success">Successful</span>
-                    </div>
-                </div>
-
-                <div class="delivery-item failed">
-                    <div class="delivery-info">
-                        <span class="delivery-route">Main Gate 1 &rarr; VSH</span>
-                        <span class="delivery-date">Oct 25, 2026</span>
-                    </div>
-                    <div class="delivery-status-group">
-                        <span class="delivery-reward">₹0</span>
-                        <span class="status-badge badge-failed">Failed</span>
-                    </div>
-                </div>
+                <!-- Dynamically populated via JS -->
             </div>
         </div>
 
     </main>
-
-    <footer class="footer">
-        <div class="footer-container">
-            <p>&copy; 2026 CampusCarry. All rights reserved.</p>
-        </div>
-    </footer>
+    <div id="siteFooter"></div>
 
     <script>
         function updateClock() {
@@ -99,24 +70,54 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        function loadProfileData() {
+        function loadProfileAndEarnings() {
             const profile = JSON.parse(localStorage.getItem("studentProfile"));
             if (profile) {
-                if (profile.studentName) document.getElementById("profileName").textContent = profile.studentName;
-                if (profile.enrollmentNo) document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
-                if (profile.courseName) document.getElementById("profileCourse").textContent = profile.courseName;
-                if (profile.batch) document.getElementById("profileBatch").textContent = profile.batch;
+                document.getElementById("profileName").textContent = profile.studentName;
+                document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
+                document.getElementById("profileCourse").textContent = profile.courseName;
+                document.getElementById("profileBatch").textContent = profile.batch;
             }
+
+            const completedDeliveries = JSON.parse(localStorage.getItem("completedDeliveries")) || [];
+            const earnedAmount = completedDeliveries.reduce((sum, task) => sum + (Number(task.reward) || 0), 0);
+            
+            document.getElementById("totalEarnings").textContent = `₹${earnedAmount}`;
+            renderHistoryList(completedDeliveries);
         }
 
-        document.addEventListener("DOMContentLoaded", loadProfileData);
+        function renderHistoryList(deliveries) {
+            const listContainer = document.getElementById("deliveryList");
+            if (deliveries.length === 0) {
+                listContainer.innerHTML = `<p style="padding: 15px; color: #53677A; font-size: 14px;">No completed deliveries yet.</p>`;
+                return;
+            }
 
-        function calculateEarnings() {
-            const savedRequests = JSON.parse(localStorage.getItem("completedDeliveries")) || [];
-            const total = savedRequests.reduce((sum, item) => sum + (Number(item.reward) || 0), 50);
-            document.getElementById("totalEarnings").textContent = `₹${total}`;
+            listContainer.innerHTML = deliveries.map(item => `
+                <div class="delivery-item success">
+                    <div class="delivery-info">
+                        <span class="delivery-route">${item.fromLocation} &rarr; ${item.toLocation}</span>
+                        <span class="delivery-date">${item.date || 'Today'}</span>
+                    </div>
+                    <div class="delivery-status-group">
+                        <span class="delivery-reward">+₹${item.reward}</span>
+                        <span class="status-badge badge-success">Successful</span>
+                    </div>
+                </div>
+            `).join('');
         }
-        calculateEarnings();
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProfileAndEarnings();
+
+            setTimeout(() => {
+                const headerBtn = document.querySelector("#siteHeader .btnGetStarted") || document.querySelector("#siteHeader a[href='login.html']");
+                if (headerBtn) {
+                    headerBtn.textContent = "Logout";
+                    headerBtn.setAttribute("href", "login.html");
+                }
+            }, 100);
+        });
 
         function toggleHistory() {
             const deliveryList = document.getElementById("deliveryList");
@@ -133,6 +134,6 @@
             }
         }
     </script>
-
+    <script src="layout.js"></script>
 </body>
 </html>
