@@ -64,6 +64,9 @@ function handleSignupSubmit(event) {
     // 2. Download a JSON file as proof of the saved data
     downloadJSONFile(profileData, "student_profile_" + enrollmentNo + ".json");
 
+    // 3. Log the new student in, so the dashboard (which checks cc_user) lets them through
+    localStorage.setItem("cc_user", JSON.stringify({ name: studentName, contact: mobileNo }));
+
     alert("Registration Successful! Default earnings set to \u20B90. Local JSON file downloaded.");
     window.location.href = "profile.html";
 }
