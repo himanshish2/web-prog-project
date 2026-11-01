@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusCarry – Admin Dashboard</title>
+    <meta name="description" content="Admin view for order statistics and Excel export" />
+    <link rel="stylesheet" href="dashboard.css" />
+    <style>
+        /* Admin‑specific layout tweaks */
+        .admin-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .stats-table th,
+        .stats-table td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .stats-table th {
+            background: var(--primary-light);
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background .2s ease;
+        }
+        .download-btn:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>CampusCarry Admin Dashboard</h1>
+    </header>
+    <main class="admin-container">
+        <section>
+            <h2>Order Statistics</h2>
+            <table class="stats-table" id="statsTable">
+                <thead>
+                    <tr><th>Metric</th><th>Count</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <button class="download-btn" id="downloadBtn">Download Excel Report</button>
+        </section>
+        <section style="margin-top:2rem;">
+            <h2>All Orders (raw JSON)</h2>
+            <pre id="ordersRaw" style="background:#f5f5f5;padding:1rem;overflow:auto;max-height:300px;"></pre>
+        </section>
+    </main>
+    <script>
+        // Hard‑coded admin credentials – keep in sync with backend/server.js
+        const ADMIN_USER = 'admin';
+        const ADMIN_PASS = 'admin123';
+        const BASIC_AUTH = 'Basic ' + btoa(ADMIN_USER + ':' + ADMIN_PASS);
+        const API_BASE = 'http://localhost:3001';
+
+        // Generic fetch helper that adds the Authorization header
+        async function fetchJson(path) {
+            const resp = await fetch(API_BASE + path, {
+                headers: { 'Authorization': BASIC_AUTH }
+            });
+            if (!resp.ok) throw new Error(`Failed ${path}: ${resp.status}`);
+            return resp.json();
+        }
+
+        // Populate the statistics table
+        async function loadStats() {
+            try {
+                const stats = await fetchJson('/stats');
+                const tbody = document.querySelector('#statsTable tbody');
+                tbody.innerHTML = '';
+                for (const [key, value] of Object.entries(stats)) {
+                    const row = document.createElement('tr');
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                    const valueCell = document.createElement('td');
+                    valueCell.textContent = value;
+                    row.append(nameCell, valueCell);
+                    tbody.appendChild(row);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Show raw order data for debugging
+        async function loadOrders() {
+            try {
+                const orders = await fetchJson('/orders');
+                document.getElementById('ordersRaw').textContent = JSON.stringify(orders, null, 2);
+            } catch (e) { console.error(e); }
+        }
+
+        // Download the Excel file – fetch as Blob then trigger a download
+        async function downloadExcel() {
+            try {
+                const resp = await fetch(API_BASE + '/export', {
+                    headers: { 'Authorization': BASIC_AUTH }
+                });
+                if (!resp.ok) throw new Error('Export failed');
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'CampusCarry_Orders.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            } catch (e) { console.error(e); }
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', downloadExcel);
+
+        // Initialise the page
+        loadStats();
+        loadOrders();
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCarry — My Activity</title>
+    <meta name="description" content="Track your parcel requests and manage deliveries on CampusCarry.">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="tb-left">
+            <a href="G_dashboard.html" class="tb-back">← Dashboard</a>
+            <span class="tb-logo">Campus<span>Carry</span></span>
+        </div>
+        <div class="tb-right">
+            <div class="tb-avatar" id="tbAvatar">S</div>
+            <span class="tb-name"  id="tbName">Student</span>
+            <button class="tb-logout" onclick="CC.logout()">Log out</button>
+        </div>
+    </header>
+
+    <!-- MAIN PAGE -->
+    <div class="page-wrap wide">
+
+        <div class="page-head">
+            <h1>My Activity</h1>
+            <p>Track your requests and manage deliveries you've accepted.</p>
+        </div>
+
+        <!-- ===================================================
+             TABS
+             "My Requests" = requests the user posted (requester view)
+             "I'm Delivering" = requests the user accepted (runner view)
+        =================================================== -->
+        <div class="tabs">
+            <!-- onclick calls the switchTab() function below -->
+            <button class="tab-btn active" id="tabMy"
+                    onclick="switchTab('my')">My Requests</button>
+            <button class="tab-btn"        id="tabDelivering"
+                    onclick="switchTab('delivering')">I'm Delivering</button>
+        </div>
+
+        <!-- TAB 1 — My Requests (requester sees their own posts) -->
+        <div class="tab-panel active" id="panelMy">
+            <div class="cards-grid" id="myGrid"></div>
+        </div>
+
+        <!-- TAB 2 — I'm Delivering (runner sees accepted deliveries) -->
+        <div class="tab-panel" id="panelDelivering">
+            <div class="cards-grid" id="deliverGrid"></div>
+        </div>
+
+    </div>
+
+
+    <script src="app.js"></script>
+    <script>
+
+        // Guard — must be logged in
+        if (!CC.requireLogin()) { /* redirected */ }
+
+        const user = CC.getUser();
+        document.getElementById('tbName').textContent   = user.name;
+        document.getElementById('tbAvatar').textContent = user.name.charAt(0).toUpperCase();
+
+        /* --- Status stepper definition ---
+           These arrays define the 4 stages a delivery goes through.
+           We loop over them to build the visual stepper HTML.
+        */
+        const STEPS  = ['open', 'accepted', 'in-transit', 'completed'];
+        const LABELS = ['Posted', 'Accepted', 'In Transit', 'Delivered'];
+        const EMOJIS = ['📋', '✅', '🚀', '🎉'];
+
+        /* --- Escape HTML --- */
+        function esc(s) {
+            return String(s)
+                .replace(/&/g,'&amp;')
+                .replace(/</g,'&lt;')
+                .replace(/>/g,'&gt;');
+        }
+
+        /* --- Build the 4-step progress stepper ---
+           Returns an HTML string.
+           Steps before the current one get class "done" (purple dot + line).
+           The current step gets "active" (glowing ring). */
+        function buildStepper(status) {
+            const cur = STEPS.indexOf(status);
+            const items = STEPS.map((s, i) => {
+                let cls = '';
+                if (i < cur) cls = 'done';
+                else if (i === cur) cls = 'active';
+                return `
+                    <div class="step-item ${cls}">
+                        <div class="step-dot">${EMOJIS[i]}</div>
+                        <div class="step-label">${LABELS[i]}</div>
+                    </div>`;
+            }).join('');
+            return `<div class="stepper">${items}</div>`;
+        }
+
+
+        /* ─────────────────────────────────────────────────
+           TAB 1 — MY REQUESTS (requester view)
+           Shows all requests the logged-in user has posted.
+           They can see: status, runner info, stepper.
+        ───────────────────────────────────────────────── */
+        function renderMyRequests() {
+            const list = CC.getRequests().filter(r => r.requester === user.name);
+            const grid = document.getElementById('myGrid');
+
+            // Nothing posted yet
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3>No requests yet</h3>
+                        <p>You haven't posted any delivery requests.</p>
+                        <a href="request.html" class="btn btn-primary">Create a Request</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map((r, i) => {
+                // Badge colour depends on status
+                const badgeCls = `badge badge-${r.status === 'in-transit' ? 'in-transit' : r.status}`;
+                return `
+                <div class="req-card card-anim ${r.status}"
+                     style="animation-delay:${i * 0.06}s">
+                    <div class="accent-bar"></div>
+
+                    <div class="req-header">
+                        <div>
+                            <div class="req-title">${esc(r.itemName)}</div>
+                            <div class="req-meta">
+                                <span>🕐 ${CC.timeAgo(r.createdAt)}</span>
+                                <span class="badge ${badgeCls}">${CC.statusLabel(r.status)}</span>
+                                ${r.urgency === 'urgent'
+                                    ? '<span class="badge badge-urgent">Urgent</span>'
+                                    : ''}
+                            </div>
+                        </div>
+                        <div class="req-reward">₹${r.reward}</div>
+                    </div>
+
+                    <!-- Route -->
+                    <div class="req-route">
+                        <span class="loc">📍 ${esc(r.pickup)}</span>
+                        <span class="arrow">——————→</span>
+                        <span class="loc">🏁 ${esc(r.dropoff)}</span>
+                    </div>
+
+                    <!-- 4-step visual tracker -->
+                    ${buildStepper(r.status)}
+
+                    <!-- If a runner has accepted, show their name/contact -->
+                    ${r.runner
+                        ? `<div class="info-box">
+                                <strong>Your Runner</strong>
+                                ${esc(r.runner)}
+                                ${r.runnerContact ? ` · 📞 ${esc(r.runnerContact)}` : ''}
+                           </div>`
+                        : `<p style="font-size:14px;color:var(--muted);margin-top:12px;font-style:italic;">
+                                ⏳ Waiting for a runner to accept your request…
+                           </p>`
+                    }
+                </div>`;
+            }).join('');
+        }
+
+
+        /* ─────────────────────────────────────────────────
+           TAB 2 — I'M DELIVERING (runner view)
+           Shows all requests this user has accepted.
+           They can see: pickup + drop-off address, requester contact,
+           and can advance the status with the action buttons.
+        ───────────────────────────────────────────────── */
+        function renderDelivering() {
+            const list = CC.getRequests().filter(r => r.runner === user.name);
+            const grid = document.getElementById('deliverGrid');
+
+            // No deliveries accepted yet
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">🏃</div>
+                        <h3>Not delivering anything yet</h3>
+                        <p>Head to Available Requests and accept a delivery on your route.</p>
+                        <a href="available-requests.html" class="btn btn-blue">Browse Requests</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = list.map((r, i) => {
+                const badgeCls = `badge badge-${r.status === 'in-transit' ? 'in-transit' : r.status}`;
+
+                // Decide what status comes next and what the button says
+                const canUpdate   = r.status === 'accepted' || r.status === 'in-transit';
+                const nextStatus  = r.status === 'accepted' ? 'in-transit' : 'completed';
+                const nextLabel   = r.status === 'accepted'
+                    ? '🚀 I\'ve Picked It Up — Mark In Transit'
+                    : '✅ Delivered — Mark as Complete';
+
+                return `
+                <div class="req-card card-anim ${r.status}"
+                     style="animation-delay:${i * 0.06}s">
+                    <div class="accent-bar"></div>
+
+                    <div class="req-header">
+                        <div>
+                            <div class="req-title">${esc(r.itemName)}</div>
+                            <div class="req-meta">
+                                <span>👤 Requested by ${esc(r.requester)}</span>
+                                <span>🕐 ${CC.timeAgo(r.createdAt)}</span>
+                                <span class="badge ${badgeCls}">${CC.statusLabel(r.status)}</span>
+                            </div>
+                        </div>
+                        <div class="req-reward">₹${r.reward}</div>
+                    </div>
+
+                    <!-- Route — this is what the runner needs to navigate -->
+                    <div class="req-route">
+                        <span class="loc">📍 <strong>Pickup:</strong> ${esc(r.pickup)}</span>
+                        <span class="arrow">——————→</span>
+                        <span class="loc">🏁 <strong>Drop-off:</strong> ${esc(r.dropoff)}</span>
+                    </div>
+
+                    <!-- Visual progress stepper -->
+                    ${buildStepper(r.status)}
+
+                    <!-- Requester contact — so runner can call/message them -->
+                    <div class="info-box">
+                        <strong>Requester Contact</strong>
+                        ${esc(r.requester)} · 📞 ${esc(r.contact || 'N/A')}
+                    </div>
+
+                    <!-- Extra notes from the requester -->
+                    ${r.description
+                        ? `<p style="font-size:14px;color:var(--muted);margin-top:12px;">
+                                <strong>Notes:</strong> ${esc(r.description)}
+                           </p>`
+                        : ''}
+
+                    <!-- Status update button (only if delivery is in progress) -->
+                    ${canUpdate
+                        ? `<div class="update-btn-row">
+                                <button class="btn btn-success"
+                                        onclick="advanceStatus(${r.id}, '${nextStatus}')">
+                                    ${nextLabel}
+                                </button>
+                           </div>`
+                        : (r.status === 'completed'
+                            ? `<p style="font-size:14px;color:#16a34a;font-weight:700;margin-top:14px;">
+                                    🎉 Delivery complete! You earned ₹${r.reward}.
+                               </p>`
+                            : '')
+                    }
+                </div>`;
+            }).join('');
+        }
+
+        /* --- Advance a delivery to the next status ---
+           Called when runner clicks the status update button. */
+        function advanceStatus(id, newStatus) {
+            CC.updateStatus(id, newStatus);
+            // Re-render both tabs so stats stay in sync
+            renderDelivering();
+            renderMyRequests();
+        }
+
+        /* --- Switch between tabs ---
+           Removes "active" from all, then applies it to the correct ones. */
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+            if (tab === 'my') {
+                document.getElementById('tabMy').classList.add('active');
+                document.getElementById('panelMy').classList.add('active');
+            } else {
+                document.getElementById('tabDelivering').classList.add('active');
+                document.getElementById('panelDelivering').classList.add('active');
+            }
+        }
+
+        // If user arrived here after accepting a delivery, open the delivering tab
+        if (window.location.hash === '#delivering') {
+            switchTab('delivering');
+        }
+
+        // First render
+        renderMyRequests();
+        renderDelivering();
+
+        // Auto-refresh every 8 seconds (simulates live tracking)
+        setInterval(() => {
+            renderMyRequests();
+            renderDelivering();
+        }, 8000);
+
+    </script>
+</body>
+</html>
