@@ -1,0 +1,130 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #F4F6FB;
+    color: #0B0E52;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-nav-bar {
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.pill-btn {
+    text-decoration: none;
+    padding: 10px 22px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.home-pill {
+    background-color: #363B8B;
+    color: #FFFFFF;
+}
+
+.login-pill {
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.signup-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 10px 40px 60px 40px;
+    width: 100%;
+}
+
+.signup-card {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 40px;
+    border: 1px solid #E2E8F0;
+}
+
+.signup-card h2 {
+    font-size: 24px;
+    color: #0B0E52;
+    margin-bottom: 6px;
+}
+
+.card-subtitle {
+    font-size: 13.5px;
+    color: #53677A;
+    margin-bottom: 25px;
+}
+
+#studentSignupForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: bold;
+    color: #0B0E52;
+}
+
+.form-group input, 
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #0B0E52;
+    outline: none;
+    background-color: #FAFAFC;
+    font-family: inherit;
+}
+
+.form-group input:focus, 
+.form-group select:focus {
+    border-color: #363B8B;
+    background-color: #FFFFFF;
+}
+
+.submit-signup-btn {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    background-color: #363B8B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}

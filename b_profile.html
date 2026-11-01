@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - CampusCarry</title>
+    <link rel="stylesheet" href="h_style.css">
+    <link rel="stylesheet" href="b_profile.css">
+</head>
+<body>
+    <header id="siteHeader"></header>
+
+    <main class="profile-container">
+
+        <div class="clock-banner">
+            <span>Current Time:</span>
+            <span class="live-clock-badge" id="liveClock">00:00:00 AM</span>
+        </div>
+        
+        <div class="profile-grid">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar-container">
+                        <svg class="profile-photo" id="studentPhoto" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="50" fill="#363B8B"/>
+                            <circle cx="50" cy="40" r="20" fill="#FEE180"/>
+                            <path d="M 20 85 C 20 65, 80 65, 80 85 Z" fill="#FEE180"/>
+                        </svg>
+                    </div>
+                    <div class="profile-meta">
+                        <h2 class="student-name" id="profileName">Student Name</h2>
+                        <p class="meta-line"><strong>Enrollment No:</strong> <span id="profileEnrollment">------</span></p>
+                        <p class="meta-line"><strong>Course:</strong> <span id="profileCourse">------</span></p>
+                        <p class="meta-line"><strong>Batch:</strong> <span id="profileBatch">------</span></p>
+                    </div>
+                </div>
+
+                <div class="earnings-banner">
+                    <span class="earnings-label">Personal Earnings</span>
+                    <span class="earnings-amount" id="totalEarnings">₹0</span>
+                </div>
+
+                <div class="action-pills-wrapper">
+                    <a href="b_creation.html" class="pill-btn primary-pill">Create Request</a>
+                    <a href="m_available.html" class="pill-btn secondary-pill">Accept Request</a>
+                </div>
+            </div>
+
+            <div class="map-card">
+                <div class="map-header">
+                    <h3>Campus Delivery Coverage Map</h3>
+                    <p class="map-subtitle">Authorized pickup points, hostel blocks, and delivery routes</p>
+                </div>
+                <div class="map-wrapper">
+                    <img src="web-MAP.jpg" alt="Campus Carry Delivery Map" class="map-img">
+                </div>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <div class="history-header">
+                <h3>Past Deliveries</h3>
+                <button type="button" class="toggle-btn" id="historyToggleBtn" onclick="toggleHistory()">Show History</button>
+            </div>
+            
+            <div class="delivery-list hidden" id="deliveryList"></div>
+        </div>
+
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours() % 12 || 12).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            document.getElementById('liveClock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function loadProfileAndEarnings() {
+            const profile = JSON.parse(localStorage.getItem("studentProfile"));
+            if (profile) {
+                document.getElementById("profileName").textContent = profile.studentName;
+                document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
+                document.getElementById("profileCourse").textContent = profile.courseName;
+                document.getElementById("profileBatch").textContent = profile.batch;
+            }
+
+            const completedDeliveries = JSON.parse(localStorage.getItem("completedDeliveries")) || [];
+            
+            const earnedAmount = completedDeliveries.reduce((sum, task) => {
+                const status = (task.status || 'successful').toLowerCase();
+                if (status === 'successful' || status === 'completed') {
+                    return sum + (Number(task.reward) || 0);
+                }
+                return sum;
+            }, 0);
+            
+            document.getElementById("totalEarnings").textContent = `₹${earnedAmount}`;
+            renderHistoryList(completedDeliveries);
+        }
+
+        function renderHistoryList(deliveries) {
+            const listContainer = document.getElementById("deliveryList");
+            if (deliveries.length === 0) {
+                listContainer.innerHTML = `<p style="padding: 15px; color: #53677A; font-size: 14px;">No past deliveries recorded yet.</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = deliveries.map(item => {
+                const fromLoc = item.fromLocation || item.pickup || 'Pickup Point';
+                const toLoc = item.toLocation || item.destination || item.dropoff || 'Destination';
+                const statusStr = (item.status || 'successful').toLowerCase();
+                const isFailed = statusStr === 'cancelled' || statusStr === 'failed';
+                
+                const badgeClass = isFailed ? 'badge-failed' : 'badge-success';
+                const badgeText = isFailed ? 'Cancelled' : 'Successful';
+                const rewardText = isFailed ? '₹0' : `+₹${item.reward || 0}`;
+
+                return `
+                    <div class="delivery-item ${isFailed ? 'failed' : 'success'}">
+                        <div class="delivery-info">
+                            <span class="delivery-route">${fromLoc} &rarr; ${toLoc}</span>
+                            <span class="delivery-date">${item.date || item.createdAt || 'Today'}</span>
+                        </div>
+                        <div class="delivery-status-group">
+                            <span class="delivery-reward ${isFailed ? 'reward-muted' : ''}">${rewardText}</span>
+                            <span class="status-badge ${badgeClass}">${badgeText}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProfileAndEarnings();
+
+            setTimeout(() => {
+                const headerBtn = document.querySelector("#siteHeader .btnGetStarted") || document.querySelector("#siteHeader a[href='login.html']");
+                if (headerBtn) {
+                    headerBtn.textContent = "Logout";
+                    headerBtn.setAttribute("href", "login.html");
+                }
+
+                const navLinks = document.querySelectorAll("#siteHeader a");
+                navLinks.forEach(link => {
+                    if (link.textContent.trim().toLowerCase() === "dashboard") {
+                        link.setAttribute("href", "G_dashboard.html");
+                    }
+                });
+            }, 100);
+        });
+
+        function toggleHistory() {
+            const deliveryList = document.getElementById("deliveryList");
+            const toggleBtn = document.getElementById("historyToggleBtn");
+            
+            if (deliveryList.classList.contains("hidden")) {
+                deliveryList.classList.remove("hidden");
+                toggleBtn.textContent = "Hide History";
+                toggleBtn.classList.add("active");
+            } else {
+                deliveryList.classList.add("hidden");
+                toggleBtn.textContent = "Show History";
+                toggleBtn.classList.remove("active");
+            }
+        }
+    </script>
+    <script src="layout.js"></script>
+</body>
+</html>
