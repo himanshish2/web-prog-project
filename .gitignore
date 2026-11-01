@@ -1,0 +1,18 @@
+# Node dependencies — never commit these
+node_modules/
+backend/node_modules/
+
+# Environment files
+.env
+*.env
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+
+# Excel export (generated file)
+admin_report.xlsx

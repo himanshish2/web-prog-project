@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="h_style.css">
     <link rel="stylesheet" href="login-style.css">
     <style>
-        /* Custom New User Modal Styling */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -71,9 +70,7 @@
     <input type="radio" name="auth-tab" id="tab-signup" class="tab-radio">
 
     <main class="login-wrapper">
-
         <div class="login-card">
-
             <div class="card-header-arc">
                 <div class="brand-logo-row">
                     <div class="logo-icon-circle">
@@ -88,14 +85,12 @@
             </div>
 
             <div class="form-box">
-
                 <div class="tab-pill-row">
                     <label for="tab-login" class="tab-btn" onclick="switchToLoginTab()">Log In</label>
                     <label for="tab-signup" class="tab-btn" onclick="openSignupModal(event)">Sign Up</label>
                 </div>
 
                 <form class="auth-form" id="loginForm" onsubmit="handleLoginSubmit(event)">
-                    
                     <div class="input-field-group">
                         <input type="text" id="loginUserEmail" class="input-underline" placeholder="Enter email or username" required>
                     </div>
@@ -129,14 +124,10 @@
                         </svg>
                     </button>
                 </div>
-
             </div>
-
         </div>
-
     </main>
 
-    <!-- NEW USER POPUP MODAL -->
     <div class="modal-overlay" id="newUserModal">
         <div class="modal-card">
             <h3>CONFIRM REGISTRATION OF NEW ACCOUNT</h3>
@@ -173,15 +164,11 @@
         function handleLoginSubmit(event) {
             event.preventDefault();
             const inputVal = document.getElementById("loginUserEmail").value.trim().toLowerCase();
-
             const savedProfile = JSON.parse(localStorage.getItem("studentProfile"));
 
-            // Check if user exists in localStorage
             if (!savedProfile || (savedProfile.bmuEmail.toLowerCase() !== inputVal && savedProfile.studentName.toLowerCase() !== inputVal && savedProfile.enrollmentNo !== inputVal)) {
-                // User is NEW -> Show Pop-up Modal
                 openSignupModal();
             } else {
-                // User EXISTS -> Redirect to Profile
                 alert(`Welcome back, ${savedProfile.studentName}!`);
                 window.location.href = "b_profile.html";
             }

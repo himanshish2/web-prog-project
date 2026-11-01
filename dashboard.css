@@ -1,0 +1,747 @@
+/* =====================================================
+   CampusCarry — Shared Dashboard Styles
+   Colour Palette (same as home.css):
+     Purple      : #363B8B
+     Deep        : #0B0E52
+     Light Purple: #EDEEF8
+     Muted text  : #53677A
+     Background  : #F2F3FA
+===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+/* -- Reset -- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* -- CSS Variables (reuse from home.css palette) -- */
+:root {
+    --purple:       #363B8B;
+    --purple-dark:  #272B6B;
+    --purple-deep:  #0B0E52;
+    --purple-light: #EDEEF8;
+    --blue:         #2563EB;
+    --blue-light:   #EFF6FF;
+    --muted:        #53677A;
+    --white:        #FFFFFF;
+    --border:       #D4D7F0;
+    --bg:           #F2F3FA;
+    --radius:       8px;
+    --radius-lg:    14px;
+    --radius-pill:  999px;
+
+    /* Shadows — subtle, not heavy */
+    --shadow-sm:  0 1px 4px rgba(11,14,82,.06);
+    --shadow-md:  0 4px 16px rgba(11,14,82,.10);
+    --shadow-lg:  0 12px 36px rgba(11,14,82,.14);
+
+    /* Transitions — smooth but not distracting */
+    --ease:       cubic-bezier(.25,.46,.45,.94);
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--purple-deep);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+
+/* =======================================================
+   TOPBAR
+   Sticky header — purple background, same as home.css
+======================================================= */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--purple);
+    height: 68px;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Subtle separator from content below */
+    box-shadow: 0 2px 16px rgba(11,14,82,.25);
+}
+
+.tb-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.tb-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Logo */
+.tb-logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.4px;
+}
+.tb-logo span { color: #b8bbf5; } /* lighter for "Carry" */
+
+/* Back button — outlined ghost style */
+.tb-back {
+    color: rgba(255,255,255,.8);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: var(--radius-pill);
+    padding: 5px 14px;
+    transition: background .2s var(--ease), color .2s;
+}
+.tb-back:hover {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+}
+
+/* Nav link */
+.tb-link {
+    color: rgba(255,255,255,.8);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: var(--radius);
+    transition: background .2s, color .2s;
+}
+.tb-link:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+/* Avatar circle */
+.tb-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    border: 2px solid rgba(255,255,255,.35);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+}
+
+.tb-name {
+    color: rgba(255,255,255,.9);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Log out button */
+.tb-logout {
+    background: none;
+    border: 1px solid rgba(255,255,255,.28);
+    border-radius: var(--radius-pill);
+    color: rgba(255,255,255,.75);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .2s, color .2s;
+}
+.tb-logout:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+
+/* =======================================================
+   PAGE LAYOUT
+   Centred container with generous padding
+======================================================= */
+.page-wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 64px 32px 100px;
+}
+
+/* Wider variant for the list pages */
+.page-wrap.wide { max-width: 1200px; }
+
+/* Page heading block */
+.page-head { margin-bottom: 44px; }
+.page-head h1 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+    color: var(--purple-deep);
+}
+.page-head p { color: var(--muted); font-size: 16px; }
+
+
+/* =======================================================
+   CARD — base white card
+======================================================= */
+.card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =======================================================
+   BUTTONS
+======================================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 26px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    transition: transform .18s var(--ease), box-shadow .18s var(--ease), background .15s;
+}
+.btn:hover  { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+    background: var(--purple);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(54,59,139,.3);
+}
+.btn-primary:hover  { background: var(--purple-dark); box-shadow: 0 6px 20px rgba(54,59,139,.38); }
+
+.btn-blue {
+    background: var(--blue);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37,99,235,.28);
+}
+.btn-blue:hover { background: #1d4ed8; box-shadow: 0 6px 20px rgba(37,99,235,.38); }
+
+.btn-success {
+    background: #16a34a;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(22,163,74,.25);
+}
+.btn-success:hover { background: #15803d; }
+
+.btn-outline {
+    background: transparent;
+    color: var(--purple);
+    border: 1.5px solid var(--purple);
+    box-shadow: none;
+}
+.btn-outline:hover { background: var(--purple-light); box-shadow: none; }
+
+.btn-sm  { padding: 8px 18px; font-size: 13px; }
+.btn-lg  { padding: 14px 32px; font-size: 15px; }
+.btn-full { width: 100%; }
+
+
+/* =======================================================
+   FORM ELEMENTS
+======================================================= */
+.form-group { margin-bottom: 22px; }
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--purple-deep);
+    margin-bottom: 7px;
+    letter-spacing: .1px;
+}
+
+/* All inputs share the same base style */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--purple-deep);
+    background: #fff;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+/* Focus state — purple glow */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(54,59,139,.1);
+}
+
+/* Two columns side by side */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+
+/* =======================================================
+   BADGES — coloured status pills
+======================================================= */
+.badge {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+    letter-spacing: .2px;
+}
+.badge-open       { background: #fef9c3; color: #854d0e; }
+.badge-accepted   { background: #dbeafe; color: #1e40af; }
+.badge-in-transit { background: #ede9fe; color: #5b21b6; }
+.badge-completed  { background: #dcfce7; color: #166534; }
+.badge-urgent     { background: #fee2e2; color: #991b1b; }
+
+
+/* =======================================================
+   ALERT BANNERS
+======================================================= */
+.alert {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 28px;
+    /* Slide-in when .show is added */
+    animation: slideDown .3s var(--ease);
+}
+.alert.show { display: flex; }
+.alert a { margin-left: auto; font-size: 13px; color: inherit; text-decoration: underline; }
+
+.alert-success { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; }
+.alert-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* =======================================================
+   EMPTY STATE — shown when no cards to display
+======================================================= */
+.empty-state {
+    text-align: center;
+    padding: 80px 24px;
+    color: var(--muted);
+    /* Spans full grid width */
+    grid-column: 1 / -1;
+}
+.empty-state .empty-icon { font-size: 52px; margin-bottom: 18px; }
+.empty-state h3 { font-size: 20px; font-weight: 700; color: var(--purple-deep); margin-bottom: 8px; }
+.empty-state p  { font-size: 15px; margin-bottom: 28px; }
+
+
+/* =======================================================
+   REQUEST CARD — used in available-requests and my-requests
+======================================================= */
+.req-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+    /* Smooth lift on hover */
+    transition: transform .22s var(--ease), box-shadow .22s var(--ease), border-color .22s;
+}
+.req-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(54,59,139,.25);
+}
+
+/* Coloured top accent bar — changes with status */
+.req-card .accent-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--purple);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.req-card.urgent     .accent-bar { background: #dc2626; }
+.req-card.accepted   .accent-bar { background: var(--blue); }
+.req-card.in-transit .accent-bar { background: #7c3aed; }
+.req-card.completed  .accent-bar { background: #16a34a; }
+
+.req-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-top: 8px; /* space below accent bar */
+}
+.req-title { font-size: 18px; font-weight: 700; color: var(--purple-deep); margin-bottom: 6px; }
+.req-meta  {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Reward amount — big and prominent */
+.req-reward {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--purple);
+    white-space: nowrap;
+}
+
+/* Pickup → dropoff route strip */
+.req-route {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+}
+.req-route .loc   { font-weight: 600; color: var(--purple-deep); }
+.req-route .arrow { color: var(--muted); flex: 1; text-align: center; letter-spacing: 2px; }
+
+.req-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+/* Card grid layout */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 24px;
+}
+
+
+/* =======================================================
+   STATS ROW — numbers at the top of dashboard
+======================================================= */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 36px;
+}
+
+.stat-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    box-shadow: var(--shadow-sm);
+    /* Gentle scale on hover */
+    transition: transform .2s var(--ease), box-shadow .2s;
+}
+.stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-num {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--purple-deep);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+
+/* =======================================================
+   STATUS STEPPER — visual progress bar for tracking
+======================================================= */
+.stepper {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    margin: 20px 0;
+    padding: 20px 16px;
+    background: var(--bg);
+    border-radius: var(--radius);
+}
+
+/* Each step takes equal width */
+.step-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+/* Connecting line between steps */
+.step-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background: var(--border);
+    transition: background .4s;
+}
+.step-item.done:not(:last-child)::after { background: var(--purple); }
+
+/* Circle dot */
+.step-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--border);
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    position: relative;
+    z-index: 1;
+    transition: background .3s, border-color .3s, box-shadow .3s;
+}
+.step-item.done   .step-dot { background: var(--purple); border-color: var(--purple); color: #fff; }
+.step-item.active .step-dot { border-color: var(--purple); box-shadow: 0 0 0 5px rgba(54,59,139,.15); }
+
+.step-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 8px;
+    transition: color .3s;
+}
+.step-item.done .step-label,
+.step-item.active .step-label { color: var(--purple); }
+
+
+/* =======================================================
+   TABS — used in my-requests.html
+======================================================= */
+.tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 32px;
+}
+.tab-btn {
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color .2s, border-color .2s;
+}
+.tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+.tab-btn:hover:not(.active) { color: var(--purple-deep); }
+
+/* Hide panels not selected */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+
+/* =======================================================
+   INFO BOX — runner details / notes
+======================================================= */
+.info-box {
+    background: var(--purple-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--purple-deep);
+    margin-top: 16px;
+}
+.info-box strong {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--muted);
+    margin-bottom: 5px;
+}
+
+/* Update button row — inside runner cards */
+.update-btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+
+/* =======================================================
+   FILTER BAR — search + filter buttons (available-requests)
+======================================================= */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+.filter-btn {
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: inherit;
+    transition: all .18s;
+}
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple);
+}
+.filter-search {
+    margin-left: auto;
+    padding: 8px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--purple-deep);
+    background: var(--white);
+    min-width: 220px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.filter-search:focus {
+    outline: none;
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(54,59,139,.1);
+}
+
+.req-count {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+
+/* =======================================================
+   MODAL — accept confirmation dialog
+======================================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(11,14,82,.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    /* Fade in */
+    animation: fadeOverlay .2s ease;
+}
+.modal-overlay.open { display: flex; }
+
+@keyframes fadeOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 44px;
+    max-width: 440px;
+    width: 90%;
+    box-shadow: 0 24px 64px rgba(0,0,0,.22);
+    /* Slide up */
+    animation: slideUp .25s var(--ease);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-box h3   { font-size: 20px; font-weight: 800; color: var(--purple-deep); margin-bottom: 10px; }
+.modal-box p    { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+.modal-actions  { display: flex; gap: 12px; justify-content: flex-end; }
+
+
+/* =======================================================
+   CARD ENTRANCE ANIMATION
+   Cards fade+slide up when they appear
+======================================================= */
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Applied via JS when cards are injected */
+.card-anim {
+    animation: cardIn .35s var(--ease) both;
+}
+
+/* Stagger delay helpers */
+.card-anim:nth-child(1) { animation-delay: .0s; }
+.card-anim:nth-child(2) { animation-delay: .06s; }
+.card-anim:nth-child(3) { animation-delay: .12s; }
+.card-anim:nth-child(4) { animation-delay: .18s; }
+.card-anim:nth-child(5) { animation-delay: .24s; }
+.card-anim:nth-child(6) { animation-delay: .30s; }
+
+
+/* =======================================================
+   RESPONSIVE — mobile tweaks
+======================================================= */
+@media (max-width: 900px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .topbar   { padding: 0 20px; height: 60px; }
+    .page-wrap { padding: 36px 18px 72px; }
+    .form-row  { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .tb-name, .tb-link { display: none; }
+    .req-footer { flex-direction: column; align-items: flex-start; }
+    .modal-box  { padding: 28px 24px; }
+}
