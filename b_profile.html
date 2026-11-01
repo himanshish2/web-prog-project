@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - CampusCarry</title>
+    <link rel="stylesheet" href="b_profile.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">CampusCarry</h1>
+            <div class="live-clock-badge" id="liveClock">00:00:00 AM</div>
+            <div class="nav-right">
+                <a href="login.html" class="logout-btn">logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar-container">
+                    <svg class="profile-photo" id="studentPhoto" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="50" fill="#363B8B"/>
+                        <circle cx="50" cy="40" r="20" fill="#FEE180"/>
+                        <path d="M 20 85 C 20 65, 80 65, 80 85 Z" fill="#FEE180"/>
+                    </svg>
+                </div>
+                <div class="profile-meta">
+                    <h2 class="student-name" id="profileName">Student Name</h2>
+                    <p class="meta-line"><strong>Enrollment No:</strong> <span id="profileEnrollment">------</span></p>
+                    <p class="meta-line"><strong>Course:</strong> <span id="profileCourse">------</span></p>
+                    <p class="meta-line"><strong>Batch:</strong> <span id="profileBatch">------</span></p>
+                </div>
+            </div>
+
+            <div class="earnings-banner">
+                <span class="earnings-label">Personal Earnings</span>
+                <span class="earnings-amount" id="totalEarnings">₹0</span>
+            </div>
+
+            <div class="action-pills-wrapper">
+                <a href="b_creation.html" class="pill-btn primary-pill">Create Request</a>
+                <a href="b_delivery.html" class="pill-btn secondary-pill">Accept Request</a>
+            </div>
+        </div>
+
+        <div class="history-card">
+            <div class="history-header">
+                <h3>Past Deliveries</h3>
+                <button type="button" class="toggle-btn" id="historyToggleBtn" onclick="toggleHistory()">Show History</button>
+            </div>
+            
+            <div class="delivery-list hidden" id="deliveryList">
+                <div class="delivery-item success">
+                    <div class="delivery-info">
+                        <span class="delivery-route">RTH &rarr; APJH</span>
+                        <span class="delivery-date">Oct 28, 2026</span>
+                    </div>
+                    <div class="delivery-status-group">
+                        <span class="delivery-reward">+₹50</span>
+                        <span class="status-badge badge-success">Successful</span>
+                    </div>
+                </div>
+
+                <div class="delivery-item failed">
+                    <div class="delivery-info">
+                        <span class="delivery-route">Main Gate 1 &rarr; VSH</span>
+                        <span class="delivery-date">Oct 25, 2026</span>
+                    </div>
+                    <div class="delivery-status-group">
+                        <span class="delivery-reward">₹0</span>
+                        <span class="status-badge badge-failed">Failed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <p>&copy; 2026 CampusCarry. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours() % 12 || 12).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+            document.getElementById('liveClock').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function loadProfileData() {
+            const profile = JSON.parse(localStorage.getItem("studentProfile"));
+            if (profile) {
+                if (profile.studentName) document.getElementById("profileName").textContent = profile.studentName;
+                if (profile.enrollmentNo) document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
+                if (profile.courseName) document.getElementById("profileCourse").textContent = profile.courseName;
+                if (profile.batch) document.getElementById("profileBatch").textContent = profile.batch;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadProfileData);
+
+        function calculateEarnings() {
+            const savedRequests = JSON.parse(localStorage.getItem("completedDeliveries")) || [];
+            const total = savedRequests.reduce((sum, item) => sum + (Number(item.reward) || 0), 50);
+            document.getElementById("totalEarnings").textContent = `₹${total}`;
+        }
+        calculateEarnings();
+
+        function toggleHistory() {
+            const deliveryList = document.getElementById("deliveryList");
+            const toggleBtn = document.getElementById("historyToggleBtn");
+            
+            if (deliveryList.classList.contains("hidden")) {
+                deliveryList.classList.remove("hidden");
+                toggleBtn.textContent = "Hide History";
+                toggleBtn.classList.add("active");
+            } else {
+                deliveryList.classList.add("hidden");
+                toggleBtn.textContent = "Show History";
+                toggleBtn.classList.remove("active");
+            }
+        }
+    </script>
+
+</body>
+</html>

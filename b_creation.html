@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Request - CampusCarry</title>
+    <link rel="stylesheet" href="b_creation.css">
+</head>
+<body>
+
+    <div class="top-nav-bar">
+        <a href="b_profile.html" class="back-pill-btn">&larr; Back to Profile</a>
+    </div>
+
+    <main class="request-container">
+        <div class="request-card">
+            <h2>Create Campus Delivery Request</h2>
+            <p class="card-subtitle">Fill in the details below to publish your parcel delivery task.</p>
+
+            <form id="parcelRequestForm" onsubmit="handleFormSubmit(event)">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollmentNo">Enrollment Number</label>
+                        <input type="text" id="enrollmentNo" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="batch">Batch</label>
+                        <input type="text" id="batch" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" id="courseName" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reward">Reward (₹)</label>
+                        <input type="number" id="reward" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline">Deadline</label>
+                        <input type="datetime-local" id="deadline" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fromLocation">From (Pickup Location)</label>
+                    <select id="fromLocation" required>
+                        <option value="" disabled selected></option>
+                        <option value="RTH">RTH</option>
+                        <option value="KCH">KCH</option>
+                        <option value="BSH">BSH</option>
+                        <option value="HBH">HBH</option>
+                        <option value="VSH">VSH</option>
+                        <option value="APJH">APJH</option>
+                        <option value="LIB">LIB</option>
+                        <option value="GA">GA</option>
+                        <option value="GH">GH</option>
+                        <option value="FH">FH</option>
+                        <option value="Main Gate 1">Main Gate 1</option>
+                        <option value="Main Gate 2">Main Gate 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="toLocation">To (Delivery Destination)</label>
+                    <select id="toLocation" required>
+                        <option value="" disabled selected></option>
+                        <option value="RTH">RTH</option>
+                        <option value="KCH">KCH</option>
+                        <option value="BSH">BSH</option>
+                        <option value="HBH">HBH</option>
+                        <option value="VSH">VSH</option>
+                        <option value="APJH">APJH</option>
+                        <option value="LIB">LIB</option>
+                        <option value="GA">GA</option>
+                        <option value="GH">GH</option>
+                        <option value="FH">FH</option>
+                        <option value="Main Gate 1">Main Gate 1</option>
+                        <option value="Main Gate 2">Main Gate 2</option>
+                    </select>
+                </div>
+
+                <div class="product-section">
+                    <h3 class="section-title">Product Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyName">Company Name</label>
+                            <input type="text" id="companyName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="deliveryAgentName">Delivery Agent Name</label>
+                            <input type="text" id="deliveryAgentName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="itemName">Item Name(s)</label>
+                            <input type="text" id="itemName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="itemNumber">Item Number / Quantity</label>
+                            <input type="number" id="itemNumber" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parcelType">Parcel Type</label>
+                            <select id="parcelType" required>
+                                <option value="" disabled selected></option>
+                                <option value="Document / Envelope">Document / Envelope</option>
+                                <option value="Food / Beverage">Food / Beverage</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Clothing / Apparel">Clothing / Apparel</option>
+                                <option value="Books / Stationery">Books / Stationery</option>
+                                <option value="Box Package">Box Package</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (approx. in kg)</label>
+                            <input type="text" id="weight" placeholder="e.g., 0.5 kg" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ownerName">Owner Name</label>
+                            <input type="text" id="ownerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Product Price (₹)</label>
+                            <input type="number" id="productPrice" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pickupNote">Pickup Note from Requester</label>
+                        <textarea id="pickupNote" rows="2" placeholder="Instructions for collecting the parcel..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes</label>
+                        <textarea id="additionalNotes" rows="2" placeholder="Any extra details for the delivery student..."></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-request-btn">Submit Request</button>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function loadSavedProfile() {
+            const profile = JSON.parse(localStorage.getItem("studentProfile"));
+            if (profile) {
+                document.getElementById("studentName").value = profile.studentName || "";
+                document.getElementById("enrollmentNo").value = profile.enrollmentNo || "";
+                document.getElementById("batch").value = profile.batch || "";
+                document.getElementById("courseName").value = profile.courseName || "";
+            }
+        }
+        window.onload = loadSavedProfile;
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById("studentName").value.trim();
+            const enrollmentNo = document.getElementById("enrollmentNo").value.trim();
+            const batch = document.getElementById("batch").value.trim();
+            const courseName = document.getElementById("courseName").value.trim();
+            const reward = document.getElementById("reward").value.trim();
+            const deadline = document.getElementById("deadline").value;
+            const fromLocation = document.getElementById("fromLocation").value;
+            const toLocation = document.getElementById("toLocation").value;
+            
+            const companyName = document.getElementById("companyName").value.trim();
+            const deliveryAgentName = document.getElementById("deliveryAgentName").value.trim();
+            const itemName = document.getElementById("itemName").value.trim();
+            const itemNumber = document.getElementById("itemNumber").value.trim();
+            const parcelType = document.getElementById("parcelType").value;
+            const weight = document.getElementById("weight").value.trim();
+            const ownerName = document.getElementById("ownerName").value.trim();
+            const productPrice = document.getElementById("productPrice").value.trim();
+            const pickupNote = document.getElementById("pickupNote").value.trim();
+            const additionalNotes = document.getElementById("additionalNotes").value.trim();
+
+            if (!studentName || !enrollmentNo || !batch || !courseName || !reward || !deadline || !fromLocation || !toLocation || !companyName || !deliveryAgentName || !itemName || !itemNumber || !parcelType || !weight || !ownerName || !productPrice) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            if (fromLocation === toLocation) {
+                alert("Pickup and drop locations cannot be the same.");
+                return;
+            }
+
+            const userConfirmed = confirm("Are you sure you want to continue the request?");
+
+            if (userConfirmed) {
+                const requestData = {
+                    id: Date.now(),
+                    studentName: studentName,
+                    enrollmentNo: enrollmentNo,
+                    batch: batch,
+                    courseName: courseName,
+                    reward: Number(reward),
+                    deadline: deadline,
+                    fromLocation: fromLocation,
+                    toLocation: toLocation,
+                    product: {
+                        companyName: companyName,
+                        deliveryAgentName: deliveryAgentName,
+                        itemName: itemName,
+                        itemNumber: Number(itemNumber),
+                        parcelType: parcelType,
+                        weight: weight,
+                        ownerName: ownerName,
+                        productPrice: Number(productPrice),
+                        pickupNote: pickupNote,
+                        additionalNotes: additionalNotes
+                    },
+                    createdAt: new Date().toISOString()
+                };
+
+                let existingRequests = JSON.parse(localStorage.getItem("campusRequests")) || [];
+                existingRequests.push(requestData);
+                localStorage.setItem("campusRequests", JSON.stringify(existingRequests));
+
+                alert("Request successfully submitted and saved!");
+                document.getElementById("parcelRequestForm").reset();
+                loadSavedProfile();
+            }
+        }
+    </script>
+
+</body>
+</html>

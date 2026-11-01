@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign Up - CampusCarry</title>
+    <link rel="stylesheet" href="b_signup.css">
+</head>
+<body>
+
+    <header class="top-nav-bar">
+        <a href="index.html" class="pill-btn home-pill">&larr; Back to Home</a>
+        <a href="login.html" class="pill-btn login-pill">Back to Login &rarr;</a>
+    </header>
+
+    <main class="signup-container">
+        <div class="signup-card">
+            <h2>Student Registration</h2>
+            <p class="card-subtitle">Enter your details below to create your CampusCarry account.</p>
+
+            <form id="studentSignupForm" onsubmit="handleSignupSubmit(event)">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" placeholder="e.g. Bhavisya Raj" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollmentNo">Enrollment Number (6 Digits)</label>
+                        <input type="text" id="enrollmentNo" pattern="\d{6}" title="Must be exactly 6 digits" placeholder="e.g. 250339" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" id="courseName" placeholder="e.g. B.Tech CSE" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="batch">Batch</label>
+                        <input type="text" id="batch" placeholder="e.g. 2025-2029" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="bmuEmail">BMU Mail ID</label>
+                    <input type="email" id="bmuEmail" placeholder="student@bmu.edu.in" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hostel">Hostel Block</label>
+                        <select id="hostel" required>
+                            <option value="" disabled selected></option>
+                            <option value="RTH">RTH</option>
+                            <option value="KCH">KCH</option>
+                            <option value="BSH">BSH</option>
+                            <option value="HBH">HBH</option>
+                            <option value="VSH">VSH</option>
+                            <option value="APJH">APJH</option>
+                            <option value="GH">GH</option>
+                            <option value="FH">FH</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobileNo">Mobile Number (10 Digits)</label>
+                        <input type="tel" id="mobileNo" pattern="\d{10}" title="Must be a 10-digit mobile number" placeholder="10-digit mobile number" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-signup-btn">Complete Sign Up</button>
+
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function handleSignupSubmit(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById("studentName").value.trim();
+            const enrollmentNo = document.getElementById("enrollmentNo").value.trim();
+            const courseName = document.getElementById("courseName").value.trim();
+            const batch = document.getElementById("batch").value.trim();
+            const bmuEmail = document.getElementById("bmuEmail").value.trim();
+            const hostel = document.getElementById("hostel").value;
+            const mobileNo = document.getElementById("mobileNo").value.trim();
+
+            if (enrollmentNo.length !== 6 || isNaN(enrollmentNo)) {
+                alert("Enrollment number must be exactly 6 numerical digits.");
+                return;
+            }
+
+            if (mobileNo.length !== 10 || isNaN(mobileNo)) {
+                alert("Mobile number must be exactly 10 digits.");
+                return;
+            }
+
+            const profileData = {
+                studentName: studentName,
+                enrollmentNo: enrollmentNo,
+                courseName: courseName,
+                batch: batch,
+                bmuEmail: bmuEmail,
+                hostel: hostel,
+                mobileNo: mobileNo,
+                registeredAt: new Date().toISOString()
+            };
+
+            localStorage.setItem("studentProfile", JSON.stringify(profileData));
+
+            alert("Registration successful! Redirecting to your profile...");
+            window.location.href = "b_profile.html";
+        }
+    </script>
+
+</body>
+</html>
