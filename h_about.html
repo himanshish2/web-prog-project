@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - CampusCarry</title>
+    <link rel="stylesheet" href="h_style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar" aria-label="Main navigation">
+            <div class="logo">
+                <a href="home.html"><b>CampusCarry</b></a>
+            </div>
+
+            <!-- Menu button: only visible on small screens (see nav.js) -->
+            <button type="button" class="navToggle" id="navToggle"
+                    aria-expanded="false" aria-controls="navMenu">
+                <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
+                <span id="navToggleText">Menu</span>
+            </button>
+
+            <ul class="navLinks" id="navMenu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="h_about.html" class="activeLink" aria-current="page">About Us</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="tracking.html">Track Parcel</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+
+            <a href="login.html" class="btnNav">Sign Up</a>
+        </nav>
+    </header>
+
+    <main id="main">
+
+        <!-- HERO -->
+        <section class="section heroSection">
+            <div class="heroSplit">
+
+                <div class="heroLeft">
+                    <div class="heroPillWrap">
+                        <span class="heroPill">Smart Campus Delivery</span>
+                    </div>
+
+                    <h1 class="heroHeading">CampusCarry<br>is Here for You</h1>
+
+                    <p class="heroSubtitle">
+                        CampusCarry connects students with fellow students
+                        to collect and deliver parcels, making campus life
+                        easier, faster and more convenient.
+                    </p>
+
+                    <a href="dashboard.html" class="btnPrimary">
+                        Go to Dashboard <span class="arrowIcon">&rarr;</span>
+                    </a>
+                </div>
+
+                <div class="heroRight">
+                    <img src="h_image2.png"
+                         alt="Student walking with a parcel on campus"
+                         width="520" height="347" class="heroImage">
+                    <div class="heroPin" aria-hidden="true"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="dividerWrap">
+            <div class="dividerLine"></div>
+        </div>
+
+        <!-- REWARDS & COMMISSION -->
+        <section class="section">
+            <div class="pillWrap">
+                <span class="pillTag">Rewards &amp; Commission</span>
+            </div>
+
+            <h2 class="rewardHeading">You set the reward. The runner keeps almost all of it.</h2>
+
+            <p class="rewardSubtitle">
+                CampusCarry takes a flat 2.5% platform commission —
+                the rest goes straight to the student doing the delivery.
+            </p>
+
+            <div class="statCardRow">
+                <article class="statCard">
+                    <p class="statLabel">Requester Offers</p>
+                    <p class="statValue">₹22</p>
+                </article>
+
+                <article class="statCard">
+                    <p class="statLabel">Platform Commission (2.5%)</p>
+                    <p class="statValue">₹0.55</p>
+                </article>
+
+                <article class="statCard statCardHighlight">
+                    <p class="statLabel">Campus Runner Receives</p>
+                    <p class="statValue">₹21.45</p>
+                </article>
+            </div>
+
+            <div class="progressBar">
+                <div class="progressRunnerShare"></div>
+                <div class="progressCommissionShare"></div>
+            </div>
+            <p class="progressCaption">97.5% to the Campus Runner &bull; 2.5% platform commission</p>
+        </section>
+
+        <div class="dividerWrap">
+            <div class="dividerLine"></div>
+        </div>
+
+        <!-- MISSION -->
+        <section class="section missionSection">
+            <h2 class="sectionHeading">Our Mission</h2>
+            <p class="sectionText">
+                Our mission is to make campus parcel collection simpler,
+                faster, and more convenient by using the existing movement
+                of students across campus.
+            </p>
+        </section>
+
+        
+        <!-- FAQ (interactive - see about.js) -->
+        <section class="section faqSection" id="faq">
+            <div class="pillWrap">
+                <span class="pillTag">FAQ</span>
+            </div>
+            <h2 class="sectionHeading">Frequently Asked Questions</h2>
+
+            <div class="faqList">
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton1"
+                                aria-expanded="false" aria-controls="faqAnswer1">
+                            <span>Who can use CampusCarry?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer1" role="region"
+                         aria-labelledby="faqButton1" hidden>
+                        <p>CampusCarry is built for students of the BML Munjal University community. Any student can ask for a parcel to be collected, and any student can accept requests when they are already walking across campus.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton2"
+                                aria-expanded="false" aria-controls="faqAnswer2">
+                            <span>How are students verified?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer2" role="region"
+                         aria-labelledby="faqButton2" hidden>
+                        <p>CampusCarry is intended for university students, so accounts are meant to be tied to a student's university identity. Verification is not active in this prototype yet; it will be handled by the backend in a later phase of the project.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton3"
+                                aria-expanded="false" aria-controls="faqAnswer3">
+                            <span>Who decides the delivery price?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer3" role="region"
+                         aria-labelledby="faqButton3" hidden>
+                        <p>The student who needs the parcel sets the reward when creating the request. Runners see the reward before they accept. CampusCarry keeps a flat 2.5% platform commission and the rest goes to the runner.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton4"
+                                aria-expanded="false" aria-controls="faqAnswer4">
+                            <span>Can a pickup request be cancelled?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer4" role="region"
+                         aria-labelledby="faqButton4" hidden>
+                        <p>Yes, as long as the parcel has not been picked up yet. Once a runner has collected the parcel, or after it has been delivered, the request can no longer be cancelled.</p>
+                    </div>
+                </div>
+
+                <div class="faqItem">
+                    <h3>
+                        <button type="button" class="faqQuestion" id="faqButton5"
+                                aria-expanded="false" aria-controls="faqAnswer5">
+                            <span>Who can see parcel details?</span>
+                            <span class="faqIcon" aria-hidden="true">+</span>
+                        </button>
+                    </h3>
+                    <div class="faqAnswer" id="faqAnswer5" role="region"
+                         aria-labelledby="faqButton5" hidden>
+                        <p>CampusCarry is designed so that the student who made the request and the runner who accepted it can see the full parcel details. Other students browsing requests only need the locations and the reward to decide whether to accept.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="section ctaSection">
+            <h2>Need someone to collect your parcel?</h2>
+            <p>Find a student who is already on the move.</p>
+            <div class="ctaButtons">
+                <a href="login.html" class="btnPrimary">Get Started</a>
+                <a href="tracking.html" class="btnSecondary">Track a Parcel</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="siteFooter">
+        <div class="footerLayout">
+            <div class="footerCol footerBrand">
+                <h4><b>CampusCarry</b></h4>
+                <p>Student-to-student parcel delivery for the BML Munjal University community.</p>
+            </div>
+
+            <div class="footerCol">
+                <h4>PLATFORM</h4>
+                <a href="home.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="tracking.html">Track Parcel</a>
+            </div>
+
+            <div class="footerCol">
+                <h4>GET STARTED</h4>
+                <a href="login.html">Request Delivery</a>
+                <a href="login.html">Become a Runner</a>
+                <a href="login.html">Sign Up</a>
+            </div>
+        </div>
+
+        <div class="footerBottom">
+            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
+        </div>
+    </footer>
+
+    <script src="nav.js"></script>
+    <script src="about.js"></script>
+</body>
+</html>
