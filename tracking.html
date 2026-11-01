@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Parcel - CampusCarry</title>
+    <!-- h_style.css = shared navbar, footer, buttons, colours. tracking.css = this page only. -->
+    <link rel="stylesheet" href="h_style.css">
+    <link rel="stylesheet" href="tracking.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar" aria-label="Main navigation">
+            <div class="logo">
+                <a href="home.html"><b>CampusCarry</b></a>
+            </div>
+
+            <button type="button" class="navToggle" id="navToggle"
+                    aria-expanded="false" aria-controls="navMenu">
+                <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
+                <span id="navToggleText">Menu</span>
+            </button>
+
+            <ul class="navLinks" id="navMenu">
+                <li><a href="home.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+                <li><a href="tracking.html" class="activeLink" aria-current="page">Track Parcel</a></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+            </ul>
+
+            <a href="login.html" class="btnNav">Sign Up</a>
+        </nav>
+    </header>
+
+    <main id="main" class="trackPage">
+
+        <a href="dashboard.html" class="backLink">&larr; Back to Dashboard</a>
+
+        <!-- ================= TRACKING SEARCH (form) ================= -->
+        <section class="trackIntro" aria-labelledby="trackHeading">
+            <h1 class="trackHeading" id="trackHeading">Track Your Parcel</h1>
+            <p class="trackLead">Enter your parcel request ID to check its current delivery status.</p>
+
+            <form class="trackForm" id="trackForm" novalidate>
+                <label for="parcelId" class="fieldLabel">Parcel ID</label>
+                <div class="trackFormRow">
+                    <input type="text" id="parcelId" name="parcelId" class="textInput"
+                           placeholder="e.g. CC1024" autocomplete="off" aria-describedby="trackMessage">
+                    <button type="submit" class="btnPrimary">Track Parcel</button>
+                </div>
+                <p class="formMessage" id="trackMessage" role="status" aria-live="polite"></p>
+            </form>
+
+            <p class="demoBanner">
+                Demo data. Sample IDs: CC1024, CC1025, CC1026, CC1027 (delivered), CC1028 (cancelled).
+            </p>
+            <p class="demoBanner">
+                Saved form records: <strong id="recordCount">0</strong>
+                <button type="button" class="btnSecondary" id="downloadButton">Download JSON</button>
+            </p>
+        </section>
+
+        <!-- ================= EMPTY STATE ================= -->
+        <section class="emptyState" id="emptyState">
+            <h2>No parcel selected yet</h2>
+            <p>Type a parcel ID above to see its status, progress timeline and delivery details.</p>
+        </section>
+
+        <!-- ================= RESULTS (filled by tracking.js) ================= -->
+        <div class="resultGrid" id="trackResults" hidden>
+
+            <section class="card areaSummary" id="summaryBox" aria-label="Parcel summary"></section>
+
+            <section class="card areaTimeline">
+                <h2>Delivery progress</h2>
+                <ol class="timeline" id="timelineList"></ol>
+            </section>
+
+            <section class="card areaControls">
+                <h2>Delivery controls</h2>
+                <p class="demoNote">
+                    <strong>Demo only.</strong> This role selector is not a login and is not secure.
+                    In Phase 3 the backend must decide who is allowed to do what.
+                </p>
+                <fieldset class="roleFieldset">
+                    <legend>View this page as</legend>
+                    <label class="roleOption"><input type="radio" name="demoRole" value="receiver" checked> Parcel Receiver</label>
+                    <label class="roleOption"><input type="radio" name="demoRole" value="partner"> Delivery Partner</label>
+                </fieldset>
+                <button type="button" class="btnSecondary" id="cancelButton">Cancel request</button>
+                <button type="button" class="btnPrimary" id="nextButton"></button>
+                <p class="controlNote" id="controlNote"></p>
+                <p class="formMessage" id="actionMessage" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="card areaPartner">
+                <h2>Delivery partner</h2>
+                <div id="partnerBox"></div>
+            </section>
+
+            <section class="card areaDetails">
+                <h2>Parcel details</h2>
+                <div id="detailsBox"></div>
+            </section>
+
+            <section class="card areaHistory">
+                <h2>Status history</h2>
+                <ul class="historyList" id="historyList"></ul>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="siteFooter">
+        <div class="footerLayout">
+            <div class="footerCol footerBrand">
+                <h4><b>CampusCarry</b></h4>
+                <p>Student-to-student parcel delivery for the BML Munjal University community.</p>
+            </div>
+
+            <div class="footerCol">
+                <h4>PLATFORM</h4>
+                <a href="home.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="how-it-works.html">How It Works</a>
+                <a href="tracking.html">Track Parcel</a>
+            </div>
+
+            <div class="footerCol">
+                <h4>GET STARTED</h4>
+                <a href="login.html">Request Delivery</a>
+                <a href="login.html">Become a Runner</a>
+                <a href="login.html">Sign Up</a>
+            </div>
+        </div>
+
+        <div class="footerBottom">
+            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts are at the end of <body> so every element above already exists. -->
+    <script src="nav.js"></script>
+    <script src="tracking.js"></script>
+</body>
+</html>
