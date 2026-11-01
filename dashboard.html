@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CampusCarry</title>
+    <!-- h_style.css = shared navbar, footer, buttons, colours (must come first) -->
+    <link rel="stylesheet" href="h_style.css">
+    <!-- dashboard.css = signed-in app pages (dashboard, browse requests) -->
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="appPage">
+
+    <header id="siteHeader"></header>
+
+    <main id="main">
+
+        <!-- HERO GREETING (name is filled in by dashboard.js) -->
+        <section class="dashHero">
+            <div class="dashHeroInner">
+                <div class="dashGreeting">
+                    <h1>Welcome back, <span id="greetName">Student</span> 👋</h1>
+                    <p>What would you like to do on campus today?</p>
+                </div>
+
+                <div class="dashHeroLinks">
+                    <a href="create-request.html" class="btnPrimary">+ New Request</a>
+                    <a href="available-requests.html" class="btnSecondary">Browse Requests</a>
+                    <a href="my-requests.html" class="btnSecondary">My Activity</a>
+                    <button type="button" class="btnSecondary" id="logoutButton">Log out</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="pageWrap">
+
+            <!-- STATS (numbers are counted from localStorage by dashboard.js) -->
+            <div class="statsRow">
+                <div class="statBox cardAnim">
+                    <div class="statNum" id="statOpen">&mdash;</div>
+                    <div class="statLabel">Open Requests</div>
+                </div>
+                <div class="statBox cardAnim">
+                    <div class="statNum" id="statMine">&mdash;</div>
+                    <div class="statLabel">My Requests</div>
+                </div>
+                <div class="statBox cardAnim">
+                    <div class="statNum" id="statRunning">&mdash;</div>
+                    <div class="statLabel">I'm Delivering</div>
+                </div>
+                <div class="statBox cardAnim">
+                    <div class="statNum" id="statDone">&mdash;</div>
+                    <div class="statLabel">Completed</div>
+                </div>
+            </div>
+
+            <!-- ROLE CARDS -->
+            <div class="roleGrid">
+
+                <a href="create-request.html" class="roleCard">
+                    <div class="roleIcon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 10V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10"/>
+                            <path d="M23 7H1l2 3h18l2-3z"/>
+                            <path d="M12 7V3M9 3h6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="roleTitle">Request a Parcel</h2>
+                        <p class="roleDesc">
+                            Need something collected and delivered to you on campus?
+                            Post a request with pickup location, drop-off point and a reward,
+                            and a fellow student runner will accept it and bring it to you.
+                        </p>
+                    </div>
+                    <span class="roleCta">Create a request <span class="ctaArrow" aria-hidden="true">&rarr;</span></span>
+                </a>
+
+                <a href="available-requests.html" class="roleCard isDeliver">
+                    <div class="roleIcon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 8 16 12 12 16"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="roleTitle">Deliver a Parcel</h2>
+                        <p class="roleDesc">
+                            Already heading somewhere on campus? Browse open delivery requests
+                            that match your route, accept one you like and earn the reward
+                            for completing the drop-off. No fixed shifts needed.
+                        </p>
+                    </div>
+                    <span class="roleCta">Browse requests <span class="ctaArrow" aria-hidden="true">&rarr;</span></span>
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script src="layout.js"></script>
+    <script src="app.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

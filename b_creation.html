@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Request - CampusCarry</title>
+    <link rel="stylesheet" href="h_style.css">
+    <link rel="stylesheet" href="b_creation.css">
+</head>
+<body>
+    <header id="siteHeader"></header>
+
+    <main class="creation-container">
+        <div class="top-nav-bar">
+            <a href="b_profile.html" class="back-pill">&larr; Back to Profile</a>
+        </div>
+
+        <div class="creation-card">
+            <h2>Create Campus Delivery Request</h2>
+            <p class="card-subtitle">Fill in the details below to publish your parcel delivery task.</p>
+
+            <form id="creationForm" onsubmit="handleCreationSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" class="readonly-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label for="enrollmentNo">Enrollment Number</label>
+                        <input type="text" id="enrollmentNo" class="readonly-field" readonly required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="batch">Batch</label>
+                        <input type="text" id="batch" class="readonly-field" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" id="courseName" class="readonly-field" readonly required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reward">Reward (₹)</label>
+                        <input type="number" id="reward" min="10" placeholder="e.g. 50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline">Deadline</label>
+                        <input type="datetime-local" id="deadline" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fromLocation">From (Pickup Location)</label>
+                    <select id="fromLocation" required>
+                        <option value="" disabled selected>Select Pickup Location</option>
+                        <option value="Main Gate Security">Main Gate Security</option>
+                        <option value="Hostel RTH Reception">Hostel RTH Reception</option>
+                        <option value="Hostel KCH Reception">Hostel KCH Reception</option>
+                        <option value="Hostel BSH Reception">Hostel BSH Reception</option>
+                        <option value="Hostel HBH Reception">Hostel HBH Reception</option>
+                        <option value="Hostel VSH Reception">Hostel VSH Reception</option>
+                        <option value="Hostel APJH Reception">Hostel APJH Reception</option>
+                        <option value="Girls Hostel Reception">Girls Hostel Reception</option>
+                        <option value="Academic Block A">Academic Block A</option>
+                        <option value="Academic Block B">Academic Block B</option>
+                        <option value="Student Centre / Mess">Student Centre / Mess</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="toLocation">To (Delivery Destination)</label>
+                    <select id="toLocation" required>
+                        <option value="" disabled selected>Select Destination</option>
+                        <option value="Hostel RTH Room">Hostel RTH Room</option>
+                        <option value="Hostel KCH Room">Hostel KCH Room</option>
+                        <option value="Hostel BSH Room">Hostel BSH Room</option>
+                        <option value="Hostel HBH Room">Hostel HBH Room</option>
+                        <option value="Hostel VSH Room">Hostel VSH Room</option>
+                        <option value="Hostel APJH Room">Hostel APJH Room</option>
+                        <option value="Girls Hostel Room">Girls Hostel Room</option>
+                        <option value="Academic Block A Class">Academic Block A Class</option>
+                        <option value="Academic Block B Class">Academic Block B Class</option>
+                        <option value="Library">Library</option>
+                    </select>
+                </div>
+
+                <fieldset class="product-details-box">
+                    <legend>Product Details</legend>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="companyName">Company / Service Name</label>
+                            <input type="text" id="companyName" placeholder="e.g. Amazon, Flipkart, BlueDart" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="agentName">Delivery Agent Name</label>
+                            <input type="text" id="agentName" placeholder="e.g. Ramesh Kumar" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="agentMobile">Delivery Agent Contact Number</label>
+                            <input type="tel" id="agentMobile" pattern="\d{10}" placeholder="10-digit agent mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickupOtp">Pickup Verification OTP / Code</label>
+                            <input type="text" id="pickupOtp" placeholder="e.g. 4921" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="itemDescription">Item Description & Instructions</label>
+                        <textarea id="itemDescription" rows="3" placeholder="e.g. Small cardboard box containing books. Handle with care." required></textarea>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="submit-request-btn">Publish Request</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const profile = JSON.parse(localStorage.getItem("studentProfile"));
+            if (profile) {
+                document.getElementById("studentName").value = profile.studentName || "";
+                document.getElementById("enrollmentNo").value = profile.enrollmentNo || "";
+                document.getElementById("batch").value = profile.batch || "";
+                document.getElementById("courseName").value = profile.courseName || "";
+            }
+
+            setTimeout(() => {
+                const headerBtn = document.querySelector("#siteHeader .btnGetStarted") || document.querySelector("#siteHeader a[href='login.html']");
+                if (headerBtn) {
+                    headerBtn.textContent = "Logout";
+                    headerBtn.setAttribute("href", "login.html");
+                }
+
+                const navLinks = document.querySelectorAll("#siteHeader a");
+                navLinks.forEach(link => {
+                    if (link.textContent.trim().toLowerCase() === "dashboard") {
+                        link.setAttribute("href", "G_dashboard.html");
+                    }
+                });
+            }, 100);
+        });
+
+        function handleCreationSubmit(event) {
+            event.preventDefault();
+
+            const existingRequests = JSON.parse(localStorage.getItem("campusRequests")) || [];
+
+            const newRequest = {
+                id: "REQ" + Date.now().toString().slice(-6),
+                studentName: document.getElementById("studentName").value,
+                enrollmentNo: document.getElementById("enrollmentNo").value,
+                batch: document.getElementById("batch").value,
+                courseName: document.getElementById("courseName").value,
+                reward: document.getElementById("reward").value,
+                deadline: document.getElementById("deadline").value,
+                fromLocation: document.getElementById("fromLocation").value,
+                toLocation: document.getElementById("toLocation").value,
+                companyName: document.getElementById("companyName").value,
+                agentName: document.getElementById("agentName").value,
+                agentMobile: document.getElementById("agentMobile").value,
+                pickupOtp: document.getElementById("pickupOtp").value,
+                itemDescription: document.getElementById("itemDescription").value,
+                createdAt: new Date().toISOString()
+            };
+
+            existingRequests.push(newRequest);
+            localStorage.setItem("campusRequests", JSON.stringify(existingRequests));
+
+            alert("Delivery Request Published Successfully!");
+            window.location.href = "b_profile.html";
+        }
+    </script>
+    <script src="layout.js"></script>
+</body>
+</html>

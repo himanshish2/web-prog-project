@@ -1,0 +1,669 @@
+/* ==========================================================
+   dashboard.css - styles for dashboard.html, available-requests.html
+   (and the future my-requests.html).
+   Navbar, footer, buttons, forms, colours and the reset come from
+   h_style.css. Do NOT style body, header, nav, footer, a or * here.
+   ========================================================== */
+
+.appPage {
+    background-color: var(--bg-soft);
+}
+
+/* ---------- Dashboard hero ---------- */
+.dashHero {
+    padding: 56px 24px 48px 24px;
+    background: linear-gradient(160deg, var(--purple-light) 0%, var(--bg-soft) 100%);
+    border-bottom: 1px solid var(--border);
+}
+
+.dashHeroInner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.dashGreeting h1 {
+    margin-bottom: 8px;
+    font-size: clamp(28px, 3.5vw, 40px);
+    line-height: 1.2;
+    color: var(--purple-deep);
+}
+
+.dashGreeting p {
+    font-size: 16px;
+    color: var(--muted);
+}
+
+.dashHeroLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* ---------- Stat boxes ---------- */
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 36px;
+}
+
+.statBox {
+    padding: 24px 28px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.statBox:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.statNum {
+    margin-bottom: 6px;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--purple-deep);
+}
+
+.statLabel {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ---------- Role cards (Request / Deliver) ---------- */
+.roleGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+.roleCard {
+    --accent: var(--purple);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    overflow: hidden;
+    padding: 40px 36px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), border-color 0.22s;
+}
+
+.roleCard.isDeliver {
+    --accent: var(--purple-deep);
+}
+
+.roleCard::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: var(--accent);
+}
+
+.roleCard:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--purple);
+}
+
+.roleIcon {
+    width: 64px;
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-sm);
+    background-color: var(--purple-light);
+    color: var(--accent);
+    transition: transform 0.2s var(--ease);
+}
+
+.roleCard:hover .roleIcon {
+    transform: scale(1.08);
+}
+
+.roleTitle {
+    margin-bottom: 8px;
+    font-size: 24px;
+    color: var(--purple-deep);
+}
+
+.roleDesc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+}
+
+.roleCta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.ctaArrow {
+    display: inline-block;
+    transition: transform 0.2s var(--ease);
+}
+
+.roleCard:hover .ctaArrow {
+    transform: translateX(6px);
+}
+
+/* ---------- Request cards (available / my requests) ---------- */
+.cardsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+}
+
+.reqCard {
+    position: relative;
+    overflow: hidden;
+    padding: 28px 28px 24px 28px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    transition: transform 0.22s var(--ease), box-shadow 0.22s var(--ease), border-color 0.22s;
+}
+
+.reqCard:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--purple);
+}
+
+/* Coloured top bar: changes with status */
+.accentBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: var(--purple);
+}
+
+.reqCard.isUrgent .accentBar    { background-color: var(--danger); }
+.reqCard.isInTransit .accentBar { background-color: var(--purple-deep); }
+.reqCard.isCompleted .accentBar { background-color: var(--success); }
+
+.reqHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding-top: 8px;
+}
+
+.reqTitle {
+    margin-bottom: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--purple-deep);
+}
+
+.reqMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.reqReward {
+    font-size: 22px;
+    font-weight: 800;
+    white-space: nowrap;
+    color: var(--purple);
+}
+
+.reqDescription {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.reqRoute {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    padding: 14px 18px;
+    background-color: var(--bg-soft);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+}
+
+.reqRoute .loc {
+    font-weight: 600;
+    color: var(--purple-deep);
+}
+
+.reqRoute .routeArrow {
+    flex: 1;
+    text-align: center;
+    letter-spacing: 2px;
+    color: var(--muted);
+}
+
+.reqFooter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.reqContact {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* ---------- Badges ---------- */
+.badge {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.badgeOpen      { background-color: var(--purple-light); color: var(--purple); }
+.badgeAccepted  { background-color: #D9DCF2; color: var(--purple-deep); }
+.badgeInTransit { background-color: var(--purple); color: #ffffff; }
+.badgeCompleted { background-color: var(--success-soft); color: var(--success); }
+.badgeUrgent    { background-color: var(--danger-soft); color: var(--danger); }
+
+/* ---------- Alerts ---------- */
+.alert {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    animation: slideDown 0.3s var(--ease);
+}
+
+.alert.show {
+    display: flex;
+}
+
+.alert a {
+    margin-left: auto;
+    font-size: 13px;
+    color: inherit;
+    text-decoration: underline;
+}
+
+.alertSuccess { background-color: var(--success-soft); border: 1px solid var(--success); color: var(--success); }
+.alertError   { background-color: var(--danger-soft);  border: 1px solid var(--danger);  color: var(--danger); }
+
+/* ---------- Empty state (spans the whole grid) ---------- */
+.gridEmpty {
+    grid-column: 1 / -1;
+    padding: 64px 24px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.gridEmpty .emptyIcon {
+    margin-bottom: 16px;
+    font-size: 48px;
+}
+
+.gridEmpty h3 {
+    margin-bottom: 8px;
+    font-size: 20px;
+    color: var(--purple-deep);
+}
+
+.gridEmpty p {
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+/* ---------- Filter bar ---------- */
+.filterBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.filterBtn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background-color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background-color 0.18s, color 0.18s, border-color 0.18s;
+}
+
+.filterBtn:hover,
+.filterBtn.active {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: #ffffff;
+}
+
+.filterSearch {
+    min-width: 220px;
+    margin-left: auto;
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background-color: #ffffff;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--purple-deep);
+}
+
+.filterSearch:hover,
+.filterSearch:focus {
+    border-color: var(--purple);
+}
+
+.reqCount {
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+/* ---------- Modal ---------- */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(11, 14, 82, 0.45);
+    animation: fadeOverlay 0.2s ease;
+}
+
+.modalOverlay.open {
+    display: flex;
+}
+
+.modalBox {
+    width: 90%;
+    max-width: 440px;
+    padding: 36px;
+    background-color: #ffffff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s var(--ease);
+}
+
+.modalBox h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: var(--purple-deep);
+}
+
+.modalBox p {
+    margin-bottom: 28px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* ---------- Status stepper (for my-requests) ---------- */
+.stepper {
+    display: flex;
+    align-items: flex-start;
+    margin: 20px 0;
+    padding: 20px 16px;
+    background-color: var(--bg-soft);
+    border-radius: var(--radius-sm);
+}
+
+.stepItem {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stepItem:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background-color: var(--border);
+}
+
+.stepItem.done:not(:last-child)::after {
+    background-color: var(--purple);
+}
+
+.stepDot {
+    position: relative;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    background-color: #ffffff;
+    font-size: 13px;
+}
+
+.stepItem.done .stepDot {
+    background-color: var(--purple);
+    border-color: var(--purple);
+    color: #ffffff;
+}
+
+.stepItem.active .stepDot {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 5px rgba(54, 59, 139, 0.15);
+}
+
+.stepLabel {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.stepItem.done .stepLabel,
+.stepItem.active .stepLabel {
+    color: var(--purple);
+}
+
+/* ---------- Tabs (for my-requests) ---------- */
+.tabs {
+    display: flex;
+    margin-bottom: 32px;
+    border-bottom: 2px solid var(--border);
+}
+
+.tabButton {
+    margin-bottom: -2px;
+    padding: 12px 28px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.tabButton.active {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+}
+
+.tabButton:hover:not(.active) {
+    color: var(--purple-deep);
+}
+
+.tabPanel {
+    display: none;
+}
+
+.tabPanel.active {
+    display: block;
+}
+
+/* ---------- Info box + update buttons (for my-requests) ---------- */
+.infoBox {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background-color: var(--purple-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    color: var(--purple-deep);
+}
+
+.infoBox strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 11px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.updateBtnRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ---------- Animations ---------- */
+@keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.cardAnim {
+    animation: cardIn 0.35s var(--ease) both;
+}
+
+/* ---------- Tablet / mobile ---------- */
+@media (max-width: 900px) {
+    .statsRow {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 680px) {
+    .roleGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashHero {
+        padding: 40px 16px;
+    }
+
+    .dashHeroInner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .cardsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .reqFooter {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filterSearch {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .modalBox {
+        padding: 28px 24px;
+    }
+
+    .roleCard {
+        padding: 32px 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cardAnim,
+    .alert,
+    .modalOverlay,
+    .modalBox {
+        animation: none;
+    }
+
+    .statBox,
+    .roleCard,
+    .roleIcon,
+    .ctaArrow,
+    .reqCard {
+        transition: none;
+    }
+}
