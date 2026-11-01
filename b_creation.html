@@ -141,6 +141,13 @@
                     headerBtn.textContent = "Logout";
                     headerBtn.setAttribute("href", "login.html");
                 }
+
+                const navLinks = document.querySelectorAll("#siteHeader a");
+                navLinks.forEach(link => {
+                    if (link.textContent.trim().toLowerCase() === "dashboard") {
+                        link.setAttribute("href", "G_dashboard.html");
+                    }
+                });
             }, 100);
         });
 
