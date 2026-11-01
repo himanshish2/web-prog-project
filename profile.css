@@ -1,0 +1,270 @@
+/* ==========================================================
+   profile.css - styles for profile.html ONLY.
+   Navbar, footer, buttons, colours and the reset come from
+   h_style.css. Do NOT style body, header, nav, footer, a or *.
+   ========================================================== */
+
+.clockBanner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.liveClockBadge {
+    padding: 6px 14px;
+    background-color: var(--purple);
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.profileGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+    align-items: stretch;
+}
+
+.profileCard,
+.mapCard,
+.historyCard {
+    padding: 28px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.profileCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.profileCard h2,
+.mapCard h2,
+.historyCard h2 {
+    font-size: 18px;
+    color: var(--purple-deep);
+}
+
+/* ---------- Profile ---------- */
+.profileHeader {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.profilePhoto {
+    flex-shrink: 0;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+}
+
+.avatarBack  { fill: var(--purple); }
+.avatarFront { fill: var(--gold); }
+
+.profileMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.studentName {
+    font-size: 26px;
+    color: var(--purple-deep);
+    text-transform: capitalize;
+    overflow-wrap: anywhere;
+}
+
+.metaLine {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.metaLine strong {
+    color: var(--purple-deep);
+}
+
+.earningsBanner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding: 18px 24px;
+    background-color: var(--purple-deep);
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+}
+
+.earningsLabel {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.earningsAmount {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.actionRow {
+    display: flex;
+    gap: 16px;
+}
+
+.actionRow a {
+    flex: 1;
+}
+
+/* ---------- Map ---------- */
+.mapCard {
+    display: flex;
+    flex-direction: column;
+}
+
+.mapSubtitle {
+    margin: 2px 0 16px 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.mapWrapper {
+    display: flex;
+    flex: 1;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.mapImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    object-fit: cover;
+}
+
+/* ---------- History ---------- */
+.historyHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Filled while the history is open (aria-expanded is set by profile.js) */
+#historyToggleBtn[aria-expanded="true"] {
+    background-color: var(--purple);
+    color: #ffffff;
+}
+
+.deliveryList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.deliveryEmpty {
+    padding: 12px 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.deliveryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background-color: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.deliveryInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.deliveryRoute {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple-deep);
+    overflow-wrap: anywhere;
+}
+
+.deliveryDate {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.deliveryStatusGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.deliveryReward {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.deliveryReward.isMuted {
+    color: var(--muted);
+}
+
+.deliveryBadge {
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.deliveryBadge.isSuccess {
+    background-color: var(--success-soft);
+    color: var(--success);
+}
+
+.deliveryBadge.isFailed {
+    background-color: var(--danger-soft);
+    color: var(--danger);
+}
+
+/* ---------- Tablet / mobile ---------- */
+@media (max-width: 900px) {
+    .profileGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .profileHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .actionRow {
+        flex-direction: column;
+    }
+
+    .deliveryItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

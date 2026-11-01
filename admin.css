@@ -1,0 +1,60 @@
+/* ==========================================================
+   admin.css - styles for admin.html ONLY.
+   Navbar, footer, buttons, colours and the reset come from
+   h_style.css. Do NOT style body, header, nav, footer, a or *.
+   ========================================================== */
+
+.adminSection {
+    margin-bottom: 36px;
+}
+
+.adminSection h2 {
+    margin-bottom: 16px;
+    font-size: 22px;
+    color: var(--purple-deep);
+}
+
+.adminMessage {
+    margin-bottom: 20px;
+    padding: 12px 14px;
+    background-color: var(--danger-soft);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--danger);
+}
+
+.tableScroll {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.statsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+.statsTable th,
+.statsTable td {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    text-align: left;
+    font-size: 15px;
+}
+
+.statsTable th {
+    background-color: var(--purple-light);
+    color: var(--purple);
+}
+
+.rawBox {
+    max-height: 300px;
+    padding: 16px;
+    overflow: auto;
+    background-color: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--purple-deep);
+}

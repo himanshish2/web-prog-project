@@ -1,0 +1,144 @@
+/* ==========================================================
+   accepted.css - styles for accepted.html ONLY.
+   Navbar, footer, buttons, form fields, pill label and colours
+   come from h_style.css. Do NOT style body, header, nav, footer,
+   a or * in this file.
+   ========================================================== */
+
+.acceptCard {
+    margin-bottom: 22px;
+    padding: 28px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.acceptCard h2 {
+    margin-bottom: 16px;
+    font-size: 20px;
+    color: var(--purple-deep);
+}
+
+/* ---------- Success message ---------- */
+.successCard {
+    padding: 38px 28px;
+    text-align: center;
+}
+
+.successCard h1 {
+    margin-bottom: 14px;
+    font-size: 30px;
+    line-height: 1.25;
+    color: var(--purple-deep);
+}
+
+.successIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 18px auto;
+    border-radius: 50%;
+    background-color: var(--success-soft);
+    color: var(--success);
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* Same colours as the "Accepted" badge on the tracking page */
+.statusBadge {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 6px 16px;
+    border-radius: var(--radius-pill);
+    background-color: #D9DCF2;
+    color: var(--purple-deep);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ---------- Delivery details ---------- */
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.detailRow:first-of-type {
+    border-top: 1px solid var(--border);
+}
+
+.detailRow:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.detailRow span {
+    flex: 0 0 40%;
+    color: var(--muted);
+}
+
+.detailRow strong {
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Campus runner ---------- */
+.runnerInfo {
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.helperText {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* ---------- Message form ---------- */
+.acceptCard .subtitle {
+    margin-bottom: 22px;
+}
+
+.downloadRow {
+    display: flex;
+    justify-content: center;
+}
+
+.formFeedback {
+    min-height: 22px;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.formFeedback.success {
+    color: var(--success);
+}
+
+.formFeedback.error {
+    color: var(--danger);
+    font-weight: 600;
+}
+
+@media (max-width: 600px) {
+    .acceptCard {
+        padding: 22px;
+    }
+
+    .successCard h1 {
+        font-size: 25px;
+    }
+
+    .detailRow {
+        gap: 12px;
+    }
+}

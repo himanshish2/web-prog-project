@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - CampusCarry</title>
+    <!-- h_style.css = shared navbar, footer, buttons, colours (must come first) -->
+    <link rel="stylesheet" href="h_style.css">
+    <!-- profile.css = this page only -->
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+    <header id="siteHeader"></header>
+
+    <main id="main" class="pageWrap">
+
+        <div class="clockBanner">
+            <span>Current Time:</span>
+            <span class="liveClockBadge" id="liveClock">00:00:00 AM</span>
+        </div>
+
+        <div class="profileGrid">
+
+            <section class="profileCard" aria-label="Student profile">
+                <div class="profileHeader">
+                    <svg class="profilePhoto" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Student avatar">
+                        <circle class="avatarBack" cx="50" cy="50" r="50"/>
+                        <circle class="avatarFront" cx="50" cy="40" r="20"/>
+                        <path class="avatarFront" d="M 20 85 C 20 65, 80 65, 80 85 Z"/>
+                    </svg>
+                    <div class="profileMeta">
+                        <h1 class="studentName" id="profileName">Student Name</h1>
+                        <p class="metaLine"><strong>Enrollment No:</strong> <span id="profileEnrollment">------</span></p>
+                        <p class="metaLine"><strong>Course:</strong> <span id="profileCourse">------</span></p>
+                        <p class="metaLine"><strong>Batch:</strong> <span id="profileBatch">------</span></p>
+                    </div>
+                </div>
+
+                <div class="earningsBanner">
+                    <span class="earningsLabel">Personal Earnings</span>
+                    <span class="earningsAmount" id="totalEarnings">&#8377;0</span>
+                </div>
+
+                <div class="actionRow">
+                    <a href="create-request.html" class="btnPrimary btnFull">Create Request</a>
+                    <a href="available-requests.html" class="btnSecondary btnFull">Accept Request</a>
+                </div>
+            </section>
+
+            <section class="mapCard" aria-label="Campus delivery coverage map">
+                <h2>Campus Delivery Coverage Map</h2>
+                <p class="mapSubtitle">Authorized pickup points, hostel blocks, and delivery routes</p>
+                <div class="mapWrapper">
+                    <img src="web-MAP.jpg" alt="Campus Carry delivery map" class="mapImg">
+                </div>
+            </section>
+
+        </div>
+
+        <section class="historyCard" aria-label="Past deliveries">
+            <div class="historyHeader">
+                <h2>Past Deliveries</h2>
+                <button type="button" class="btnSecondary btnSmall" id="historyToggleBtn"
+                        aria-expanded="false" aria-controls="deliveryList">Show History</button>
+            </div>
+
+            <div class="deliveryList" id="deliveryList" hidden></div>
+        </section>
+
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script src="layout.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

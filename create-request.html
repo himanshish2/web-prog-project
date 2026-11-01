@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Request - CampusCarry</title>
+    <!-- h_style.css = shared navbar, footer, buttons, forms, colours (must come first) -->
+    <link rel="stylesheet" href="h_style.css">
+    <!-- create-request.css = this page only -->
+    <link rel="stylesheet" href="create-request.css">
+</head>
+<body>
+
+    <header id="siteHeader"></header>
+
+    <main id="main" class="pageWrap pageNarrow">
+
+        <a href="profile.html" class="backLink">&larr; Back to Profile</a>
+
+        <div class="formCard">
+            <h1>Create Campus Delivery Request</h1>
+            <p class="cardSubtitle">Fill in the details below to publish your parcel delivery task.</p>
+
+            <!-- Shown by create-request.js when no student profile is saved yet -->
+            <p class="formNotice" id="profileNotice" hidden>
+                No student profile found. <a href="signup.html">Register first</a> so your details can be filled in.
+            </p>
+
+            <form class="formStack" id="creationForm">
+                <div class="formRow">
+                    <div class="formGroup">
+                        <label for="studentName">Student Name</label>
+                        <input type="text" id="studentName" class="readonlyField" readonly required>
+                    </div>
+                    <div class="formGroup">
+                        <label for="enrollmentNo">Enrollment Number</label>
+                        <input type="text" id="enrollmentNo" class="readonlyField" readonly required>
+                    </div>
+                </div>
+
+                <div class="formRow">
+                    <div class="formGroup">
+                        <label for="batch">Batch</label>
+                        <input type="text" id="batch" class="readonlyField" readonly required>
+                    </div>
+                    <div class="formGroup">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" id="courseName" class="readonlyField" readonly required>
+                    </div>
+                </div>
+
+                <div class="formRow">
+                    <div class="formGroup">
+                        <label for="reward">Reward (&#8377;)</label>
+                        <input type="number" id="reward" min="10" placeholder="e.g. 50" required>
+                    </div>
+                    <div class="formGroup">
+                        <label for="deadline">Deadline</label>
+                        <input type="datetime-local" id="deadline" required>
+                    </div>
+                </div>
+
+                <div class="formGroup">
+                    <label for="fromLocation">From (Pickup Location)</label>
+                    <select id="fromLocation" required>
+                        <option value="" disabled selected>Select Pickup Location</option>
+                        <option value="Main Gate Security">Main Gate Security</option>
+                        <option value="Hostel RTH Reception">Hostel RTH Reception</option>
+                        <option value="Hostel KCH Reception">Hostel KCH Reception</option>
+                        <option value="Hostel BSH Reception">Hostel BSH Reception</option>
+                        <option value="Hostel HBH Reception">Hostel HBH Reception</option>
+                        <option value="Hostel VSH Reception">Hostel VSH Reception</option>
+                        <option value="Hostel APJH Reception">Hostel APJH Reception</option>
+                        <option value="Girls Hostel Reception">Girls Hostel Reception</option>
+                        <option value="Academic Block A">Academic Block A</option>
+                        <option value="Academic Block B">Academic Block B</option>
+                        <option value="Student Centre / Mess">Student Centre / Mess</option>
+                    </select>
+                </div>
+
+                <div class="formGroup">
+                    <label for="toLocation">To (Delivery Destination)</label>
+                    <select id="toLocation" required>
+                        <option value="" disabled selected>Select Destination</option>
+                        <option value="Hostel RTH Room">Hostel RTH Room</option>
+                        <option value="Hostel KCH Room">Hostel KCH Room</option>
+                        <option value="Hostel BSH Room">Hostel BSH Room</option>
+                        <option value="Hostel HBH Room">Hostel HBH Room</option>
+                        <option value="Hostel VSH Room">Hostel VSH Room</option>
+                        <option value="Hostel APJH Room">Hostel APJH Room</option>
+                        <option value="Girls Hostel Room">Girls Hostel Room</option>
+                        <option value="Academic Block A Class">Academic Block A Class</option>
+                        <option value="Academic Block B Class">Academic Block B Class</option>
+                        <option value="Library">Library</option>
+                    </select>
+                </div>
+
+                <fieldset class="productBox">
+                    <legend>Product Details</legend>
+                    <div class="formRow">
+                        <div class="formGroup">
+                            <label for="companyName">Company / Service Name</label>
+                            <input type="text" id="companyName" placeholder="e.g. Amazon, Flipkart, BlueDart" required>
+                        </div>
+                        <div class="formGroup">
+                            <label for="agentName">Delivery Agent Name</label>
+                            <input type="text" id="agentName" placeholder="e.g. Ramesh Kumar" required>
+                        </div>
+                    </div>
+
+                    <div class="formRow">
+                        <div class="formGroup">
+                            <label for="agentMobile">Delivery Agent Contact Number</label>
+                            <input type="tel" id="agentMobile" pattern="\d{10}" placeholder="10-digit agent mobile number" required>
+                        </div>
+                        <div class="formGroup">
+                            <label for="pickupOtp">Pickup Verification OTP / Code</label>
+                            <input type="text" id="pickupOtp" placeholder="e.g. 4921" required>
+                        </div>
+                    </div>
+
+                    <div class="formGroup">
+                        <label for="itemDescription">Item Description &amp; Instructions</label>
+                        <textarea id="itemDescription" rows="3" placeholder="e.g. Small cardboard box containing books. Handle with care." required></textarea>
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="btnPrimary btnFull" id="submitButton">Publish Request</button>
+            </form>
+        </div>
+
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script src="layout.js"></script>
+    <script src="create-request.js"></script>
+</body>
+</html>

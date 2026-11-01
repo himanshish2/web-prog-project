@@ -1,0 +1,21 @@
+/* ==========================================================
+   create-request.css - styles for create-request.html ONLY.
+   Card, form fields, buttons and colours come from h_style.css.
+   ========================================================== */
+
+.productBox {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 6px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.productBox legend {
+    padding: 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+}
