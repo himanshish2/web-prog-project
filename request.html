@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Carry</title>
+    <title>Available Requests - CampusCarry</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- h_style.css = shared navbar, footer, buttons, colours (must come first) -->
+    <link rel="stylesheet" href="h_style.css">
+    <!-- request_style.css = this page only -->
     <link rel="stylesheet" href="request_style.css">
 </head>
 <body>
 
-    <header class="navbar">
-        <a href="#" class="logo">Campus Carry</a>
-        
-        <nav class="nav-links">
-            <a href="#">Track</a>
-            <a href="#" class="active">Requests</a>
-        </nav>
+    <header id="siteHeader"></header>
 
-        <div class="nav-empty"></div>
-    </header>
+    <main id="main">
 
-    <main class="main-content">
-        
         <div class="hero">
             <h1>Available Pickup Requests</h1>
             <p>Requests posted by fellow students. Click any request to view full pickup, fare, and distance details.</p>
@@ -57,7 +51,7 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹22</span>
                     </div>
-                    <button class="accept-btn">Accept Request</button>
+                    <button type="button" class="accept-btn">Accept Request</button>
                 </div>
             </details>
 
@@ -87,7 +81,7 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹20</span>
                     </div>
-                    <button class="accept-btn">Accept Request</button>
+                    <button type="button" class="accept-btn">Accept Request</button>
                 </div>
             </details>
 
@@ -117,7 +111,7 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹25</span>
                     </div>
-                    <button class="accept-btn">Accept Request</button>
+                    <button type="button" class="accept-btn">Accept Request</button>
                 </div>
             </details>
 
@@ -147,7 +141,7 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹20</span>
                     </div>
-                    <button class="accept-btn">Accept Request</button>
+                    <button type="button" class="accept-btn">Accept Request</button>
                 </div>
             </details>
 
@@ -177,49 +171,16 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹22</span>
                     </div>
-                    <button class="accept-btn">Accept Request</button>
+                    <button type="button" class="accept-btn">Accept Request</button>
                 </div>
             </details>
 
         </div>
     </main>
 
-    <footer class="footer">
-        <div class="footer-cta">
-            <h2>Need someone to collect your parcel?</h2>
-            <p>Find a student who is already on the move.</p>
-            <button class="footer-btn">Get Started</button>
-        </div>
+    <div id="siteFooter"></div>
 
-        <div class="footer-links">
-            <div>
-                <h3>CampusCarry</h3>
-                <p>Making campus deliveries easier, one parcel at a time.</p>
-            </div>
-
-            <div>
-                <h4>PLATFORM</h4>
-                <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">How It Works</a></li>
-                    <li><a href="#">About Us</a></li>
-                </ul>
-            </div>
-
-            <div>
-                <h4>STUDENTS</h4>
-                <ul>
-                    <li><a href="#">Login</a></li>
-                    <li><a href="#">Sign Up</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="copyright">
-            © 2026 CampusCarry. Web Programming Project.
-        </div>
-    </footer>
-
+    <!-- layout.js builds the shared navbar + footer. -->
+    <script src="layout.js"></script>
 </body>
 </html>
