@@ -8,30 +8,7 @@
 </head>
 <body>
 
-    <header>
-        <nav class="navbar" aria-label="Main navigation">
-            <div class="logo">
-                <a href="home.html"><b>CampusCarry</b></a>
-            </div>
-
-            <!-- Menu button: only visible on small screens (see nav.js) -->
-            <button type="button" class="navToggle" id="navToggle"
-                    aria-expanded="false" aria-controls="navMenu">
-                <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
-                <span id="navToggleText">Menu</span>
-            </button>
-
-            <ul class="navLinks" id="navMenu">
-                <li><a href="home.html">Home</a></li>
-                <li><a href="h_about.html" class="activeLink" aria-current="page">About Us</a></li>
-                <li><a href="how-it-works.html">How It Works</a></li>
-                <li><a href="tracking.html">Track Parcel</a></li>
-                <li><a href="dashboard.html">Dashboard</a></li>
-            </ul>
-
-            <a href="login.html" class="btnNav">Sign Up</a>
-        </nav>
-    </header>
+    <header id="siteHeader"></header>
 
     <main id="main">
 
@@ -122,8 +99,7 @@
             </p>
         </section>
 
-        
-        <!-- FAQ (interactive - see about.js) -->
+        <!-- FAQ (interactive - see faq.js) -->
         <section class="section faqSection" id="faq">
             <div class="pillWrap">
                 <span class="pillTag">FAQ</span>
@@ -217,35 +193,9 @@
 
     </main>
 
-    <footer class="siteFooter">
-        <div class="footerLayout">
-            <div class="footerCol footerBrand">
-                <h4><b>CampusCarry</b></h4>
-                <p>Student-to-student parcel delivery for the BML Munjal University community.</p>
-            </div>
+    <div id="siteFooter"></div>
 
-            <div class="footerCol">
-                <h4>PLATFORM</h4>
-                <a href="home.html">Home</a>
-                <a href="about.html">About Us</a>
-                <a href="how-it-works.html">How It Works</a>
-                <a href="tracking.html">Track Parcel</a>
-            </div>
-
-            <div class="footerCol">
-                <h4>GET STARTED</h4>
-                <a href="login.html">Request Delivery</a>
-                <a href="login.html">Become a Runner</a>
-                <a href="login.html">Sign Up</a>
-            </div>
-        </div>
-
-        <div class="footerBottom">
-            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
-        </div>
-    </footer>
-
-    <script src="nav.js"></script>
-    <script src="about.js"></script>
+    <script src="layout.js"></script>
+    <script src="faq.js"></script>
 </body>
 </html>

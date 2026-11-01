@@ -1,114 +1,94 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>How It Works</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="how-it-works.css"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - CampusCarry</title>
+    <!-- All styles for this page (journey, steps, cards, CTA) live in h_style.css -->
+    <link rel="stylesheet" href="h_style.css">
 </head>
-
 <body>
-<nav class="navbar">
-            <div class="logo">
-                <b>CampusCarry</b>
-            </div>
 
-            <ul class="navLinks">
-                <li><a href="home.html">Home</a></li>
-                <!-- 
-                    The How it works link is marked with class="activeLink"
-                    to show the user which page they are currently on,
-                    matching the highlighted "Home" pill in the
-                    reference screenshot.
-                -->
-                <li><a href="about.html" >About Us</a></li>
-                <li><a href="how-it-works.html" class="activeLink">How It Works</a></li>
-            </ul>
+    <header id="siteHeader"></header>
 
-            <a href="login.html" class="btnGetStarted">Sign Up</a>
-        </nav>
+    <main id="main">
+
         <section class="journey">
+            <div class="journeyInner">
 
-            <div class="journeyHeader">
+                <div class="journeyHeader">
+                    <p class="sectionLabel">The Journey</p>
 
-                <p class="sectionLabel">THE JOURNEY</p>
+                    <h1>Request &rarr; Accept &rarr; Collect &rarr; Deliver &amp; Earn</h1>
 
-                <h1>Request → Accept → Chat → Pickup<br>
-             → Track → Deliver → Earn</h1>
-
-                <p class="subtitle">
-                    Four simple steps from a busy student to a delivered parcel.
-                </p>
-
-            </div>
-
-            <div class="steps">
-
-                <div class="stepCard">
-
-                    <p class="stepNumber">01</p>
-
-                    <h2>Create a Request</h2>
-
-                    <p>
-                        Enter the parcel collection point, delivery location,
-                        parcel details, preferred time and offered reward.
+                    <p class="subtitle">
+                        Four simple steps from a busy student to a delivered parcel.
                     </p>
-
                 </div>
 
-                <p class="arrow">→</p>
+                <div class="steps">
 
+                    <article class="stepCard">
+                        <p class="stepNumber">01</p>
+                        <h2>Create a Request</h2>
+                        <p>
+                            Enter the parcel collection point, delivery location,
+                            parcel details, preferred time and offered reward.
+                        </p>
+                    </article>
 
-                <div class="stepCard">
+                    <p class="arrow" aria-hidden="true">&rarr;</p>
 
-                    <p class="stepNumber">02</p>
+                    <article class="stepCard">
+                        <p class="stepNumber">02</p>
+                        <h2>A Campus Runner Accepts</h2>
+                        <p>
+                            A student who is already heading in that direction
+                            accepts your delivery request.
+                        </p>
+                    </article>
 
-                    <h2>A Campus Runner Accepts</h2>
+                    <p class="arrow" aria-hidden="true">&rarr;</p>
 
-                    <p>
-                        A student who is already heading in that direction
-                        accepts your delivery request.
-                    </p>
+                    <article class="stepCard">
+                        <p class="stepNumber">03</p>
+                        <h2>Connect &amp; Collect</h2>
+                        <p>
+                            Connect with your Campus Runner, coordinate the
+                            handoff and collect the parcel.
+                        </p>
+                    </article>
 
-                </div>
+                    <p class="arrow" aria-hidden="true">&rarr;</p>
 
-
-                <p class="arrow">→</p>
-
-
-                <div class="stepCard">
-
-                    <p class="stepNumber">03</p>
-
-                    <h2>Connect &amp; Collect</h2>
-
-                    <p>
-                      Connect with your Campus Runner, coordinate the
-                      handoff and collect the parcel.
-                    </p>
-
-                </div>
-
-
-                <p class="arrow">→</p>
-
-                <div class="stepCard">
-
-                    <p class="stepNumber">04</p>
-
-                    <h2>Deliver &amp; Earn</h2>
-
-                    <p>
-                        The parcel is delivered safely and the Campus Runner
-                        receives the offered reward.
-                    </p>
+                    <article class="stepCard">
+                        <p class="stepNumber">04</p>
+                        <h2>Deliver &amp; Earn</h2>
+                        <p>
+                            The parcel is delivered safely and the Campus Runner
+                            receives the offered reward.
+                        </p>
+                    </article>
 
                 </div>
 
             </div>
-
         </section>
-</body>
 
+        <!-- CTA (same markup as the About and Home pages) -->
+        <section class="section ctaSection">
+            <h2>Ready to try it?</h2>
+            <p>Join as a requester, a runner, or both.</p>
+            <div class="ctaButtons">
+                <a href="login.html" class="btnPrimary">Get Started</a>
+                <a href="request.html" class="btnSecondary">Browse Requests</a>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="siteFooter"></div>
+
+    <script src="layout.js"></script>
+</body>
 </html>

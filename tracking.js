@@ -1,5 +1,5 @@
 // tracking.js - CampusCarry Parcel Tracking (plain JavaScript, sample data only)
-// The mobile menu is in nav.js.
+// The navbar, footer and mobile menu are in layout.js.
 
 // ---------- 1. DATA ----------
 const statuses = ["Waiting for Delivery Partner", "Accepted", "Picked Up", "Out for Delivery", "Delivered"];

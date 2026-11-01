@@ -1,374 +1,246 @@
-/* ==========================================================================
-   CampusCarry - Laptop Login Page Stylesheet
-   Color Tokens:
-   - Primary Navy: #363B8B
-   - Dark Navy: #0B0E52
-   - Coral Red: #D80027 / #F26B6B
-   - Gold Accent: #FEE180
-   - Subtitle Muted: #53677A
-   ========================================================================== */
+/* ==========================================================
+   login-style.css - styles for login.html ONLY.
+   Navbar, footer, buttons and colours come from h_style.css.
+   Do NOT style body, header, nav, footer, a or * in this file
+   (apart from the page background and layout on <body> below).
+   ========================================================== */
 
-/* --------------------------------------------------------------------------
-   0. RESET & BOX MODEL
-   -------------------------------------------------------------------------- */
-* {
-    box-sizing: border-box; /* BOX MODEL: Prevents padding from breaking layout width */
-    margin: 0;
-    padding: 0;
+:root {
+    --gold: #FEE180;   /* used only on the login page */
 }
 
+/* Page background + sticky-footer layout (login page only) */
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #F4F6FB;
-    color: #0B0E52;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-soft);
 }
 
-/* ==========================================================================
-   1. NAVBAR (FLEXBOX) - Matches CampusCarry about.html header
-   ========================================================================== */
-.navbar {
-    display: flex; /* FLEXBOX: Spreads logo, nav links, and button */
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px; /* BOX MODEL: Padding top/bottom & left/right */
-    background-color: #363B8B; /* Primary Navy */
+/* Pure-CSS tab switching: the radios stay in the page (so they work with the
+   keyboard) but are not visible. */
+.tabRadio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.logo {
-    font-size: 22px;
-    color: #FFFFFF;
-}
-
-.navLinks {
-    display: flex; /* FLEXBOX: Horizontal row for nav links */
-    flex-direction: row;
-    align-items: center;
-    gap: 25px;
-    list-style: none;
-}
-
-.navLinks li {
+/* ---------- Centered card ---------- */
+.loginWrapper {
+    flex: 1;
     display: flex;
-}
-
-.navLinks a {
-    text-decoration: none;
-    color: #FFFFFF;
-    padding: 6px 10px;
-    font-size: 15px;
-}
-
-.navLinks a:hover {
-    text-decoration: underline;
-}
-
-.activeLink {
-    color: #FFFFFF;
-    background-color: transparent;
-    border-bottom: 2px solid #FFFFFF; /* BOX MODEL: Underline active tab */
-}
-
-.btnGetStarted {
-    background-color: #FFFFFF;
-    color: #363B8B;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-}
-
-.btnGetStarted:hover {
-    background-color: #EDEEF8;
-}
-
-/* Hide radio inputs used for pure CSS tab switching */
-.tab-radio {
-    display: none;
-}
-
-/* ==========================================================================
-   2. MAIN LAPTOP LOGIN WRAPPER (FLEXBOX & POSITION)
-   ========================================================================== */
-.login-wrapper {
-    flex: 1; /* FLEXBOX: Fills remaining vertical height between header & footer */
-    display: flex; /* FLEXBOX: Centers the login card in the middle of laptop screen */
     justify-content: center;
     align-items: center;
     padding: 50px 20px;
 }
 
-/* Centered Laptop Login Card (POSITION & BOX MODEL) */
-.login-card {
+.loginCard {
+    position: relative;
     width: 100%;
-    max-width: 440px; /* Laptop optimized card width */
-    background-color: #FFFFFF;
-    border-radius: 24px; /* BOX MODEL */
-    box-shadow: 0 15px 35px rgba(11, 14, 82, 0.12);
-    position: relative; /* POSITION: Anchor for header arc and form box */
+    max-width: 440px;
     overflow: hidden;
-    border: 1px solid #E2E8F0;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 15px 35px rgba(11, 14, 82, 0.12);
 }
 
-/* ==========================================================================
-   3. CARD HEADER ARC (POSITION & FLEXBOX)
-   ========================================================================== */
-.card-header-arc {
-    background-color: #363B8B; /* Solid Primary Navy matching navbar */
-    padding: 40px 20px 60px 20px;
-    display: flex; /* FLEXBOX: Centering brand logo */
+/* ---------- Card header arc ---------- */
+.cardHeaderArc {
+    display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom-left-radius: 40% 25px; /* Curved bottom header shape */
+    padding: 40px 20px 60px 20px;
+    background-color: var(--purple);
+    border-bottom-left-radius: 40% 25px;
     border-bottom-right-radius: 40% 25px;
 }
 
-.brand-logo-row {
+.brandLogoRow {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.logo-icon-circle {
+.logoIconCircle {
     width: 42px;
     height: 42px;
-    background-color: #0B0E52;
-    border-radius: 50%;
-    display: flex; /* FLEXBOX: Centering SVG icon */
+    display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #FFFFFF;
+    background-color: var(--purple-deep);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
 }
 
-.brand-title {
-    color: #FFFFFF;
-    font-size: 28px; /* Required Main Heading Size (28–30px) */
-    font-weight: 700; /* Required Bold (700) */
+.brandTitle {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
     line-height: 34px;
 }
 
-.gold-dot {
-    color: #FEE180;
+.goldDot {
+    color: var(--gold);
 }
 
-/* ==========================================================================
-   4. FLOATING FORM BOX (POSITION & BOX MODEL)
-   ========================================================================== */
-.form-box {
-    position: relative; /* POSITION: Pulls form box up over header arc */
-    margin: -40px 25px 30px 25px; /* BOX MODEL: Negative margin pulls up */
-    padding: 24px 20px; /* BOX MODEL */
-    background-color: #FFFFFF;
-    border-radius: 20px;
-    border: 1px solid #E2E8F0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-    z-index: 10; /* POSITION: Keeps card on top of header background */
-    display: flex; /* FLEXBOX */
+/* ---------- Floating form box ---------- */
+.formBox {
+    position: relative;
+    z-index: 10;
+    display: flex;
     flex-direction: column;
+    margin: -40px 25px 30px 25px;
+    padding: 24px 20px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
 }
 
-/* Tab Switcher Pills (FLEXBOX) */
-.tab-pill-row {
-    display: flex; /* FLEXBOX: Splits tab buttons 50/50 */
-    background-color: #FEE180; /* Gold background */
-    border-radius: 25px;
-    padding: 3px;
+.tabPillRow {
+    display: flex;
     margin-bottom: 20px;
+    padding: 3px;
+    background-color: var(--gold);
+    border-radius: var(--radius-pill);
 }
 
-.tab-btn {
-    flex: 1; /* FLEXBOX: 50% width */
-    text-align: center;
+.tabBtn {
+    flex: 1;
     padding: 9px 0;
-    font-size: 13.5px;
-    font-weight: bold;
-    color: #363B8B;
-    border-radius: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--purple);
+    border-radius: var(--radius-pill);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Auth Form (FLEXBOX & BOX MODEL) */
-.auth-form {
-    display: flex; /* FLEXBOX: Vertical column arrangement */
+.authForm {
+    display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.input-field-group {
+.inputFieldGroup {
     display: flex;
     flex-direction: column;
 }
 
-/* Underline inputs */
-.input-underline {
+.inputUnderline {
     width: 100%;
-    padding: 8px 0; /* BOX MODEL */
+    padding: 8px 0;
     border: none;
-    border-bottom: 1.5px solid #CBD5E1; /* BOX MODEL: Underline style border */
-    font-size: 13.5px;
-    color: #0B0E52;
-    outline: none;
+    border-bottom: 1.5px solid var(--border);
+    background-color: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--purple-deep);
     transition: border-color 0.2s ease;
 }
 
-.input-underline:focus {
-    border-bottom-color: #363B8B; /* Navy focus underline */
+.inputUnderline:focus {
+    border-bottom-color: var(--purple);
 }
 
-/* Forgot Password link */
-.forgot-row {
-    display: flex; /* FLEXBOX: Align right */
+.forgotRow {
+    display: flex;
     justify-content: flex-end;
 }
 
-.forgot-link {
-    font-size: 12.5px;
-    color: #53677A; /* Required Subtitle color */
+.forgotLink {
+    font-size: 13px;
+    color: var(--muted);
     text-decoration: none;
 }
 
-.forgot-link:hover {
-    color: #363B8B;
+.forgotLink:hover {
+    color: var(--purple);
     text-decoration: underline;
 }
 
-/* Submit Button */
-.submit-btn {
+/* Full-width version of the shared .btnPrimary */
+.submitBtn {
     width: 100%;
-    padding: 11px 0; /* BOX MODEL */
+    justify-content: center;
     margin-top: 6px;
-    background-color: #363B8B; /* Primary Navy Blue Button */
-    color: #FFFFFF;
-    border: none;
-    border-radius: 25px;
-    font-size: 14.5px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
 }
 
-.submit-btn:hover {
-    background-color: #0B0E52;
-}
-
-/* OR Divider (FLEXBOX) */
-.or-divider {
-    display: flex; /* FLEXBOX */
+.orDivider {
+    display: flex;
     justify-content: center;
     align-items: center;
     margin: 14px 0 10px 0;
     font-size: 11px;
-    color: #53677A;
-    font-weight: bold;
+    font-weight: 700;
+    color: var(--muted);
 }
 
-/* Social Buttons Row (FLEXBOX) */
-.social-btn-row {
-    display: flex; /* FLEXBOX */
+.socialBtnRow {
+    display: flex;
     justify-content: center;
     gap: 14px;
 }
 
-.social-btn {
+.socialBtn {
     width: 38px;
     height: 38px;
-    background-color: #FFFFFF;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    display: flex; /* FLEXBOX: Centering SVG icon */
+    display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: transform 0.2s ease;
 }
 
-.social-btn:hover {
+.socialBtn:hover {
     transform: scale(1.08);
 }
 
-/* ==========================================================================
-   5. PURE CSS TAB SWITCHING (LOG IN VS SIGN UP)
-   ========================================================================== */
-#tab-login:checked ~ .login-wrapper .tab-pill-row label[for="tab-login"] {
-    background-color: #363B8B;
-    color: #FFFFFF;
+/* ---------- Pure CSS tab switching (Log In vs Sign Up) ---------- */
+#tabLogin:checked ~ .loginWrapper label[for="tabLogin"],
+#tabSignup:checked ~ .loginWrapper label[for="tabSignup"] {
+    background-color: var(--purple);
+    color: #ffffff;
 }
 
-#tab-signup:checked ~ .login-wrapper .tab-pill-row label[for="tab-signup"] {
-    background-color: #363B8B;
-    color: #FFFFFF;
+/* keyboard focus ring on the active tab */
+#tabLogin:focus-visible ~ .loginWrapper label[for="tabLogin"],
+#tabSignup:focus-visible ~ .loginWrapper label[for="tabSignup"] {
+    outline: 3px solid var(--purple);
+    outline-offset: 2px;
 }
 
-#tab-login:checked ~ .login-wrapper .signup-only {
+#tabLogin:checked ~ .loginWrapper .signupOnly {
     display: none;
 }
 
-#tab-signup:checked ~ .login-wrapper .signup-only {
+#tabSignup:checked ~ .loginWrapper .signupOnly {
     display: flex;
 }
 
-#tab-signup:checked ~ .login-wrapper .forgot-row {
+#tabSignup:checked ~ .loginWrapper .forgotRow {
     display: none;
 }
 
-#tab-signup:checked ~ .login-wrapper .submit-btn {
+/* The button text switches from "Log In" to "Sign Up" with CSS only */
+#tabSignup:checked ~ .loginWrapper .submitBtn {
     font-size: 0;
 }
 
-#tab-signup:checked ~ .login-wrapper .submit-btn::after {
+#tabSignup:checked ~ .loginWrapper .submitBtn::after {
     content: "Sign Up";
-    font-size: 14.5px;
-}
-
-/* ==========================================================================
-   6. FOOTER (CSS GRID & FLEXBOX) - Identical to about.html
-   ========================================================================== */
-footer {
-    background-color: #363B8B;
-    padding: 30px;
-    color: #FFFFFF;
-}
-
-.footerColumns {
-    display: flex; /* FLEXBOX: Spreads 3 footer columns across laptop screen */
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.footerColumn {
-    display: flex; /* FLEXBOX: Vertical column */
-    flex-direction: column;
-    gap: 8px;
-}
-
-.footerColumn h4 {
-    color: #FFFFFF;
-    font-size: 15px;
-}
-
-.footerColumn p, .footerColumn a {
-    color: #FFFFFF;
-    text-decoration: none;
     font-size: 14px;
 }
 
-.footerColumn a:hover {
-    text-decoration: underline;
-}
-
-.footerBottom {
-    display: flex; /* FLEXBOX: Centering copyright note */
-    justify-content: center;
-    padding-top: 20px;
-}
-
-.footerBottom p {
-    color: #FFFFFF;
-    font-size: 13px;
+@media (prefers-reduced-motion: reduce) {
+    .tabBtn,
+    .inputUnderline,
+    .socialBtn {
+        transition: none;
+    }
 }

@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Requests - CampusCarry</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- h_style.css = shared navbar, footer, buttons, colours (must come first) -->
     <link rel="stylesheet" href="h_style.css">
     <!-- request_style.css = this page only -->
@@ -16,25 +13,25 @@
 
     <header id="siteHeader"></header>
 
-    <main id="main">
+    <main id="main" class="requestPage">
 
-        <div class="hero">
+        <div class="requestIntro">
             <h1>Available Pickup Requests</h1>
             <p>Requests posted by fellow students. Click any request to view full pickup, fare, and distance details.</p>
         </div>
 
-        <div class="request-list">
+        <div class="requestList">
 
-            <details class="request-item">
-                <summary class="request-header">
-                    <span class="title">Parcel Request #1042</span>
-                    <span class="route">📦 Parcel Centre ➔ 🏠 Hostel Block A</span>
-                    <div class="price-box">
+            <details class="requestItem">
+                <summary class="requestHeader">
+                    <span class="requestTitle">Parcel Request #1042</span>
+                    <span class="requestRoute">📦 Parcel Centre ➔ 🏠 Hostel Block A</span>
+                    <span class="priceBox">
                         <span class="price">₹22</span>
-                        <span class="arrow">▼</span>
-                    </div>
+                        <span class="chevron" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
-                <div class="details-box">
+                <div class="detailsBox">
                     <div class="row">
                         <span class="label">Pickup Location:</span>
                         <span class="val">📦 Parcel Centre</span>
@@ -51,20 +48,21 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹22</span>
                     </div>
-                    <button type="button" class="accept-btn">Accept Request</button>
+                    <!-- Goes to login for now; link to the real accept flow in Phase 3 -->
+                    <a href="login.html" class="btnPrimary acceptBtn">Accept Request</a>
                 </div>
             </details>
 
-            <details class="request-item">
-                <summary class="request-header">
-                    <span class="title">Parcel Request #1043</span>
-                    <span class="route">📦 Parcel Centre ➔ 📚 Library — Hall 2</span>
-                    <div class="price-box">
+            <details class="requestItem">
+                <summary class="requestHeader">
+                    <span class="requestTitle">Parcel Request #1043</span>
+                    <span class="requestRoute">📦 Parcel Centre ➔ 📚 Library — Hall 2</span>
+                    <span class="priceBox">
                         <span class="price">₹20</span>
-                        <span class="arrow">▼</span>
-                    </div>
+                        <span class="chevron" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
-                <div class="details-box">
+                <div class="detailsBox">
                     <div class="row">
                         <span class="label">Pickup Location:</span>
                         <span class="val">📦 Parcel Centre</span>
@@ -81,20 +79,21 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹20</span>
                     </div>
-                    <button type="button" class="accept-btn">Accept Request</button>
+                    <!-- Goes to login for now; link to the real accept flow in Phase 3 -->
+                    <a href="login.html" class="btnPrimary acceptBtn">Accept Request</a>
                 </div>
             </details>
 
-            <details class="request-item">
-                <summary class="request-header">
-                    <span class="title">Parcel Request #1044</span>
-                    <span class="route">📦 Main Gate Desk ➔ 🏠 Hostel Block C</span>
-                    <div class="price-box">
+            <details class="requestItem">
+                <summary class="requestHeader">
+                    <span class="requestTitle">Parcel Request #1044</span>
+                    <span class="requestRoute">📦 Main Gate Desk ➔ 🏠 Hostel Block C</span>
+                    <span class="priceBox">
                         <span class="price">₹25</span>
-                        <span class="arrow">▼</span>
-                    </div>
+                        <span class="chevron" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
-                <div class="details-box">
+                <div class="detailsBox">
                     <div class="row">
                         <span class="label">Pickup Location:</span>
                         <span class="val">📦 Main Gate Desk</span>
@@ -111,20 +110,21 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹25</span>
                     </div>
-                    <button type="button" class="accept-btn">Accept Request</button>
+                    <!-- Goes to login for now; link to the real accept flow in Phase 3 -->
+                    <a href="login.html" class="btnPrimary acceptBtn">Accept Request</a>
                 </div>
             </details>
 
-            <details class="request-item">
-                <summary class="request-header">
-                    <span class="title">Parcel Request #1045</span>
-                    <span class="route">📦 Parcel Centre ➔ ☕ Cafeteria</span>
-                    <div class="price-box">
+            <details class="requestItem">
+                <summary class="requestHeader">
+                    <span class="requestTitle">Parcel Request #1045</span>
+                    <span class="requestRoute">📦 Parcel Centre ➔ ☕ Cafeteria</span>
+                    <span class="priceBox">
                         <span class="price">₹20</span>
-                        <span class="arrow">▼</span>
-                    </div>
+                        <span class="chevron" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
-                <div class="details-box">
+                <div class="detailsBox">
                     <div class="row">
                         <span class="label">Pickup Location:</span>
                         <span class="val">📦 Parcel Centre</span>
@@ -141,20 +141,21 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹20</span>
                     </div>
-                    <button type="button" class="accept-btn">Accept Request</button>
+                    <!-- Goes to login for now; link to the real accept flow in Phase 3 -->
+                    <a href="login.html" class="btnPrimary acceptBtn">Accept Request</a>
                 </div>
             </details>
 
-            <details class="request-item">
-                <summary class="request-header">
-                    <span class="title">Parcel Request #1046</span>
-                    <span class="route">🏛️ Academic Reception ➔ ⚽ Sports Complex</span>
-                    <div class="price-box">
+            <details class="requestItem">
+                <summary class="requestHeader">
+                    <span class="requestTitle">Parcel Request #1046</span>
+                    <span class="requestRoute">🏛️ Academic Reception ➔ ⚽ Sports Complex</span>
+                    <span class="priceBox">
                         <span class="price">₹22</span>
-                        <span class="arrow">▼</span>
-                    </div>
+                        <span class="chevron" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
-                <div class="details-box">
+                <div class="detailsBox">
                     <div class="row">
                         <span class="label">Pickup Location:</span>
                         <span class="val">🏛️ Academic Reception</span>
@@ -171,7 +172,8 @@
                         <span class="label">Reward / Fare:</span>
                         <span class="val fare">₹22</span>
                     </div>
-                    <button type="button" class="accept-btn">Accept Request</button>
+                    <!-- Goes to login for now; link to the real accept flow in Phase 3 -->
+                    <a href="login.html" class="btnPrimary acceptBtn">Accept Request</a>
                 </div>
             </details>
 

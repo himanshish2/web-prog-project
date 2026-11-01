@@ -9,6 +9,9 @@
     --radius-sm: 6px;
     --radius-lg: 20px;
     --radius-pill: 999px;
+
+    --shadow: 0 1px 4px rgba(11, 14, 82, 0.05);
+    --max-w: 1160px;
 }
 
 /* Reset & Base Defaults */
@@ -20,6 +23,7 @@
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px;   /* fixed navbar height + a little air */
 }
 
 body {
@@ -87,7 +91,7 @@ select:focus-visible {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 25px;
+    gap: 16px;
 }
 
 .navLinks li {
@@ -117,6 +121,12 @@ select:focus-visible {
 
 .navToggle:hover {
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Links to pages that are not built yet (aria-disabled="true") */
+a[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.7;
 }
 
 /* Buttons */
@@ -431,6 +441,11 @@ select:focus-visible {
     background-color: var(--bg-soft);
 }
 
+.journeyInner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+}
+
 .journeyHeader {
     margin-bottom: 40px;
 }
@@ -438,10 +453,11 @@ select:focus-visible {
 .sectionLabel {
     color: var(--purple);
     background-color: var(--purple-light);
-    padding: 8px 16px;
+    padding: 6px 16px;
     border-radius: var(--radius-pill);
     display: inline-block;
     margin-bottom: 15px;
+    font-size: 12px;
 }
 
 .journey h1 {
@@ -643,6 +659,20 @@ select:focus-visible {
     .heroRight {
         width: 100%;
         max-width: 420px;
+    }
+
+    .steps {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stepCard {
+        min-height: 0;
+    }
+
+    .arrow {
+        align-self: center;
+        transform: rotate(90deg);
     }
 }
 

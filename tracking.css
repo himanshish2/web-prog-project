@@ -324,10 +324,6 @@ dd {
     font-weight: 600;
 }
 
-.timelineItem.isNotReached .timelineLabel {
-    text-decoration: line-through;
-}
-
 .timelineItem.isCancelled .timelineMarker {
     background-color: var(--danger);
     border-color: var(--danger);

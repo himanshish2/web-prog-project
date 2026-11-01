@@ -3,132 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusCarry — BMU Campus Parcel Delivery</title>
+    <title>Home - CampusCarry</title>
+    <!-- h_style.css = shared navbar, footer, buttons, hero, FAQ, CTA (must come first) -->
+    <link rel="stylesheet" href="h_style.css">
+    <!-- home.css = this page only -->
     <link rel="stylesheet" href="home.css">
 </head>
 <body>
 
-    <!-- =====================================================
-         NAVIGATION
-    ===================================================== -->
-    <header class="siteHeader">
-        <nav class="navbar">
-            <div class="logo">
-                <a href="home.html"><b>CampusCarry</b></a>
-            </div>
+    <header id="siteHeader"></header>
 
-            <ul class="navLinks">
-                <li><a href="home.html" class="activeLink">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-            </ul>
+    <main id="main">
 
-            <a href="#" class="btnNav">Sign Up</a>
-        </nav>
-    </header>
+        <!-- HERO (same markup as the About page hero) -->
+        <section class="section heroSection">
+            <div class="heroSplit">
 
-    <main>
+                <div class="heroLeft">
+                    <div class="heroPillWrap">
+                        <span class="heroPill">BMU Campus Delivery</span>
+                    </div>
 
-        <!-- =====================================================
-             HERO
-        ===================================================== -->
-        <section class="hero">
-            <div class="container heroGrid">
-                
-                <div class="heroCopy">
-                    <p class="sectionLabel">BMU Campus Delivery</p>
-                    
-                    <h1 class="heroTitle">
-                        Your parcel is already at BMU.
-                        <span class="heroSubtitle">Let a student bring it the rest of the way.</span>
-                    </h1>
+                    <h1 class="heroHeading">Your parcel is already at BMU.</h1>
 
-                    <p class="heroLead">
-                        CampusCarry connects students who need a parcel collected with students already moving between BMU's academic buildings, library, hostels and other campus facilities.
+                    <p class="heroSubtitle">
+                        Let a student bring it the rest of the way. CampusCarry connects
+                        students who need a parcel collected with students already moving
+                        between BMU's academic buildings, library, hostels and other
+                        campus facilities.
                     </p>
 
                     <div class="heroActions">
-                        <a href="#" class="btnPrimary">Request a delivery</a>
+                        <!-- Create-request page is being built: not linked yet -->
+                        <a href="#" class="btnPrimary" aria-disabled="true" title="Coming soon">Request a delivery</a>
                         <a href="#runner" class="btnSecondary">Become a runner</a>
                     </div>
                 </div>
 
-                <div class="heroVisual">
-                    <div class="imageFrame">
-                        <img src="5b26235d-8107-4193-b206-2f32f9f5fd5f.png"
-                             alt="Student handing a parcel to another student on campus"
-                             class="heroImage">
-                        <div class="imageCaption">
-                            <span class="captionLocation">Campus delivery point &rarr; Hostels</span>
-                            <span class="captionStatus">Peer handoff</span>
-                        </div>
+                <div class="heroRight">
+                    <img src="5b26235d-8107-4193-b206-2f32f9f5fd5f.png"
+                         alt="Student handing a parcel to another student on campus"
+                         width="520" height="347" class="heroImage">
+                    <div class="heroPin" aria-hidden="true"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- THE CONCEPT -->
+        <section class="homeSection">
+            <div class="container coreIdeaGrid">
+
+                <div class="coreIdeaText">
+                    <p class="sectionLabel">The Concept</p>
+                    <h2 class="sectionHeading">Someone is already going there.</h2>
+                    <p class="sectionBody">
+                        Students at BMU already move between classes, the library, hostels, cafeteria and other campus facilities throughout the day.
+                    </p>
+                    <p class="sectionBody">
+                        A parcel may be waiting at a campus delivery point while the student who needs it is somewhere else on campus.
+                    </p>
+                    <p class="sectionBody">
+                        CampusCarry connects those two journeys.
+                    </p>
+                </div>
+
+                <div class="logisticsDiagram">
+                    <div class="diagramRow">
+                        <span class="diagramStep">The Need</span>
+                        <h3 class="diagramTitle">Parcel at Delivery Point</h3>
+                        <p class="diagramText">A student is attending classes at the Academic Block while an incoming parcel arrives at a campus collection area.</p>
+                    </div>
+
+                    <div class="diagramDivider"></div>
+
+                    <div class="diagramRow">
+                        <span class="diagramStep">The Route</span>
+                        <h3 class="diagramTitle">Student Walking Nearby</h3>
+                        <p class="diagramText">Another BMU student is already walking past that area on their way back to the hostels or dining facilities.</p>
+                    </div>
+
+                    <div class="diagramDivider"></div>
+
+                    <div class="diagramRow diagramRowAccent">
+                        <span class="diagramStep">The Connection</span>
+                        <h3 class="diagramTitle">Campus Delivery Completed</h3>
+                        <p class="diagramText">The parcel travels along an existing walking journey. The recipient receives their parcel, and the runner earns a peer reward.</p>
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- =====================================================
-             THE CONCEPT (NEED & ROUTE)
-        ===================================================== -->
-        <section class="coreIdeaSection">
+        <!-- HOW IT WORKS (short version; full page is how-it-works.html) -->
+        <section class="homeSection processSection" id="how-it-works">
             <div class="container">
-                <div class="coreIdeaGrid">
-                    
-                    <div class="coreIdeaText">
-                        <p class="sectionLabel">The Concept</p>
-                        <h2 class="sectionHeading">Someone is already going there.</h2>
-                        <p class="sectionBody">
-                            Students at BMU already move between classes, the library, hostels, cafeteria and other campus facilities throughout the day.
-                        </p>
-                        <p class="sectionBody">
-                            A parcel may be waiting at a campus delivery point while the student who needs it is somewhere else on campus.
-                        </p>
-                        <p class="sectionBody">
-                            CampusCarry connects those two journeys.
-                        </p>
-                    </div>
 
-                    <div class="logisticsDiagram">
-                        <div class="diagramRow">
-                            <div class="diagramBlock">
-                                <span class="diagramStep">The Need</span>
-                                <h3 class="diagramTitle">Parcel at Delivery Point</h3>
-                                <p class="diagramText">A student is attending classes at the Academic Block while an incoming parcel arrives at a campus collection area.</p>
-                            </div>
-                        </div>
-
-                        <div class="diagramDivider"></div>
-
-                        <div class="diagramRow">
-                            <div class="diagramBlock">
-                                <span class="diagramStep">The Route</span>
-                                <h3 class="diagramTitle">Student Walking Nearby</h3>
-                                <p class="diagramText">Another BMU student is already walking past that area on their way back to the hostels or dining facilities.</p>
-                            </div>
-                        </div>
-
-                        <div class="diagramDivider"></div>
-
-                        <div class="diagramRow">
-                            <div class="diagramBlock diagramBlockAccent">
-                                <span class="diagramStep">The Connection</span>
-                                <h3 class="diagramTitle">Campus Delivery Completed</h3>
-                                <p class="diagramText">The parcel travels along an existing walking journey. The recipient receives their parcel, and the runner earns a peer reward.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- =====================================================
-             HOW IT WORKS (LINEAR EDITORIAL PROCESS)
-        ===================================================== -->
-        <section class="processSection" id="how-it-works">
-            <div class="container">
-                
                 <div class="sectionHeader">
                     <p class="sectionLabel">Workflow</p>
                     <h2 class="sectionHeading">How It Works</h2>
@@ -142,9 +112,7 @@
                             <div class="stepRule"></div>
                         </div>
                         <h3 class="stepTitle">Request</h3>
-                        <p class="stepText">
-                            Tell us where your parcel needs to be collected and where you need it delivered on campus.
-                        </p>
+                        <p class="stepText">Tell us where your parcel needs to be collected and where you need it delivered on campus.</p>
                     </div>
 
                     <div class="processStep">
@@ -153,9 +121,7 @@
                             <div class="stepRule"></div>
                         </div>
                         <h3 class="stepTitle">Match</h3>
-                        <p class="stepText">
-                            A BMU student already heading that way accepts the delivery.
-                        </p>
+                        <p class="stepText">A BMU student already heading that way accepts the delivery.</p>
                     </div>
 
                     <div class="processStep">
@@ -164,21 +130,19 @@
                             <div class="stepRule"></div>
                         </div>
                         <h3 class="stepTitle">Deliver</h3>
-                        <p class="stepText">
-                            Meet at an agreed campus location and complete the handoff.
-                        </p>
+                        <p class="stepText">Meet at an agreed campus location and complete the handoff.</p>
                     </div>
                 </div>
+
+                <p class="processMore"><a href="how-it-works.html" class="textLink">See the full journey &rarr;</a></p>
 
             </div>
         </section>
 
-        <!-- =====================================================
-             RUNNER / EARNING SECTION
-        ===================================================== -->
-        <section class="runnerSection" id="runner">
+        <!-- RUNNERS -->
+        <section class="homeSection runnerSection" id="runner">
             <div class="container runnerGrid">
-                
+
                 <div class="runnerCopy">
                     <p class="sectionLabelLight">For Student Runners</p>
                     <h2 class="sectionHeadingLight">Already heading that way?</h2>
@@ -203,48 +167,44 @@
                         </div>
                     </div>
 
-                    <a href="#" class="btnLight">Become a runner</a>
+                    <a href="request.html" class="btnPrimary">Browse open requests</a>
                 </div>
 
-                <div class="runnerDiagramColumn">
-                    <div class="routeCard">
-                        <p class="routeCardLabel">Illustrative Campus Route</p>
-                        <div class="routeFlow">
-                            <div class="routeStep">
-                                <span class="routeMarker">A</span>
-                                <div>
-                                    <strong>Academic Block</strong>
-                                    <p>Class ends</p>
-                                </div>
-                            </div>
-                            <div class="routePath"></div>
-                            <div class="routeStep">
-                                <span class="routeMarker">B</span>
-                                <div>
-                                    <strong>Library</strong>
-                                    <p>Student is already heading this way</p>
-                                </div>
-                            </div>
-                            <div class="routePath"></div>
-                            <div class="routeStep">
-                                <span class="routeMarker">C</span>
-                                <div>
-                                    <strong>Hostels</strong>
-                                    <p>Parcel handoff</p>
-                                </div>
+                <div class="routeCard">
+                    <p class="routeCardLabel">Illustrative Campus Route</p>
+                    <div class="routeFlow">
+                        <div class="routeStep">
+                            <span class="routeMarker">A</span>
+                            <div>
+                                <strong>Academic Block</strong>
+                                <p>Class ends</p>
                             </div>
                         </div>
-                        <p class="routeCardNote">Illustrative example of student movement between campus facilities</p>
+                        <div class="routePath"></div>
+                        <div class="routeStep">
+                            <span class="routeMarker">B</span>
+                            <div>
+                                <strong>Library</strong>
+                                <p>Student is already heading this way</p>
+                            </div>
+                        </div>
+                        <div class="routePath"></div>
+                        <div class="routeStep">
+                            <span class="routeMarker">C</span>
+                            <div>
+                                <strong>Hostels</strong>
+                                <p>Parcel handoff</p>
+                            </div>
+                        </div>
                     </div>
+                    <p class="routeCardNote">Illustrative example of student movement between campus facilities</p>
                 </div>
 
             </div>
         </section>
 
-        <!-- =====================================================
-             CAMPUS DELIVERY NETWORK
-        ===================================================== -->
-        <section class="networkSection">
+        <!-- CAMPUS DELIVERY NETWORK -->
+        <section class="homeSection">
             <div class="container">
                 <div class="sectionHeader">
                     <p class="sectionLabel">Campus Delivery Network</p>
@@ -307,103 +267,104 @@
             </div>
         </section>
 
-        <!-- =====================================================
-             FAQ
-        ===================================================== -->
-        <section class="faqSection">
+        <!-- FAQ (same markup + faq.js as the About page) -->
+        <section class="homeSection faqSection" id="faq">
             <div class="container faqGrid">
-                
+
                 <div class="faqInfo">
                     <p class="sectionLabel">FAQ</p>
                     <h2 class="sectionHeading">Frequently asked questions</h2>
                     <p class="sectionBody">Common questions about parcel requests, delivery handoffs, and runner coordination at BMU.</p>
                 </div>
 
-                <div class="faqAccordion">
-                    <details class="faqDetails">
-                        <summary class="faqSummary">How does a parcel handoff work?</summary>
-                        <div class="faqContent">
-                            <p>Requesters and runners coordinate a convenient meeting point on campus — such as outside an academic block, near the hostels, or by the library. Both students verify the package before completing the handoff.</p>
-                        </div>
-                    </details>
+                <div class="faqList">
 
-                    <details class="faqDetails">
-                        <summary class="faqSummary">Where can parcels be collected?</summary>
-                        <div class="faqContent">
+                    <div class="faqItem">
+                        <h3>
+                            <button type="button" class="faqQuestion" id="faqButton1"
+                                    aria-expanded="false" aria-controls="faqAnswer1">
+                                <span>How does a parcel handoff work?</span>
+                                <span class="faqIcon" aria-hidden="true">+</span>
+                            </button>
+                        </h3>
+                        <div class="faqAnswer" id="faqAnswer1" role="region" aria-labelledby="faqButton1" hidden>
+                            <p>Requesters and runners coordinate a convenient meeting point on campus, such as outside an academic block, near the hostels, or by the library. Both students verify the package before completing the handoff.</p>
+                        </div>
+                    </div>
+
+                    <div class="faqItem">
+                        <h3>
+                            <button type="button" class="faqQuestion" id="faqButton2"
+                                    aria-expanded="false" aria-controls="faqAnswer2">
+                                <span>Where can parcels be collected?</span>
+                                <span class="faqIcon" aria-hidden="true">+</span>
+                            </button>
+                        </h3>
+                        <div class="faqAnswer" id="faqAnswer2" role="region" aria-labelledby="faqButton2" hidden>
                             <p>Parcels can be collected from designated campus drop-off spots or delivery areas where student shipments arrive.</p>
                         </div>
-                    </details>
+                    </div>
 
-                    <details class="faqDetails">
-                        <summary class="faqSummary">Where can I meet the student delivering my parcel?</summary>
-                        <div class="faqContent">
-                            <p>Handoffs typically happen in open, accessible campus areas — such as hostel entry gates, the cafeteria plaza, or outside lecture halls.</p>
+                    <div class="faqItem">
+                        <h3>
+                            <button type="button" class="faqQuestion" id="faqButton3"
+                                    aria-expanded="false" aria-controls="faqAnswer3">
+                                <span>Where can I meet the student delivering my parcel?</span>
+                                <span class="faqIcon" aria-hidden="true">+</span>
+                            </button>
+                        </h3>
+                        <div class="faqAnswer" id="faqAnswer3" role="region" aria-labelledby="faqButton3" hidden>
+                            <p>Handoffs typically happen in open, accessible campus areas, such as hostel entry gates, the cafeteria plaza, or outside lecture halls.</p>
                         </div>
-                    </details>
+                    </div>
 
-                    <details class="faqDetails">
-                        <summary class="faqSummary">How are delivery rewards determined?</summary>
-                        <div class="faqContent">
+                    <div class="faqItem">
+                        <h3>
+                            <button type="button" class="faqQuestion" id="faqButton4"
+                                    aria-expanded="false" aria-controls="faqAnswer4">
+                                <span>How are delivery rewards determined?</span>
+                                <span class="faqIcon" aria-hidden="true">+</span>
+                            </button>
+                        </h3>
+                        <div class="faqAnswer" id="faqAnswer4" role="region" aria-labelledby="faqButton4" hidden>
                             <p>The student requesting delivery specifies the reward amount when creating the request. Runners review the pickup location, destination, and offered reward before deciding to accept.</p>
                         </div>
-                    </details>
+                    </div>
 
-                    <details class="faqDetails">
-                        <summary class="faqSummary">Can a student both request and deliver parcels?</summary>
-                        <div class="faqContent">
+                    <div class="faqItem">
+                        <h3>
+                            <button type="button" class="faqQuestion" id="faqButton5"
+                                    aria-expanded="false" aria-controls="faqAnswer5">
+                                <span>Can a student both request and deliver parcels?</span>
+                                <span class="faqIcon" aria-hidden="true">+</span>
+                            </button>
+                        </h3>
+                        <div class="faqAnswer" id="faqAnswer5" role="region" aria-labelledby="faqButton5" hidden>
                             <p>Yes. Any BMU student can post delivery requests when busy with classes or labs, and accept delivery tasks when walking across campus.</p>
                         </div>
-                    </details>
+                    </div>
+
                 </div>
 
             </div>
         </section>
 
-        <!-- =====================================================
-             FINAL CALL TO ACTION
-        ===================================================== -->
-        <section class="ctaSection">
-            <div class="container ctaContent">
-                <h2 class="ctaTitle">Need your parcel?</h2>
-                <p class="ctaSubtitle">Someone is already on the move across BMU.</p>
-                <div class="ctaActions">
-                    <a href="#" class="btnPrimary">Request a delivery</a>
-                    <a href="#runner" class="btnSecondaryLight">Become a runner</a>
-                </div>
+        <!-- CTA (same markup as the About page CTA) -->
+        <section class="section ctaSection">
+            <h2>Need your parcel?</h2>
+            <p>Someone is already on the move across BMU.</p>
+            <div class="ctaButtons">
+                <!-- Create-request page is being built: not linked yet -->
+                <a href="#" class="btnPrimary" aria-disabled="true" title="Coming soon">Request a delivery</a>
+                <a href="#runner" class="btnSecondary">Become a runner</a>
             </div>
         </section>
 
     </main>
 
-    <!-- =====================================================
-         FOOTER
-    ===================================================== -->
-    <footer class="siteFooter">
-        <div class="container footerLayout">
-            <div class="footerBrand">
-                <div class="logo"><b>CampusCarry</b></div>
-                <p class="footerDesc">Student-to-student parcel delivery for the BML Munjal University community.</p>
-            </div>
+    <div id="siteFooter"></div>
 
-            <div class="footerLinks">
-                <span class="footerHeading">Platform</span>
-                <a href="home.html">Home</a>
-                <a href="about.html">About Us</a>
-                <a href="#how-it-works">How It Works</a>
-            </div>
-
-            <div class="footerLinks">
-                <span class="footerHeading">Get Started</span>
-                <a href="#">Request Delivery</a>
-                <a href="#runner">Become a Runner</a>
-                <a href="#">Sign Up</a>
-            </div>
-        </div>
-
-        <div class="container footerBottom">
-            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
-        </div>
-    </footer>
-
+    <script src="layout.js"></script>
+    <script src="faq.js"></script>
 </body>
 </html>
