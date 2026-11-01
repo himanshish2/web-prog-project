@@ -1,11 +1,11 @@
 /* ==========================================================================
    CampusCarry - Laptop Login Page Stylesheet
    Color Tokens:
-   - Primary Navy: #363B8B
-   - Dark Navy: #0B0E52
-   - Coral Red: #D80027 / #F26B6B
-   - Gold Accent: #FEE180
-   - Subtitle Muted: #53677A
+- Primary Navy: #363B8B
+- Dark Navy: #0B0E52
+- Coral Red: #D80027 / #F26B6B
+- Gold Accent: #FEE180
+- Subtitle Muted: #53677A
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -27,7 +27,7 @@ body {
 }
 
 /* ==========================================================================
-   1. NAVBAR (FLEXBOX) - Matches CampusCarry about.html header
+1. NAVBAR (FLEXBOX) - Matches CampusCarry about.html header
    ========================================================================== */
 .navbar {
     display: flex; /* FLEXBOX: Spreads logo, nav links, and button */
@@ -326,7 +326,83 @@ body {
 }
 
 /* ==========================================================================
-   6. FOOTER (CSS GRID & FLEXBOX) - Identical to about.html
+   6. NEW USER POPUP MODAL STYLES
+   ========================================================================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(11, 14, 82, 0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-card {
+    background-color: #FFFFFF;
+    width: 90%;
+    max-width: 420px;
+    padding: 30px;
+    border-radius: 16px;
+    text-align: center;
+    border: 2px solid #363B8B;
+    box-shadow: 0 20px 40px rgba(11, 14, 82, 0.25);
+}
+
+.modal-card h3 {
+    color: #0B0E52;
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+.modal-card p {
+    color: #53677A;
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px 18px;
+    border-radius: 25px;
+    font-size: 13.5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.btn-continue {
+    background-color: #363B8B;
+    color: #FFFFFF;
+}
+
+.btn-continue:hover {
+    background-color: #0B0E52;
+}
+
+.btn-nothanks {
+    background-color: #E2E8F0;
+    color: #0B0E52;
+}
+
+.btn-nothanks:hover {
+    background-color: #CBD5E1;
+}
+
+/* ==========================================================================
+   7. FOOTER (CSS GRID & FLEXBOX) - Identical to about.html
    ========================================================================== */
 footer {
     background-color: #363B8B;
