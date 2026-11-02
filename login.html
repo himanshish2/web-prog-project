@@ -12,7 +12,7 @@
 <body>
     <header id="siteHeader"></header>
 
-    <!-- State controller for the Log In / Sign Up tabs (pure CSS).
+    <!-- Tab controller for Log In / Sign Up (pure CSS). login.html#signup opens the Sign Up tab.
          These radios must stay siblings placed BEFORE <main>. -->
     <input type="radio" name="authTab" id="tabLogin" class="tabRadio" checked>
     <input type="radio" name="authTab" id="tabSignup" class="tabRadio">
@@ -44,21 +44,22 @@
                     <label for="tabSignup" class="tabBtn">Sign Up</label>
                 </div>
 
-                <form class="authForm" id="authForm" action="#" method="POST">
+                <form class="authForm" id="authForm" action="#" method="POST" novalidate>
 
                     <div class="inputFieldGroup">
-                        <input type="text" class="inputUnderline" placeholder="Enter email or username"
-                               aria-label="Email or username" autocomplete="username" required>
+                        <input type="email" class="inputUnderline" id="authEmail" placeholder="Email address"
+                               aria-label="Email address" autocomplete="email" required>
                     </div>
 
                     <div class="inputFieldGroup">
-                        <input type="password" class="inputUnderline" placeholder="Password"
+                        <input type="password" class="inputUnderline" id="authPassword" placeholder="Password"
                                aria-label="Password" autocomplete="current-password" required>
                     </div>
 
-                    <!-- Only visible in the Sign Up tab -->
+                    <!-- Only visible in the Sign Up tab. Not "required" in the HTML because it is
+                         hidden on the Log In tab; login.js checks it when signing up. -->
                     <div class="inputFieldGroup signupOnly">
-                        <input type="password" class="inputUnderline" placeholder="Confirm Password"
+                        <input type="password" class="inputUnderline" id="authConfirm" placeholder="Confirm password"
                                aria-label="Confirm password" autocomplete="new-password">
                     </div>
 
@@ -66,7 +67,12 @@
                         <a href="#" class="forgotLink">Forgot Password?</a>
                     </div>
 
-                    <button type="submit" class="btnPrimary submitBtn">Log In</button>
+                    <p class="authMessage" id="authMessage" role="status" aria-live="polite"></p>
+
+                    <button type="submit" class="btnPrimary submitBtn">
+                        <span class="labelLogin">Log In</span>
+                        <span class="labelSignup">Sign Up</span>
+                    </button>
                 </form>
 
                 <div class="orDivider">OR</div>

@@ -18,7 +18,7 @@
 .liveClockBadge {
     padding: 6px 14px;
     background-color: var(--purple);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-sm);
     font-size: 14px;
     font-weight: 700;
     color: #ffffff;
@@ -38,7 +38,7 @@
     padding: 28px;
     background-color: #ffffff;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
 }
 
 .profileCard {

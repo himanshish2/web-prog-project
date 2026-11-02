@@ -35,11 +35,20 @@ function updateClock() {
 // ---------- Profile + earnings ----------
 function loadProfileAndEarnings() {
     const profile = readStorage("studentProfile", null);
+    const user = readStorage("cc_user", null);     // the account that is signed in
+
+    // Name: the registered name if there is one, otherwise the name from sign-in.
+    const signedInName = user ? (user.name || user.email) : "";
+    document.getElementById("profileName").textContent =
+        (profile && profile.studentName) || signedInName || "Student";
+
     if (profile) {
-        document.getElementById("profileName").textContent = profile.studentName;
         document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
         document.getElementById("profileCourse").textContent = profile.courseName;
         document.getElementById("profileBatch").textContent = profile.batch;
+    } else {
+        // Signed in, but the student details have not been filled in yet.
+        document.getElementById("profileNotice").hidden = false;
     }
 
     const completedDeliveries = readStorage("completedDeliveries", []);

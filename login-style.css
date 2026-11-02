@@ -201,7 +201,7 @@ body {
     transform: scale(1.08);
 }
 
-/* ---------- Pure CSS tab switching (Log In vs Sign Up) ---------- */
+/* ---------- Tab highlight (Log In / Sign Up) ---------- */
 #tabLogin:checked ~ .loginWrapper label[for="tabLogin"],
 #tabSignup:checked ~ .loginWrapper label[for="tabSignup"] {
     background-color: var(--purple);
@@ -213,6 +213,11 @@ body {
 #tabSignup:focus-visible ~ .loginWrapper label[for="tabSignup"] {
     outline: 3px solid var(--purple);
     outline-offset: 2px;
+}
+
+/* ---------- Sign Up tab: shows the extra field, swaps labels ---------- */
+.labelSignup {
+    display: none;
 }
 
 #tabLogin:checked ~ .loginWrapper .signupOnly {
@@ -227,14 +232,25 @@ body {
     display: none;
 }
 
-/* The button text switches from "Log In" to "Sign Up" with CSS only */
-#tabSignup:checked ~ .loginWrapper .submitBtn {
-    font-size: 0;
+#tabSignup:checked ~ .loginWrapper .labelLogin {
+    display: none;
 }
 
-#tabSignup:checked ~ .loginWrapper .submitBtn::after {
-    content: "Sign Up";
-    font-size: 14px;
+#tabSignup:checked ~ .loginWrapper .labelSignup {
+    display: inline;
+}
+
+/* ---------- Message under the fields ---------- */
+.authMessage {
+    min-height: 20px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--purple);
+}
+
+.authMessage.isError {
+    color: var(--danger);
+    font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {

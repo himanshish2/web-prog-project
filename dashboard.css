@@ -402,50 +402,6 @@
     color: var(--muted);
 }
 
-/* ---------- Modal ---------- */
-.modalOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(11, 14, 82, 0.45);
-    animation: fadeOverlay 0.2s ease;
-}
-
-.modalOverlay.open {
-    display: flex;
-}
-
-.modalBox {
-    width: 90%;
-    max-width: 440px;
-    padding: 36px;
-    background-color: #ffffff;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    animation: slideUp 0.25s var(--ease);
-}
-
-.modalBox h3 {
-    margin-bottom: 10px;
-    font-size: 20px;
-    color: var(--purple-deep);
-}
-
-.modalBox p {
-    margin-bottom: 28px;
-    font-size: 14px;
-    color: var(--muted);
-}
-
-.modalActions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
 /* ---------- Status stepper (for my-requests) ---------- */
 .stepper {
     display: flex;
@@ -590,16 +546,6 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeOverlay {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-
 .cardAnim {
     animation: cardIn 0.35s var(--ease) both;
 }
@@ -642,10 +588,6 @@
         margin-left: 0;
     }
 
-    .modalBox {
-        padding: 28px 24px;
-    }
-
     .roleCard {
         padding: 32px 24px;
     }
@@ -653,9 +595,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .cardAnim,
-    .alert,
-    .modalOverlay,
-    .modalBox {
+    .alert {
         animation: none;
     }
 

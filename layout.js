@@ -1,21 +1,80 @@
 /* layout.js - one navbar + one footer for every page.
    Edit the links here ONCE and every page updates.
    Every page needs:  <header id="siteHeader"></header>  and  <div id="siteFooter"></div>
-   and this script loaded at the END of <body>. */
+   and this script loaded at the END of <body>.
+
+   Pages that need a signed-in user put  data-auth="required"  on <body>:
+   visitors who are not signed in are sent to login.html. */
 
 const NAV_LINKS = [
     { href: "home.html",         text: "Home" },
-    { href: "h_about.html",        text: "About Us" },
+    { href: "about.html",        text: "About Us" },
     { href: "how-it-works.html", text: "How It Works" },
     { href: "request.html",      text: "Requests" },
-    { href: "tracking.html",     text: "Track Parcel" },
-    { href: "dashboard.html",    text: "Dashboard" }
+    { href: "tracking.html",     text: "Track Parcel" }
 ];
 
-// The "create a request" page is still being built, so "Request Delivery"
-// does not link anywhere yet. When the page exists, change "#" to its filename
-// (for example "create-request.html") and the footer updates on every page.
-const CREATE_REQUEST_HREF = "#";
+// Where "Request Delivery" points. Use "#" to switch the link off while a page
+// is being built; the footer then shows it as "Coming soon".
+const CREATE_REQUEST_HREF = "create-request.html";
+
+// ---------- Signed-in user ----------
+// The signed-in pages save the user under "cc_user" (see app.js / login.js / signup.js).
+function getSignedInUser() {
+    try {
+        return JSON.parse(localStorage.getItem("cc_user"));
+    } catch (error) {
+        return null;
+    }
+}
+
+function isLoggedIn() {
+    return getSignedInUser() !== null;
+}
+
+function escapeHtml(text) {
+    return String(text === undefined || text === null ? "" : text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+// Guard: runs straight away, before the page is drawn.
+if (document.body && document.body.dataset.auth === "required" && !isLoggedIn()) {
+    window.location.replace("login.html");
+}
+
+// ---------- Navbar ----------
+function buildAccountArea() {
+    const user = getSignedInUser();
+
+    // Signed out: the Sign Up button (opens the Sign Up tab on the login page).
+    if (user === null) {
+        return '<a href="login.html#signup" class="btnNav">Sign Up</a>';
+    }
+
+    // Signed in: a profile icon with a small account menu.
+    const who = user.name || user.email || "Student";
+    return `
+        <div class="navProfile">
+            <button type="button" class="navProfileBtn" id="navProfileBtn"
+                    aria-expanded="false" aria-haspopup="true" aria-controls="navProfileMenu"
+                    aria-label="Account menu" title="${escapeHtml(who)}">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+                </svg>
+            </button>
+            <ul class="navProfileMenu" id="navProfileMenu" hidden>
+                <li class="navProfileName">Signed in as<br><strong>${escapeHtml(who)}</strong></li>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+                <li><button type="button" id="navLogout">Log out</button></li>
+            </ul>
+        </div>`;
+}
 
 function buildNavbar(currentPage) {
     let linksHtml = "";
@@ -40,10 +99,11 @@ function buildNavbar(currentPage) {
             ${linksHtml}
         </ul>
 
-        <a href="login.html" class="btnNav">Sign Up</a>
+        ${buildAccountArea()}
     </nav>`;
 }
 
+// ---------- Footer ----------
 function buildFooter() {
     let platformHtml = "";
     for (const link of NAV_LINKS) {
@@ -52,6 +112,10 @@ function buildFooter() {
 
     // While CREATE_REQUEST_HREF is "#", mark the link as not available yet.
     const comingSoon = (CREATE_REQUEST_HREF === "#") ? ' aria-disabled="true" title="Coming soon"' : "";
+
+    const accountLinks = isLoggedIn()
+        ? '<a href="dashboard.html">Dashboard</a><a href="profile.html">My Profile</a>'
+        : '<a href="login.html">Log In</a><a href="login.html#signup">Sign Up</a>';
 
     return `
     <footer class="siteFooter">
@@ -69,8 +133,7 @@ function buildFooter() {
             <div class="footerCol">
                 <h4>GET STARTED</h4>
                 <a href="${CREATE_REQUEST_HREF}"${comingSoon}>Request Delivery</a>
-                <a href="request.html">Become a Runner</a>
-                <a href="login.html">Sign Up</a>
+                ${accountLinks}
             </div>
         </div>
 
@@ -80,7 +143,8 @@ function buildFooter() {
     </footer>`;
 }
 
-// Mobile menu: below 960px the links hide behind a "Menu" button.
+// ---------- Mobile menu ----------
+// Below 960px the links hide behind a "Menu" button.
 // The class names (navReady, menuOpen) are the ones h_style.css expects.
 function setupNavToggle() {
     const navbar = document.querySelector(".navbar");
@@ -125,6 +189,41 @@ function setupNavToggle() {
     });
 }
 
+// ---------- Profile icon menu ----------
+function setupProfileMenu() {
+    const button = document.getElementById("navProfileBtn");
+    const menu = document.getElementById("navProfileMenu");
+    if (!button || !menu) return;
+
+    function setOpen(isOpen) {
+        menu.hidden = !isOpen;
+        button.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    button.addEventListener("click", function () {
+        setOpen(menu.hidden);
+    });
+
+    // Click anywhere else, or press Escape, to close.
+    document.addEventListener("click", function (event) {
+        if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) {
+            setOpen(false);
+        }
+    });
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !menu.hidden) {
+            setOpen(false);
+            button.focus();
+        }
+    });
+
+    // Log out: forget the user and go back to the login page.
+    document.getElementById("navLogout").addEventListener("click", function () {
+        try { localStorage.removeItem("cc_user"); } catch (error) { /* ignore */ }
+        window.location.href = "login.html";
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const currentPage = window.location.pathname.split("/").pop() || "home.html";
 
@@ -135,6 +234,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (footerSlot) footerSlot.innerHTML = buildFooter();
 
     setupNavToggle();
+    setupProfileMenu();
 
     // Links marked aria-disabled="true" point to pages that are not built yet.
     document.addEventListener("click", function (event) {

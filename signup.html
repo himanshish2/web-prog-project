@@ -7,7 +7,7 @@
     <!-- Everything on this page (card, form fields, buttons) comes from h_style.css -->
     <link rel="stylesheet" href="h_style.css">
 </head>
-<body>
+<body data-auth="required">
 
     <header id="siteHeader"></header>
 
@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="formGroup">
-                    <label for="bmuEmail">BMU Email ID</label>
+                    <label for="bmuEmail">Email ID</label>
                     <input type="email" id="bmuEmail" placeholder="student@bmu.edu.in" required>
                 </div>
 
@@ -64,17 +64,6 @@
                     <div class="formGroup">
                         <label for="mobileNo">Mobile Number (10 Digits)</label>
                         <input type="tel" id="mobileNo" pattern="\d{10}" title="Must be 10 digits" placeholder="10-digit mobile number" required>
-                    </div>
-                </div>
-
-                <div class="formRow">
-                    <div class="formGroup">
-                        <label for="signupPassword">Password</label>
-                        <input type="password" id="signupPassword" placeholder="Minimum 6 characters" minlength="6" autocomplete="new-password" required>
-                    </div>
-                    <div class="formGroup">
-                        <label for="signupConfirmPassword">Confirm Password</label>
-                        <input type="password" id="signupConfirmPassword" placeholder="Re-enter password" minlength="6" autocomplete="new-password" required>
                     </div>
                 </div>
 

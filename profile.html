@@ -9,7 +9,7 @@
     <!-- profile.css = this page only -->
     <link rel="stylesheet" href="profile.css">
 </head>
-<body>
+<body data-auth="required">
 
     <header id="siteHeader"></header>
 
@@ -37,6 +37,10 @@
                     </div>
                 </div>
 
+                <p class="formNotice" id="profileNotice" hidden>
+                    Your student details are missing. <a href="signup.html">Complete your registration</a>.
+                </p>
+
                 <div class="earningsBanner">
                     <span class="earningsLabel">Personal Earnings</span>
                     <span class="earningsAmount" id="totalEarnings">&#8377;0</span>
@@ -44,7 +48,7 @@
 
                 <div class="actionRow">
                     <a href="create-request.html" class="btnPrimary btnFull">Create Request</a>
-                    <a href="available-requests.html" class="btnSecondary btnFull">Accept Request</a>
+                    <a href="available-requests.html" class="btnGold btnFull">Accept Request</a>
                 </div>
             </section>
 

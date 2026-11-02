@@ -1,6 +1,21 @@
-// signup.js - student registration (saves to localStorage, plain JavaScript)
+// signup.js - student registration: the details step after the account is created
+// on the login page (email + password live there). Plain JavaScript, localStorage only.
 
 const signupForm = document.getElementById("studentSignupForm");
+const emailField = document.getElementById("bmuEmail");
+
+// The account email comes from the signed-in user and cannot be changed here.
+let currentUser = null;
+try {
+    currentUser = JSON.parse(localStorage.getItem("cc_user"));
+} catch (error) {
+    currentUser = null;
+}
+if (currentUser && currentUser.email) {
+    emailField.value = currentUser.email;
+    emailField.readOnly = true;
+    emailField.classList.add("readonlyField");
+}
 
 // Download an object as a .json file.
 function downloadJSONFile(dataObj, filename) {
@@ -21,16 +36,9 @@ function handleSignupSubmit(event) {
     const enrollmentNo = document.getElementById("enrollmentNo").value.trim();
     const courseName = document.getElementById("courseName").value.trim();
     const batch = document.getElementById("batch").value.trim();
-    const bmuEmail = document.getElementById("bmuEmail").value.trim();
+    const bmuEmail = emailField.value.trim().toLowerCase();
     const hostel = document.getElementById("hostel").value;
     const mobileNo = document.getElementById("mobileNo").value.trim();
-    const password = document.getElementById("signupPassword").value;
-    const confirmPassword = document.getElementById("signupConfirmPassword").value;
-
-    if (password !== confirmPassword) {
-        alert("Passwords do not match! Please check and try again.");
-        return;
-    }
 
     if (enrollmentNo.length !== 6 || isNaN(enrollmentNo)) {
         alert("Enrollment number must be exactly 6 digits.");
@@ -42,9 +50,7 @@ function handleSignupSubmit(event) {
         return;
     }
 
-    // The password is checked above but NOT stored: this object is saved in the
-    // browser and downloaded as a file, and a password must never be kept in plain
-    // text. The backend will handle passwords in Phase 3.
+    // No password here: it was set (and stored only as a hash) on the login page.
     const profileData = {
         studentName: studentName,
         enrollmentNo: enrollmentNo,
@@ -61,11 +67,11 @@ function handleSignupSubmit(event) {
     // 1. Save to localStorage
     localStorage.setItem("studentProfile", JSON.stringify(profileData));
 
-    // 2. Download a JSON file as proof of the saved data
-    downloadJSONFile(profileData, "student_profile_" + enrollmentNo + ".json");
+    // 2. Update the signed-in user with the real name and number
+    localStorage.setItem("cc_user", JSON.stringify({ name: studentName, contact: mobileNo, email: bmuEmail }));
 
-    // 3. Log the new student in, so the dashboard (which checks cc_user) lets them through
-    localStorage.setItem("cc_user", JSON.stringify({ name: studentName, contact: mobileNo }));
+    // 3. Download a JSON file as proof of the saved data
+    downloadJSONFile(profileData, "student_profile_" + enrollmentNo + ".json");
 
     alert("Registration Successful! Default earnings set to \u20B90. Local JSON file downloaded.");
     window.location.href = "profile.html";

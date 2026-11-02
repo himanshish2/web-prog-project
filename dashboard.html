@@ -9,7 +9,7 @@
     <!-- dashboard.css = signed-in app pages (dashboard, browse requests) -->
     <link rel="stylesheet" href="dashboard.css">
 </head>
-<body class="appPage">
+<body data-auth="required" class="appPage">
 
     <header id="siteHeader"></header>
 
@@ -27,7 +27,7 @@
                     <a href="create-request.html" class="btnPrimary">+ New Request</a>
                     <a href="available-requests.html" class="btnSecondary">Browse Requests</a>
                     <a href="my-requests.html" class="btnSecondary">My Activity</a>
-                    <button type="button" class="btnSecondary" id="logoutButton">Log out</button>
+                    <a href="profile.html" class="btnSecondary">My Profile</a>
                 </div>
             </div>
         </section>

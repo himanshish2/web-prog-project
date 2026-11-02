@@ -21,7 +21,3 @@ if (user) {
         return r.status === "completed";
     }).length;
 }
-
-document.getElementById("logoutButton").addEventListener("click", function () {
-    CC.logout();
-});

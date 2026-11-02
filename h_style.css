@@ -6,8 +6,8 @@
     --border: #D9DCF2;
     --bg-soft: #F7F8FC;
 
-    --radius-sm: 6px;
-    --radius-lg: 20px;
+    --radius-sm: 10px;
+    --radius-lg: 16px;
     --radius-pill: 999px;
 
     --shadow: 0 1px 4px rgba(11, 14, 82, 0.05);
@@ -144,8 +144,85 @@ a[aria-disabled="true"] {
     opacity: 0.7;
 }
 
+/* Profile icon + account menu (replaces "Sign Up" when signed in) */
+.navProfileBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    background-color: #ffffff;
+    color: var(--purple);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.navProfileBtn:hover,
+.navProfileBtn[aria-expanded="true"] {
+    background-color: var(--purple-light);
+}
+
+/* position: fixed so the menu is never clipped by the navbar's own scrolling */
+.navProfileMenu {
+    position: fixed;
+    top: 76px;
+    right: 24px;
+    z-index: 110;
+    min-width: 210px;
+    padding: 8px;
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+}
+
+.navProfileName {
+    margin-bottom: 4px;
+    padding: 8px 12px 10px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
+.navProfileName strong {
+    font-size: 14px;
+    color: var(--purple-deep);
+}
+
+.navProfileMenu a,
+.navProfileMenu button {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    text-decoration: none;
+    color: var(--purple-deep);
+    cursor: pointer;
+}
+
+.navProfileMenu a:hover,
+.navProfileMenu button:hover {
+    background-color: var(--purple-light);
+    text-decoration: none;
+}
+
+.navbar .navProfileMenu a:focus-visible,
+.navbar .navProfileMenu button:focus-visible {
+    outline-color: var(--purple);
+}
+
 /* Buttons */
-.btnPrimary, .btnSecondary, .btnNav {
+.btnPrimary, .btnSecondary, .btnNav, .btnGold {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -613,6 +690,10 @@ a[aria-disabled="true"] {
     font-size: 14px;
 }
 
+.footerBrand p {
+    color: #ffffff;
+}
+
 .footerBottom {
     max-width: 1160px;
     margin: 24px auto 0;
@@ -680,7 +761,7 @@ a[aria-disabled="true"] {
     padding: 36px;
     background-color: #ffffff;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
 }
 
 .formCard h1 {
@@ -784,6 +865,85 @@ a[aria-disabled="true"] {
     }
 }
 
+/* Gold accent button (profile page) */
+.btnGold {
+    background-color: var(--gold);
+    color: var(--purple-deep);
+    border: none;
+}
+
+.btnGold:hover {
+    background-color: #FCD653;
+}
+
+/* Modal dialog (login sign-up confirmation, accept request) */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(11, 14, 82, 0.45);
+    animation: fadeOverlay 0.2s ease;
+}
+
+.modalOverlay.open {
+    display: flex;
+}
+
+.modalBox {
+    width: 90%;
+    max-width: 440px;
+    padding: 36px;
+    background-color: #ffffff;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s var(--ease);
+}
+
+.modalBox h3 {
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: var(--purple-deep);
+}
+
+.modalBox p {
+    margin-bottom: 28px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOverlay {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+    .modalBox {
+        padding: 28px 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modalOverlay,
+    .modalBox {
+        animation: none;
+    }
+}
+
 /* Media Queries */
 @media (max-width: 960px) {
     .navbar {
@@ -793,6 +953,19 @@ a[aria-disabled="true"] {
 
     .navbar.navReady .navToggle {
         display: inline-block;
+        order: 1;
+    }
+
+    .navProfile {
+        order: 2;
+    }
+
+    .navbar.navReady .navLinks {
+        order: 3;
+    }
+
+    .navbar.navReady .btnNav {
+        order: 4;
     }
 
     .navbar.navReady .navLinks,
