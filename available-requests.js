@@ -112,7 +112,7 @@ function confirmAccept() {
 
     if (ok) {
         // my-requests.html shows the runner the delivery details
-        window.location.href = "my-requests.html";
+        window.location.href = "my-requests.html#delivering";
     } else {
         alert("This request was just accepted by someone else. Please pick another.");
         renderCards();

@@ -535,6 +535,27 @@
     margin-top: 18px;
 }
 
+/* ---------- Small notes on cards ---------- */
+.waitingNote {
+    margin-top: 12px;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--muted);
+}
+
+.doneNote {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.reqNotes {
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
 /* ---------- Animations ---------- */
 @keyframes cardIn {
     from { opacity: 0; transform: translateY(16px); }

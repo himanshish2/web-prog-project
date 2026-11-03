@@ -53,6 +53,24 @@ function handleCreationSubmit(event) {
     existingRequests.push(newRequest);
     localStorage.setItem("campusRequests", JSON.stringify(existingRequests));
 
+    // Also post it to the shared list used by "Available Requests" and "My Activity" (app.js).
+    // It is marked urgent when the deadline is less than 3 hours away.
+    const hoursLeft = (new Date(newRequest.deadline).getTime() - Date.now()) / 3600000;
+    CC.addRequest({
+        itemName: newRequest.companyName + " parcel",
+        description: newRequest.itemDescription,
+        pickup: newRequest.fromLocation,
+        dropoff: newRequest.toLocation,
+        reward: Number(newRequest.reward),
+        urgency: hoursLeft < 3 ? "urgent" : "normal",
+        contact: profile ? profile.mobileNo : "",
+        deadline: newRequest.deadline,
+        companyName: newRequest.companyName,
+        agentName: newRequest.agentName,
+        agentMobile: newRequest.agentMobile,
+        pickupOtp: newRequest.pickupOtp
+    });
+
     alert("Delivery Request Published Successfully!");
     window.location.href = "profile.html";
 }
