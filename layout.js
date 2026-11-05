@@ -8,7 +8,7 @@
 
 const NAV_LINKS = [
     { href: "home.html",         text: "Home" },
-    { href: "about.html",        text: "About Us" },
+    { href: "h_about.html",        text: "About Us" },
     { href: "how-it-works.html", text: "How It Works" },
     { href: "request.html",      text: "Requests" },
     { href: "tracking.html",     text: "Track Parcel" }
