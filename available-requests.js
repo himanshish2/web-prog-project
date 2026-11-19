@@ -13,6 +13,30 @@ let currentFilter = "all";      // which urgency filter is active
 let pendingAcceptId = null;     // id of the request the user clicked "Accept" on
 let firstRender = true;         // only the first draw plays the entrance animation
 
+let availableRequests = [];
+
+async function loadAvailableRequests() {
+    try {
+        const requests = await api.get("/api/requests");
+
+        availableRequests = requests.map((request) => ({
+            id: request.id,
+            itemName: request.companyName + " parcel",
+            description: request.itemDescription,
+            requester: request.requester?.name || "Student",
+            pickup: request.pickupLocation,
+            dropoff: request.dropLocation,
+            reward: request.reward,
+            urgency: request.isUrgent ? "urgent" : "normal",
+            createdAt: request.createdAt
+        }));
+
+        renderCards();
+    } catch (error) {
+        countLabel.textContent = api.describeError(error);
+    }
+}
+
 // Escape user-provided text before putting it in innerHTML.
 function esc(text) {
     return String(text === undefined || text === null ? "" : text)
@@ -31,9 +55,7 @@ function renderCards() {
     const search = searchInput.value.toLowerCase();
 
     // Keep a request only if it is open, not the user's own, and matches filter + search.
-    const list = CC.getRequests().filter(function (r) {
-        if (r.status !== "open") return false;
-        if (r.requester === user.name) return false;
+    const list = availableRequests.filter(function (r) {
         if (currentFilter === "urgent" && r.urgency !== "urgent") return false;
         if (search && !contains(r.itemName, search) && !contains(r.pickup, search) && !contains(r.dropoff, search)) {
             return false;
@@ -84,7 +106,6 @@ function renderCards() {
                     '<span class="loc">🏁 ' + esc(r.dropoff) + '</span>' +
                 '</div>' +
                 '<div class="reqFooter">' +
-                    '<span class="reqContact">Contact: ' + esc(r.contact) + '</span>' +
                     '<button type="button" class="btnPrimary btnSmall" data-accept-id="' + esc(r.id) + '">Accept Request</button>' +
                 '</div>' +
             '</div>';
@@ -104,18 +125,29 @@ function closeModal() {
     pendingAcceptId = null;
 }
 
-function confirmAccept() {
+async function confirmAccept() {
     if (!pendingAcceptId) return;
 
-    const ok = CC.acceptRequest(pendingAcceptId);   // saves to localStorage
-    closeModal();
+    const button = document.getElementById("confirmAccept");
+    const id = encodeURIComponent(pendingAcceptId);
 
-    if (ok) {
-        // my-requests.html shows the runner the delivery details
-        window.location.href = "my-requests.html#delivering";
-    } else {
-        alert("This request was just accepted by someone else. Please pick another.");
-        renderCards();
+    button.disabled = true;
+
+    try {
+        const parcel = await api.request(
+            "PATCH",
+            `/api/requests/${id}/accept`
+        );
+
+        closeModal();
+        window.location.href =
+            `tracking.html?id=${encodeURIComponent(parcel.id)}`;
+    } catch (error) {
+        closeModal();
+        alert(api.describeError(error));
+        await loadAvailableRequests();
+    } finally {
+        button.disabled = false;
     }
 }
 
@@ -151,6 +183,6 @@ if (user) {
         if (event.key === "Escape" && modal.classList.contains("open")) closeModal();
     });
 
-    renderCards();
-    setInterval(renderCards, 10000);    // simulates real-time updates
+    loadAvailableRequests();
+    setInterval(loadAvailableRequests, 10000);  // simulates real-time updates
 }

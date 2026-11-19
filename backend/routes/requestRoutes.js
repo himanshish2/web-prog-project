@@ -154,6 +154,34 @@ router.get(
   })
 );
 
+router.get(
+  '/stats',
+  asyncHandler(async (req, res) => {
+    await expireOverdueRequests();
+
+    const mine = { requesterId: req.user._id };
+    const activeStatuses = [
+      'pending', 'accepted', 'picked_up', 'out_for_delivery',
+    ];
+
+    const [open, total, delivering, completed] = await Promise.all([
+      ParcelRequest.countDocuments({
+        ...mine,
+        status: { $in: activeStatuses },
+      }),
+      ParcelRequest.countDocuments(mine),
+      ParcelRequest.countDocuments({
+        deliveryPartnerId: req.user._id,
+        status: { $in: activeStatuses },
+      }),
+      ParcelRequest.countDocuments({ ...mine, status: 'delivered' }),
+    ]);
+
+    return ok(res, { open, total, delivering, completed });
+  })
+);
+
+
 // ---------- GET /api/requests/:id ----------
 router.get(
   '/:id',

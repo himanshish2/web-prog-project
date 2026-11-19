@@ -1,23 +1,23 @@
-// dashboard.js - dashboard page logic (uses the CC data layer from app.js)
+async function refreshDashboard() {
+    try {
+        const user = await api.me();
 
-// Not logged in: requireLogin() sends the visitor to login.html and we stop here.
-const user = CC.requireLogin() ? CC.getUser() : null;
+        if (!user) {
+            window.location.replace("login.html");
+            return;
+        }
 
-if (user) {
-    document.getElementById("greetName").textContent = user.name;
+        const stats = await api.get("/api/requests/stats");
 
-    // Count the stats from localStorage.
-    const allRequests = CC.getRequests();
-    document.getElementById("statOpen").textContent = allRequests.filter(function (r) {
-        return r.status === "open";
-    }).length;
-    document.getElementById("statMine").textContent = allRequests.filter(function (r) {
-        return r.requester === user.name;
-    }).length;
-    document.getElementById("statRunning").textContent = allRequests.filter(function (r) {
-        return r.runner === user.name && r.status !== "completed";
-    }).length;
-    document.getElementById("statDone").textContent = allRequests.filter(function (r) {
-        return r.status === "completed";
-    }).length;
+        document.getElementById("greetName").textContent = user.name;
+        document.getElementById("statOpen").textContent = stats.open;
+        document.getElementById("statMine").textContent = stats.total;
+        document.getElementById("statRunning").textContent = stats.delivering;
+        document.getElementById("statDone").textContent = stats.completed;
+    } catch (error) {
+        console.error("Could not load dashboard counts:", error);
+    }
 }
+
+refreshDashboard();
+setInterval(refreshDashboard, 8000);

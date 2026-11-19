@@ -1,132 +1,187 @@
+// accepted.js — requester view of an accepted parcel
 
-const messageForm = document.querySelector("#messageForm");
-const nameInput = document.querySelector("#studentName");
-const messageInput = document.querySelector("#message");
-const feedback = document.querySelector("#formFeedback");
-const downloadButton = document.querySelector("#downloadJsonButton");
+const messageForm = document.getElementById("messageForm");
+const messageInput = document.getElementById("message");
+const nameInput = document.getElementById("studentName");
+const feedback = document.getElementById("formFeedback");
+const sendButton = messageForm.querySelector('button[type="submit"]');
+const downloadButton = document.getElementById("downloadJsonButton");
 
-// Handle message submission.
-messageForm.addEventListener("submit", function (event) {
-    // Stop the page from refreshing.
-    event.preventDefault();
+const parcelIdField = document.getElementById("parcelId");
+const detailsCard = parcelIdField.closest(".acceptCard");
+const runnerCard = document.querySelector(".runnerInfo").closest(".acceptCard");
+const successCard = document.querySelector(".successCard");
+const trackingLink = runnerCard.querySelector("a");
 
-    const studentName = nameInput.value.trim();
-    const messageText = messageInput.value.trim();
+const parcelId = new URLSearchParams(window.location.search).get("id");
+const parcelUrl = parcelId
+    ? `/api/requests/${encodeURIComponent(parcelId)}`
+    : null;
+const trackingUrl = `tracking.html?id=${encodeURIComponent(parcelId || "")}`;
 
-    // Validate the form.
-    if (studentName === "" || messageText === "") {
-        showFeedback("Please fill in both fields.", "error");
-        return;
-    }
+const statusLabels = {
+    accepted: "Accepted",
+    picked_up: "Picked Up",
+    out_for_delivery: "Out for Delivery",
+    delivered: "Delivered",
+    cancelled: "Cancelled",
+    expired: "Expired"
+};
 
-    // Create an object containing the submitted data.
-    const newMessage = {
-        name: studentName,
-        message: messageText,
-        parcelId: "CC1026",
-        runner: "Meera K.",
-        submittedAt: new Date().toISOString()
-    };
+const messagingStatuses = new Set([
+    "accepted",
+    "picked_up",
+    "out_for_delivery"
+]);
 
-    // Read previously saved messages.
-    let savedMessages = [];
+const pageMessage = document.createElement("p");
+pageMessage.setAttribute("role", "status");
+successCard.before(pageMessage);
 
-    try {
-        const storedData = localStorage.getItem("campusCarryMessages");
-        savedMessages = storedData ? JSON.parse(storedData) : [];
+const cards = [
+    successCard,
+    detailsCard,
+    runnerCard,
+    messageForm.closest(".acceptCard")
+];
 
-        if (!Array.isArray(savedMessages)) {
-            savedMessages = [];
-        }
-    } catch (error) {
-        showFeedback(
-            "Could not read saved messages from browser storage.",
-            "error"
-        );
-        return;
-    }
+for (const card of cards) card.hidden = true;
+pageMessage.textContent = "Loading parcel details…";
+sendButton.disabled = true;
 
-    // Add the new message to the list.
-    savedMessages.push(newMessage);
-
-    // Save the complete list in localStorage.
-    try {
-        localStorage.setItem(
-            "campusCarryMessages",
-            JSON.stringify(savedMessages)
-        );
-    } catch (error) {
-        showFeedback(
-            "Could not save messages in browser storage.",
-            "error"
-        );
-        return;
-    }
-
-    // Show confirmation and clear the form.
-    showFeedback(
-        "Message saved successfully!",
-        "success"
-    );
-
-    messageForm.reset();
-});
-
-// Handle JSON file download separately.
-downloadButton.addEventListener("click", function () {
-    let savedMessages = [];
-
-    try {
-        const storedData = localStorage.getItem("campusCarryMessages");
-        savedMessages = storedData ? JSON.parse(storedData) : [];
-
-        if (!Array.isArray(savedMessages)) {
-            savedMessages = [];
-        }
-    } catch (error) {
-        showFeedback(
-            "Could not read saved messages from browser storage.",
-            "error"
-        );
-        return;
-    }
-
-    if (savedMessages.length === 0) {
-        showFeedback(
-            "There are no saved messages to download yet.",
-            "error"
-        );
-        return;
-    }
-
-    // Convert all saved messages into JSON format.
-    const jsonData = JSON.stringify(savedMessages, null, 4);
-
-    const file = new Blob(
-        [jsonData],
-        { type: "application/json" }
-    );
-
-    const downloadURL = URL.createObjectURL(file);
-
-    const downloadLink = document.createElement("a");
-    downloadLink.href = downloadURL;
-    downloadLink.download = "campusCarryMessages.json";
-
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-
-    URL.revokeObjectURL(downloadURL);
-
-    showFeedback(
-        "Your JSON file has been downloaded successfully!",
-        "success"
-    );
-});
-
-// Display feedback messages.
 function showFeedback(message, type) {
     feedback.textContent = message;
-    feedback.className = "formFeedback " + type;
+    feedback.className = `formFeedback ${type}`;
 }
+
+function renderParcel(parcel, viewer) {
+    const values = [
+        parcel.id,
+        parcel.itemDescription || `${parcel.companyName} parcel`,
+        parcel.pickupLocation,
+        parcel.dropLocation,
+        `₹${parcel.reward}`
+    ];
+
+    detailsCard.querySelectorAll(".detailRow strong").forEach((field, index) => {
+        field.textContent = values[index];
+    });
+
+    successCard.querySelector(".statusBadge").textContent =
+        statusLabels[parcel.status] || parcel.status;
+
+    runnerCard.querySelector("h2").textContent =
+        parcel.deliveryPartner?.name || "Assigned delivery partner";
+    runnerCard.querySelector(".runnerInfo").hidden = true;
+    runnerCard.querySelector(".helperText").textContent =
+        "Open Tracking to see the latest delivery status.";
+
+    trackingLink.href = trackingUrl;
+
+    nameInput.value = viewer.name || "";
+    nameInput.readOnly = true;
+
+    const canMessage = messagingStatuses.has(parcel.status);
+    sendButton.disabled = !canMessage;
+    messageInput.disabled = !canMessage;
+
+    if (!canMessage) {
+        showFeedback("Messaging is closed for this parcel.", "error");
+    }
+
+    for (const card of cards) card.hidden = false;
+    pageMessage.hidden = true;
+}
+
+messageForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (sendButton.disabled) return;
+
+    const text = messageInput.value.trim();
+    if (!text) {
+        showFeedback("Enter a message before sending.", "error");
+        messageInput.focus();
+        return;
+    }
+
+    sendButton.disabled = true;
+
+    try {
+        await api.post(`${parcelUrl}/messages`, { text });
+        messageInput.value = "";
+        showFeedback("Message sent to your runner.", "success");
+    } catch (error) {
+        showFeedback(api.describeError(error), "error");
+    } finally {
+        sendButton.disabled = false;
+    }
+});
+
+downloadButton.addEventListener("click", async () => {
+    downloadButton.disabled = true;
+
+    try {
+        const messages = await api.get(`${parcelUrl}/messages`);
+
+        if (messages.length === 0) {
+            showFeedback("There are no messages for this parcel yet.", "error");
+            return;
+        }
+
+        const file = new Blob(
+            [JSON.stringify(messages, null, 2)],
+            { type: "application/json" }
+        );
+        const downloadUrl = URL.createObjectURL(file);
+        const link = document.createElement("a");
+
+        link.href = downloadUrl;
+        link.download = `campuscarry-messages-${parcelId}.json`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1000);
+        showFeedback("Messages downloaded.", "success");
+    } catch (error) {
+        showFeedback(api.describeError(error), "error");
+    } finally {
+        downloadButton.disabled = false;
+    }
+});
+
+async function loadAcceptedPage() {
+    if (!parcelUrl) {
+        pageMessage.textContent =
+            "Open an accepted parcel from My Activity to see its details.";
+        return;
+    }
+
+    try {
+        const viewer = await api.me();
+
+        if (!viewer) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        const parcel = await api.get(parcelUrl);
+
+        if (viewer.id === parcel.deliveryPartnerId) {
+            window.location.replace(trackingUrl);
+            return;
+        }
+
+        if (viewer.id !== parcel.requesterId || !parcel.deliveryPartnerId) {
+            pageMessage.textContent =
+                "This page is available to the requester once a runner is assigned.";
+            return;
+        }
+
+        renderParcel(parcel, viewer);
+    } catch (error) {
+        pageMessage.textContent = api.describeError(error);
+    }
+}
+
+loadAcceptedPage();

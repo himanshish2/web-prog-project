@@ -1,262 +1,289 @@
-// my-requests.js - "My Activity": requests I posted + deliveries I accepted
-// (uses the CC data layer from app.js)
-
-// Not logged in: requireLogin() sends the visitor to login.html and we stop here.
-const user = CC.requireLogin() ? CC.getUser() : null;
-
-// The 4 stages a delivery goes through (looped over to build the stepper).
-const STEPS = ["open", "accepted", "in-transit", "completed"];
-const LABELS = ["Posted", "Accepted", "In Transit", "Delivered"];
-const EMOJIS = ["📋", "✅", "🚀", "🎉"];
+// my-requests.js — My Activity
 
 const myGrid = document.getElementById("myGrid");
 const deliverGrid = document.getElementById("deliverGrid");
 
-let firstRender = true;     // only the first draw plays the entrance animation
+const tabs = {
+    my: {
+        button: document.getElementById("tabMy"),
+        panel: document.getElementById("panelMy")
+    },
+    delivering: {
+        button: document.getElementById("tabDelivering"),
+        panel: document.getElementById("panelDelivering")
+    }
+};
 
-// Escape user-provided text before putting it in innerHTML.
-function esc(text) {
-    return String(text === undefined || text === null ? "" : text)
+const steps = [
+    { status: "pending", label: "Posted", icon: "📋" },
+    { status: "accepted", label: "Accepted", icon: "✅" },
+    { status: "picked_up", label: "Picked Up", icon: "📦" },
+    { status: "out_for_delivery", label: "Out for Delivery", icon: "🚀" },
+    { status: "delivered", label: "Delivered", icon: "🎉" }
+];
+
+const statusLabels = {
+    ...Object.fromEntries(steps.map(({ status, label }) => [status, label])),
+    cancelled: "Cancelled",
+    expired: "Expired"
+};
+
+const badgeClasses = {
+    pending: "badgeOpen",
+    accepted: "badgeAccepted",
+    picked_up: "badgeInTransit",
+    out_for_delivery: "badgeInTransit",
+    delivered: "badgeCompleted"
+};
+
+const cardClasses = {
+    picked_up: "isInTransit",
+    out_for_delivery: "isInTransit",
+    delivered: "isCompleted"
+};
+
+const nextSteps = {
+    accepted: { status: "picked_up", label: "Mark as Picked Up" },
+    picked_up: { status: "out_for_delivery", label: "Mark as Out for Delivery" },
+    out_for_delivery: { status: "delivered", label: "Mark as Delivered" }
+};
+
+let isRefreshing = false;
+let isUpdating = false;
+
+function escapeHtml(value) {
+    return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
-// Colour classes for each status (defined in dashboard.css).
-function badgeClass(status) {
-    return {
-        "open": "badgeOpen",
-        "accepted": "badgeAccepted",
-        "in-transit": "badgeInTransit",
-        "completed": "badgeCompleted"
-    }[status] || "badgeOpen";
+function switchTab(activeTab) {
+    for (const [name, tab] of Object.entries(tabs)) {
+        const isActive = name === activeTab;
+        tab.button.classList.toggle("active", isActive);
+        tab.button.setAttribute("aria-selected", String(isActive));
+        tab.panel.classList.toggle("active", isActive);
+    }
 }
 
-function cardClass(status) {
-    return { "in-transit": "isInTransit", "completed": "isCompleted" }[status] || "";
-}
+function renderStepper(status) {
+    const current = steps.findIndex((step) => step.status === status);
+    if (current === -1) return "";
 
-// The 4-step progress tracker. Steps before the current one are "done",
-// the current one is "active".
-function buildStepper(status) {
-    const current = STEPS.indexOf(status);
-    let items = "";
-    for (let i = 0; i < STEPS.length; i++) {
+    const items = steps.map((step, index) => {
         let state = "";
-        if (i < current) state = "done";
-        else if (i === current) state = "active";
-        items +=
-            '<div class="stepItem ' + state + '">' +
-                '<div class="stepDot">' + EMOJIS[i] + '</div>' +
-                '<div class="stepLabel">' + LABELS[i] + '</div>' +
-            '</div>';
-    }
-    return '<div class="stepper">' + items + '</div>';
+        if (index < current) state = "done";
+        if (index === current) state = "active";
+
+        return `
+            <div class="stepItem ${state}">
+                <div class="stepDot" aria-hidden="true">${step.icon}</div>
+                <div class="stepLabel">${step.label}</div>
+            </div>`;
+    }).join("");
+
+    return `<div class="stepper">${items}</div>`;
 }
 
-function animationFor(index) {
-    return firstRender
-        ? { cls: " cardAnim", style: ' style="animation-delay:' + (index * 0.06) + 's"' }
-        : { cls: "", style: "" };
+function renderRequesterDetails(request) {
+    if (request.deliveryPartnerId) {
+        const acceptedUrl = `accepted.html?id=${encodeURIComponent(request.id)}`;
+        return `
+            <div class="infoBox">
+                <strong>Your Runner</strong>
+                ${escapeHtml(request.deliveryPartner?.name || "Assigned")}
+            </div>
+            <a class="btnSecondary" href="${escapeHtml(acceptedUrl)}">
+                View Accepted Request
+            </a>`;
+    }
+
+    if (request.status === "pending") {
+        return '<p class="waitingNote">Waiting for a runner to accept your request…</p>';
+    }
+
+    return "";
 }
 
-// ---------- TAB 1: My Requests (requester view) ----------
-function renderMyRequests() {
-    const list = CC.getRequests().filter(function (r) {
-        return r.requester === user.name;
-    });
+function renderDeliveryDetails(request) {
+    const next = nextSteps[request.status];
+    const trackingUrl = `tracking.html?id=${encodeURIComponent(request.id)}`;
 
-    if (list.length === 0) {
-        myGrid.innerHTML =
-            '<div class="gridEmpty">' +
-            '<div class="emptyIcon" aria-hidden="true">📦</div>' +
-            '<h3>No requests yet</h3>' +
-            "<p>You haven't posted any delivery requests.</p>" +
-            '<a href="create-request.html" class="btnPrimary">Create a Request</a>' +
-            '</div>';
-        return;
-    }
+    const pickupDetails = request.pickupOtp ? `
+        <div class="infoBox">
+            <strong>Pickup details</strong>
+            ${escapeHtml(request.companyName || "Courier")} ·
+            Agent: ${escapeHtml(request.agentName || "N/A")}
+            ${request.agentMobile ? ` · ${escapeHtml(request.agentMobile)}` : ""}
+            · Code: ${escapeHtml(request.pickupOtp)}
+        </div>` : "";
 
-    let html = "";
-    for (let i = 0; i < list.length; i++) {
-        const r = list[i];
-        const anim = animationFor(i);
+    const nextButton = next ? `
+        <button type="button" class="btnPrimary"
+                data-advance-id="${escapeHtml(request.id)}"
+                data-next="${next.status}">
+            ${next.label}
+        </button>` : "";
 
-        const runnerHtml = r.runner
-            ? '<div class="infoBox"><strong>Your Runner</strong>' + esc(r.runner) +
-              (r.runnerContact ? " · 📞 " + esc(r.runnerContact) : "") + '</div>'
-            : '<p class="waitingNote">⏳ Waiting for a runner to accept your request…</p>';
-
-        html +=
-            '<div class="reqCard' + anim.cls + " " + cardClass(r.status) + '"' + anim.style + '>' +
-                '<div class="accentBar"></div>' +
-                '<div class="reqHeader">' +
-                    '<div>' +
-                        '<div class="reqTitle">' + esc(r.itemName) + '</div>' +
-                        '<div class="reqMeta">' +
-                            '<span>🕐 ' + esc(CC.timeAgo(r.createdAt)) + '</span>' +
-                            '<span class="badge ' + badgeClass(r.status) + '">' + esc(CC.statusLabel(r.status)) + '</span>' +
-                            (r.urgency === "urgent" ? '<span class="badge badgeUrgent">Urgent</span>' : "") +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="reqReward">₹' + esc(r.reward) + '</div>' +
-                '</div>' +
-                '<div class="reqRoute">' +
-                    '<span class="loc">📍 ' + esc(r.pickup) + '</span>' +
-                    '<span class="routeArrow" aria-hidden="true">&rarr;</span>' +
-                    '<span class="loc">🏁 ' + esc(r.dropoff) + '</span>' +
-                '</div>' +
-                buildStepper(r.status) +
-                runnerHtml +
-            '</div>';
-    }
-    myGrid.innerHTML = html;
+    return `
+        ${pickupDetails}
+        ${request.status === "delivered"
+            ? `<p class="doneNote">Delivery complete! You earned ₹${escapeHtml(request.reward)}.</p>`
+            : ""}
+        <div class="updateBtnRow">
+            <a class="btnSecondary" href="${escapeHtml(trackingUrl)}">Track Parcel</a>
+            ${nextButton}
+        </div>`;
 }
 
-// ---------- TAB 2: I'm Delivering (runner view) ----------
-function renderDelivering() {
-    const list = CC.getRequests().filter(function (r) {
-        return r.runner === user.name;
-    });
+function renderCard(request, isDelivering) {
+    return `
+        <div class="reqCard ${cardClasses[request.status] || ""}">
+            <div class="accentBar"></div>
+            <div class="reqHeader">
+                <div>
+                    <div class="reqTitle">${escapeHtml(request.companyName)} parcel</div>
+                    <div class="reqMeta">
+                        ${isDelivering
+                            ? `<span>Requested by ${escapeHtml(request.requester?.name || "Student")}</span>`
+                            : ""}
+                        <span>${escapeHtml(CC.timeAgo(request.createdAt))}</span>
+                        <span class="badge ${badgeClasses[request.status] || "badgeOpen"}">
+                            ${escapeHtml(statusLabels[request.status] || request.status)}
+                        </span>
+                        ${request.isUrgent ? '<span class="badge badgeUrgent">Urgent</span>' : ""}
+                    </div>
+                </div>
+                <div class="reqReward">₹${escapeHtml(request.reward)}</div>
+            </div>
 
-    if (list.length === 0) {
-        deliverGrid.innerHTML =
-            '<div class="gridEmpty">' +
-            '<div class="emptyIcon" aria-hidden="true">🏃</div>' +
-            '<h3>Not delivering anything yet</h3>' +
-            '<p>Head to Available Requests and accept a delivery on your route.</p>' +
-            '<a href="available-requests.html" class="btnPrimary">Browse Requests</a>' +
-            '</div>';
-        return;
-    }
+            <div class="reqRoute">
+                <span class="loc">📍 ${escapeHtml(request.pickupLocation)}</span>
+                <span class="routeArrow" aria-hidden="true">&rarr;</span>
+                <span class="loc">🏁 ${escapeHtml(request.dropLocation)}</span>
+            </div>
 
-    let html = "";
-    for (let i = 0; i < list.length; i++) {
-        const r = list[i];
-        const anim = animationFor(i);
+            ${request.itemDescription
+                ? `<p class="reqNotes">${escapeHtml(request.itemDescription)}</p>`
+                : ""}
+            ${renderStepper(request.status)}
+            ${isDelivering ? renderDeliveryDetails(request) : renderRequesterDetails(request)}
+        </div>`;
+}
 
-        // What comes next, and what the button says.
-        const canUpdate = (r.status === "accepted" || r.status === "in-transit");
-        const nextStatus = (r.status === "accepted") ? "in-transit" : "completed";
-        const nextLabel = (r.status === "accepted")
-            ? "🚀 I've Picked It Up: Mark In Transit"
-            : "✅ Delivered: Mark as Complete";
+async function loadList(grid, endpoint, isDelivering) {
+    try {
+        const requests = await api.get(endpoint);
 
-        let footer = "";
-        if (canUpdate) {
-            footer =
-                '<div class="updateBtnRow">' +
-                    '<button type="button" class="btnPrimary" data-advance-id="' + esc(r.id) +
-                    '" data-next="' + nextStatus + '">' + nextLabel + '</button>' +
-                '</div>';
-        } else if (r.status === "completed") {
-            footer = '<p class="doneNote">🎉 Delivery complete! You earned ₹' + esc(r.reward) + '.</p>';
+        if (requests.length > 0) {
+            grid.innerHTML = requests.map((request) => renderCard(request, isDelivering)).join("");
+            return;
         }
 
-        // Pickup details the requester entered (only runners who accepted see this page).
-        const pickupHtml = r.pickupOtp
-            ? '<div class="infoBox"><strong>Pickup details</strong>' +
-              esc(r.companyName || "Courier") + " · Agent: " + esc(r.agentName || "N/A") +
-              (r.agentMobile ? " · 📞 " + esc(r.agentMobile) : "") +
-              " · Code: " + esc(r.pickupOtp) + '</div>'
-            : "";
-
-        html +=
-            '<div class="reqCard' + anim.cls + " " + cardClass(r.status) + '"' + anim.style + '>' +
-                '<div class="accentBar"></div>' +
-                '<div class="reqHeader">' +
-                    '<div>' +
-                        '<div class="reqTitle">' + esc(r.itemName) + '</div>' +
-                        '<div class="reqMeta">' +
-                            '<span>👤 Requested by ' + esc(r.requester) + '</span>' +
-                            '<span>🕐 ' + esc(CC.timeAgo(r.createdAt)) + '</span>' +
-                            '<span class="badge ' + badgeClass(r.status) + '">' + esc(CC.statusLabel(r.status)) + '</span>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="reqReward">₹' + esc(r.reward) + '</div>' +
-                '</div>' +
-                '<div class="reqRoute">' +
-                    '<span class="loc">📍 <strong>Pickup:</strong> ' + esc(r.pickup) + '</span>' +
-                    '<span class="routeArrow" aria-hidden="true">&rarr;</span>' +
-                    '<span class="loc">🏁 <strong>Drop-off:</strong> ' + esc(r.dropoff) + '</span>' +
-                '</div>' +
-                buildStepper(r.status) +
-                '<div class="infoBox"><strong>Requester Contact</strong>' +
-                    esc(r.requester) + " · 📞 " + esc(r.contact || "N/A") + '</div>' +
-                pickupHtml +
-                (r.description ? '<p class="reqNotes"><strong>Notes:</strong> ' + esc(r.description) + '</p>' : "") +
-                footer +
-            '</div>';
-    }
-    deliverGrid.innerHTML = html;
-}
-
-// ---------- Earnings: a completed delivery is added to the profile's history ----------
-function recordCompletedDelivery(request) {
-    let list = [];
-    try {
-        list = JSON.parse(localStorage.getItem("completedDeliveries")) || [];
+        grid.innerHTML = isDelivering
+            ? `<div class="gridEmpty">
+                   <h3>Not delivering anything yet</h3>
+                   <p>Accept a parcel from Available Requests to see it here.</p>
+                   <a href="available-requests.html" class="btnPrimary">Browse Requests</a>
+               </div>`
+            : `<div class="gridEmpty">
+                   <h3>No requests yet</h3>
+                   <p>You haven't posted any delivery requests.</p>
+                   <a href="create-request.html" class="btnPrimary">Create a Request</a>
+               </div>`;
     } catch (error) {
-        list = [];
-    }
-    if (list.some(function (d) { return d.requestId === request.id; })) return;
-
-    list.push({
-        requestId: request.id,
-        fromLocation: request.pickup,
-        toLocation: request.dropoff,
-        reward: request.reward,
-        status: "successful",
-        date: new Date().toLocaleDateString("en-IN")
-    });
-    localStorage.setItem("completedDeliveries", JSON.stringify(list));
-}
-
-// ---------- Move a delivery to its next status ----------
-function advanceStatus(id, newStatus) {
-    CC.updateStatus(id, newStatus);
-    if (newStatus === "completed") {
-        const request = CC.getRequestById(id);
-        if (request) recordCompletedDelivery(request);
-    }
-    renderDelivering();
-    renderMyRequests();
-}
-
-// ---------- Tabs ----------
-const tabButtons = { my: document.getElementById("tabMy"), delivering: document.getElementById("tabDelivering") };
-const tabPanels = { my: document.getElementById("panelMy"), delivering: document.getElementById("panelDelivering") };
-
-function switchTab(tab) {
-    for (const name in tabButtons) {
-        const isActive = (name === tab);
-        tabButtons[name].classList.toggle("active", isActive);
-        tabButtons[name].setAttribute("aria-selected", String(isActive));
-        tabPanels[name].classList.toggle("active", isActive);
+        grid.textContent = api.describeError(error);
     }
 }
 
-// ---------- Start (only when logged in) ----------
-if (user) {
-    tabButtons.my.addEventListener("click", function () { switchTab("my"); });
-    tabButtons.delivering.addEventListener("click", function () { switchTab("delivering"); });
+async function refreshActivity() {
+    if (isRefreshing || isUpdating) return;
 
-    deliverGrid.addEventListener("click", function (event) {
+    isRefreshing = true;
+    try {
+        await Promise.all([
+            loadList(myGrid, "/api/requests/mine", false),
+            loadList(deliverGrid, "/api/requests/delivering", true)
+        ]);
+    } finally {
+        isRefreshing = false;
+    }
+}
+
+// Keep the existing Profile page's local earnings display working.
+function recordCompletedDelivery(request) {
+    try {
+        const saved = JSON.parse(localStorage.getItem("completedDeliveries"));
+        const history = Array.isArray(saved) ? saved : [];
+
+        if (history.some((delivery) => delivery.requestId === request.id)) return;
+
+        history.push({
+            requestId: request.id,
+            fromLocation: request.pickupLocation,
+            toLocation: request.dropLocation,
+            reward: request.reward,
+            status: "successful",
+            date: new Date(request.deliveredAt || Date.now()).toLocaleDateString("en-IN")
+        });
+
+        localStorage.setItem("completedDeliveries", JSON.stringify(history));
+    } catch (error) {
+        console.warn("Could not update the local profile history.", error);
+    }
+}
+
+async function advanceStatus(button) {
+    if (isUpdating || isRefreshing) return;
+
+    isUpdating = true;
+    button.disabled = true;
+
+    try {
+        const id = encodeURIComponent(button.dataset.advanceId);
+        const request = await api.request("PATCH", `/api/requests/${id}/status`, {
+            status: button.dataset.next
+        });
+
+        if (request.status === "delivered") {
+            recordCompletedDelivery(request);
+        }
+    } catch (error) {
+        alert(api.describeError(error));
+    } finally {
+        isUpdating = false;
+        button.disabled = false;
+    }
+
+    await refreshActivity();
+}
+
+async function startActivity() {
+    try {
+        const user = await api.me();
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
+    } catch (error) {
+        myGrid.textContent = api.describeError(error);
+        return;
+    }
+
+    tabs.my.button.addEventListener("click", () => switchTab("my"));
+    tabs.delivering.button.addEventListener("click", () => switchTab("delivering"));
+
+    deliverGrid.addEventListener("click", (event) => {
         const button = event.target.closest("[data-advance-id]");
-        if (button) advanceStatus(button.dataset.advanceId, button.dataset.next);
+        if (button) advanceStatus(button);
     });
 
-    // Arriving right after accepting a delivery: open the "I'm Delivering" tab.
-    if (window.location.hash === "#delivering") switchTab("delivering");
-
-    renderMyRequests();
-    renderDelivering();
-    firstRender = false;
-
-    // Auto-refresh every 8 seconds (simulates live tracking).
-    setInterval(function () {
-        renderMyRequests();
-        renderDelivering();
-    }, 8000);
+    switchTab(window.location.hash === "#delivering" ? "delivering" : "my");
+    await refreshActivity();
+    setInterval(refreshActivity, 8000);
 }
+
+startActivity();

@@ -27,52 +27,38 @@ if (profile) {
     submitButton.disabled = true;
 }
 
-function handleCreationSubmit(event) {
+async function handleCreationSubmit(event) {
     event.preventDefault();
 
-    const existingRequests = readStorage("campusRequests", []);
+    const value = (id) => document.getElementById(id).value;
+    const deadline = new Date(value("deadline"));
 
-    const newRequest = {
-        id: "REQ" + Date.now().toString().slice(-6),
-        studentName: document.getElementById("studentName").value,
-        enrollmentNo: document.getElementById("enrollmentNo").value,
-        batch: document.getElementById("batch").value,
-        courseName: document.getElementById("courseName").value,
-        reward: document.getElementById("reward").value,
-        deadline: document.getElementById("deadline").value,
-        fromLocation: document.getElementById("fromLocation").value,
-        toLocation: document.getElementById("toLocation").value,
-        companyName: document.getElementById("companyName").value,
-        agentName: document.getElementById("agentName").value,
-        agentMobile: document.getElementById("agentMobile").value,
-        pickupOtp: document.getElementById("pickupOtp").value,
-        itemDescription: document.getElementById("itemDescription").value,
-        createdAt: new Date().toISOString()
-    };
+    if (Number.isNaN(deadline.getTime()) || deadline <= new Date()) {
+        alert("Choose a deadline in the future.");
+        return;
+    }
 
-    existingRequests.push(newRequest);
-    localStorage.setItem("campusRequests", JSON.stringify(existingRequests));
+    submitButton.disabled = true;
 
-    // Also post it to the shared list used by "Available Requests" and "My Activity" (app.js).
-    // It is marked urgent when the deadline is less than 3 hours away.
-    const hoursLeft = (new Date(newRequest.deadline).getTime() - Date.now()) / 3600000;
-    CC.addRequest({
-        itemName: newRequest.companyName + " parcel",
-        description: newRequest.itemDescription,
-        pickup: newRequest.fromLocation,
-        dropoff: newRequest.toLocation,
-        reward: Number(newRequest.reward),
-        urgency: hoursLeft < 3 ? "urgent" : "normal",
-        contact: profile ? profile.mobileNo : "",
-        deadline: newRequest.deadline,
-        companyName: newRequest.companyName,
-        agentName: newRequest.agentName,
-        agentMobile: newRequest.agentMobile,
-        pickupOtp: newRequest.pickupOtp
-    });
+    try {
+        await api.post("/api/requests", {
+            pickupLocation: value("fromLocation"),
+            dropLocation: value("toLocation"),
+            reward: Number(value("reward")),
+            deadline: deadline.toISOString(),
+            companyName: value("companyName"),
+            agentName: value("agentName"),
+            agentMobile: value("agentMobile"),
+            pickupOtp: value("pickupOtp"),
+            itemDescription: value("itemDescription")
+        });
 
-    alert("Delivery Request Published Successfully!");
-    window.location.href = "profile.html";
+        alert("Delivery Request Published Successfully!");
+        window.location.href = "profile.html";
+    } catch (error) {
+        alert(api.describeError(error));
+        submitButton.disabled = false;
+    }
 }
 
 creationForm.addEventListener("submit", handleCreationSubmit);
