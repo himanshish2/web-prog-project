@@ -1,5 +1,6 @@
 const express = require('express');
 const ParcelRequest = require('../models/ParcelRequest');
+const User = require('../models/User');
 const asyncHandler = require('../utils/asyncHandler');
 const AppError = require('../utils/AppError');
 const notify = require('../utils/notify');
@@ -36,6 +37,7 @@ router.post(
     const agentMobile = b.agentMobile ? normalizeMobile(b.agentMobile) : '';
     const pickupOtp = str(typeof b.pickupOtp === 'number' ? String(b.pickupOtp) : b.pickupOtp);
     const itemDescription = str(b.itemDescription);
+    const isUrgentFlag = Boolean(b.isUrgent === true || b.isUrgent === 'true' || b.isUrgent === 1 || b.isUrgent === '1');
 
     // reward: a real number (30) or a plain numeric string ("30"); never "₹30"
     let reward = b.reward;
@@ -84,6 +86,7 @@ router.post(
       agentMobile,
       pickupOtp,
       itemDescription,
+      isUrgent: isUrgentFlag,
       status: 'pending',
     });
 
@@ -106,7 +109,10 @@ router.get(
     };
     const urgent = String(req.query.urgent || '').toLowerCase() === 'true';
     if (urgent) {
-      filter.createdAt = { $lte: new Date(now.getTime() - URGENT_AFTER_MINUTES * 60 * 1000) };
+      filter.$or = [
+        { isUrgent: true },
+        { createdAt: { $lte: new Date(now.getTime() - URGENT_AFTER_MINUTES * 60 * 1000) } }
+      ];
     }
 
     const rows = await ParcelRequest.find(filter)
@@ -295,6 +301,19 @@ router.patch(
       .populate('deliveryPartnerId', USER_FIELDS)
       .lean();
     if (!updated) throw conflict();
+
+    if (target === 'delivered') {
+      const credited = await ParcelRequest.findOneAndUpdate(
+        { _id: r._id, deliveryPartnerId: req.user._id, rewardCredited: { $ne: true } },
+        { $set: { rewardCredited: true } },
+        { new: true }
+      );
+      if (credited) {
+        await User.findByIdAndUpdate(req.user._id, {
+          $inc: { earnings: credited.reward || 0 }
+        });
+      }
+    }
 
     await notify({
       userId: updated.requesterId._id,

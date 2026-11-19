@@ -25,6 +25,7 @@ function userBrief(u, admin = false) {
 const dateOrNull = (d) => d ?? null;
 
 function isUrgent(r, now = Date.now()) {
+  if (r.isUrgent) return true;
   return (
     r.status === 'pending' &&
     new Date(r.deadline).getTime() > now &&

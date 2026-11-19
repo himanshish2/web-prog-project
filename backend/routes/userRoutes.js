@@ -68,16 +68,24 @@ router.patch(
   })
 );
 
-// GET /api/users/me/deliveries   (?status=delivered by default; any valid status allowed)
+// GET /api/users/me/deliveries   (returns all past deliveries: successful & cancelled/failed by default)
 router.get(
   '/me/deliveries',
   asyncHandler(async (req, res) => {
-    const status = req.query.status ? str(String(req.query.status)) : 'delivered';
-    if (!STATUS_VALUES.includes(status))
-      throw new AppError(400, 'INVALID_STATUS', 'Unknown status filter');
+    const statusParam = req.query.status ? str(String(req.query.status)) : 'all';
+    let filter = { deliveryPartnerId: req.user._id };
 
-    const rows = await ParcelRequest.find({ deliveryPartnerId: req.user._id, status })
-      .sort({ deliveredAt: -1, acceptedAt: -1 })
+    if (statusParam && statusParam !== 'all' && statusParam !== 'past') {
+      if (!STATUS_VALUES.includes(statusParam))
+        throw new AppError(400, 'INVALID_STATUS', 'Unknown status filter');
+      filter.status = statusParam;
+    } else {
+      // Returns past deliveries: both delivered and cancelled/expired
+      filter.status = { $in: ['delivered', 'cancelled', 'expired'] };
+    }
+
+    const rows = await ParcelRequest.find(filter)
+      .sort({ deliveredAt: -1, cancelledAt: -1, updatedAt: -1, createdAt: -1 })
       .limit(parseLimit(req.query.limit, 100, 200))
       .populate('requesterId', 'name hostel')
       .lean();
@@ -94,8 +102,13 @@ router.get(
       { $match: { deliveryPartnerId: req.user._id, status: 'delivered' } },
       { $group: { _id: null, totalEarned: { $sum: '$reward' }, deliveriesCompleted: { $sum: 1 } } },
     ]);
+
+    const aggregated = agg ? agg.totalEarned : 0;
+    const userStored = req.user.earnings || 0;
+    const totalEarned = Math.max(aggregated, userStored);
+
     return ok(res, {
-      totalEarned: agg ? agg.totalEarned : 0,
+      totalEarned,
       deliveriesCompleted: agg ? agg.deliveriesCompleted : 0,
       currency: 'INR',
     });

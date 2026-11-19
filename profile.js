@@ -1,4 +1,4 @@
-// profile.js - student profile page (details from the backend; earnings history still in localStorage)
+// profile.js - student profile page (details, live earnings & past deliveries from the backend)
 
 const historyButton = document.getElementById("historyToggleBtn");
 const deliveryList = document.getElementById("deliveryList");
@@ -29,52 +29,72 @@ function updateClock() {
     const minutes = String(now.getMinutes()).padStart(2, "0");
     const seconds = String(now.getSeconds()).padStart(2, "0");
     const ampm = now.getHours() >= 12 ? "PM" : "AM";
-    document.getElementById("liveClock").textContent = hours + ":" + minutes + ":" + seconds + " " + ampm;
+    const clockEl = document.getElementById("liveClock");
+    if (clockEl) clockEl.textContent = hours + ":" + minutes + ":" + seconds + " " + ampm;
 }
 
-// ---------- Profile + earnings ----------
-// The student's details come from the backend (MongoDB) via GET /api/auth/me.
+// ---------- Profile + Live Earnings + Past Deliveries ----------
 async function loadProfileAndEarnings() {
     let profile = null;
+    let user = null;
+
     try {
-        const user = await api.me();            // the server's answer is the truth
+        user = await api.me(); // the server's answer is the truth
         if (user) {
-            cacheUser(user);                    // refresh the display copy (layout.js)
-            profile = { studentName: user.name, enrollmentNo: user.enrollmentNo, courseName: user.course, batch: user.batch };
+            cacheUser(user);
+            profile = {
+                studentName: user.name,
+                enrollmentNo: user.enrollmentNo,
+                courseName: user.course,
+                batch: user.batch
+            };
         }
     } catch (error) {
-        // Server unreachable: fall back to the display copy so the page is not empty.
         profile = readStorage("studentProfile", null);
     }
 
     if (profile) {
-        document.getElementById("profileName").textContent = profile.studentName || "Student";
-        document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
-        document.getElementById("profileCourse").textContent = profile.courseName;
-        document.getElementById("profileBatch").textContent = profile.batch;
+        const nameEl = document.getElementById("profileName");
+        const enrollEl = document.getElementById("profileEnrollment");
+        const courseEl = document.getElementById("profileCourse");
+        const batchEl = document.getElementById("profileBatch");
+        if (nameEl) nameEl.textContent = profile.studentName || "Student";
+        if (enrollEl) enrollEl.textContent = profile.enrollmentNo || "------";
+        if (courseEl) courseEl.textContent = profile.courseName || "------";
+        if (batchEl) batchEl.textContent = profile.batch || "------";
     } else {
         const notice = document.getElementById("profileNotice");
-        notice.textContent = "Could not load your details. Check that the backend is running, then refresh.";
-        notice.hidden = false;
+        if (notice) {
+            notice.textContent = "Could not load your details. Check that the backend is running, then refresh.";
+            notice.hidden = false;
+        }
     }
 
-    const completedDeliveries = readStorage("completedDeliveries", []);
+    // 1. Live Personal Earnings from Backend
+    let totalEarned = 0;
+    try {
+        const earningsRes = await api.get("/api/users/me/earnings");
+        totalEarned = Number(earningsRes.totalEarned) || 0;
+    } catch (e) {
+        totalEarned = Number(user?.earnings) || 0;
+    }
+    const earningsEl = document.getElementById("totalEarnings");
+    if (earningsEl) earningsEl.textContent = "₹" + totalEarned;
 
-    // Only successful / completed deliveries add to the earnings.
-    const earnedAmount = completedDeliveries.reduce(function (sum, task) {
-        const status = (task.status || "successful").toLowerCase();
-        if (status === "successful" || status === "completed") {
-            return sum + (Number(task.reward) || 0);
-        }
-        return sum;
-    }, 0);
-
-    document.getElementById("totalEarnings").textContent = "\u20B9" + earnedAmount;
-    renderHistoryList(completedDeliveries);
+    // 2. Live Past Deliveries (Successful & Failed/Cancelled) from Backend
+    let deliveries = [];
+    try {
+        deliveries = await api.get("/api/users/me/deliveries");
+    } catch (e) {
+        deliveries = readStorage("completedDeliveries", []);
+    }
+    renderHistoryList(deliveries);
 }
 
 function renderHistoryList(deliveries) {
-    if (deliveries.length === 0) {
+    if (!deliveryList) return;
+
+    if (!Array.isArray(deliveries) || deliveries.length === 0) {
         deliveryList.innerHTML = '<p class="deliveryEmpty">No past deliveries recorded yet.</p>';
         return;
     }
@@ -82,22 +102,32 @@ function renderHistoryList(deliveries) {
     let html = "";
     for (let i = 0; i < deliveries.length; i++) {
         const item = deliveries[i];
-        const fromLoc = item.fromLocation || item.pickup || "Pickup Point";
-        const toLoc = item.toLocation || item.destination || item.dropoff || "Destination";
-        const status = (item.status || "successful").toLowerCase();
-        const isFailed = (status === "cancelled" || status === "failed");
+        const fromLoc = item.pickupLocation || item.fromLocation || item.pickup || "Pickup Point";
+        const toLoc = item.dropLocation || item.toLocation || item.destination || "Destination";
+        const status = String(item.status || "successful").toLowerCase();
+        const isSuccess = (status === "delivered" || status === "successful" || status === "completed");
+
+        let statusBadgeClass = isSuccess ? "isSuccess" : "isFailed";
+        let statusLabel = isSuccess ? "Successful" : status === "cancelled" ? "Cancelled" : status === "expired" ? "Expired" : "Failed";
+        let rewardText = isSuccess ? `+₹${item.reward || 0}` : `₹0`;
+
+        const dateStr = item.deliveredAt || item.cancelledAt || item.updatedAt || item.createdAt || item.date;
+        const formattedDate = dateStr
+            ? new Date(dateStr).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })
+            : "Recent";
+        const parcelName = item.companyName ? `${item.companyName} parcel` : (item.itemDescription || "Parcel delivery");
 
         html +=
             '<div class="deliveryItem">' +
                 '<div class="deliveryInfo">' +
                     '<span class="deliveryRoute">' + esc(fromLoc) + ' &rarr; ' + esc(toLoc) + '</span>' +
-                    '<span class="deliveryDate">' + esc(item.date || item.createdAt || "Today") + '</span>' +
+                    '<span class="deliveryDate">' + esc(parcelName) + ' &middot; ' + esc(formattedDate) + '</span>' +
                 '</div>' +
                 '<div class="deliveryStatusGroup">' +
-                    '<span class="deliveryReward' + (isFailed ? " isMuted" : "") + '">' +
-                        (isFailed ? "\u20B90" : "+\u20B9" + esc(item.reward || 0)) + '</span>' +
-                    '<span class="deliveryBadge ' + (isFailed ? "isFailed" : "isSuccess") + '">' +
-                        (isFailed ? "Cancelled" : "Successful") + '</span>' +
+                    '<span class="deliveryReward' + (!isSuccess ? " isMuted" : "") + '">' +
+                        esc(rewardText) + '</span>' +
+                    '<span class="deliveryBadge ' + statusBadgeClass + '">' +
+                        esc(statusLabel) + '</span>' +
                 '</div>' +
             '</div>';
     }
@@ -106,13 +136,14 @@ function renderHistoryList(deliveries) {
 
 // ---------- Show / hide history ----------
 function toggleHistory() {
+    if (!historyButton || !deliveryList) return;
     const isOpen = historyButton.getAttribute("aria-expanded") === "true";
     deliveryList.hidden = isOpen;
     historyButton.setAttribute("aria-expanded", String(!isOpen));
     historyButton.textContent = isOpen ? "Show History" : "Hide History";
 }
 
-historyButton.addEventListener("click", toggleHistory);
+if (historyButton) historyButton.addEventListener("click", toggleHistory);
 setInterval(updateClock, 1000);
 updateClock();
 loadProfileAndEarnings();

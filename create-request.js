@@ -92,6 +92,8 @@ async function handleCreationSubmit(event) {
     submitButton.textContent = "Publishing Request…";
 
     try {
+        const isUrgent = Boolean(document.getElementById("isUrgent") && document.getElementById("isUrgent").checked);
+
         const created = await api.post("/api/requests", {
             pickupLocation: value("fromLocation"),
             dropLocation: value("toLocation"),
@@ -101,7 +103,8 @@ async function handleCreationSubmit(event) {
             agentName: value("agentName"),
             agentMobile: agentMobile,
             pickupOtp: pickupOtp,
-            itemDescription: value("itemDescription")
+            itemDescription: value("itemDescription"),
+            isUrgent: isUrgent
         });
 
         submitButton.textContent = "Published! Redirecting…";

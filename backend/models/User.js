@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema(
     passwordHash: { type: String, required: true, select: false },
     isVerified: { type: Boolean, default: false },
     role: { type: String, enum: ROLES, default: 'student' },
+    earnings: { type: Number, default: 0, min: 0 },
 
     // Email verification (stored hashed; never returned)
     emailVerificationTokenHash: { type: String, select: false },

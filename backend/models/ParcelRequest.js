@@ -21,6 +21,8 @@ const parcelRequestSchema = new mongoose.Schema(
     },
     pickupOtp: { type: String, required: true, trim: true, maxlength: 10 },
     itemDescription: { type: String, trim: true, maxlength: 1000, default: '' },
+    isUrgent: { type: Boolean, default: false, index: true },
+    rewardCredited: { type: Boolean, default: false },
     status: { type: String, enum: STATUS_VALUES, default: 'pending', index: true },
     acceptedAt: { type: Date, default: null },
     pickedUpAt: { type: Date, default: null },

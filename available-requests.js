@@ -63,6 +63,38 @@ function contains(field, search) {
     return String(field || "").toLowerCase().includes(search);
 }
 
+function renderCardHtml(r, index) {
+    const isUrgent = (r.urgency === "urgent");
+    const animation = firstRender ? " cardAnim" : "";
+    const delay = firstRender ? ' style="animation-delay:' + (index * 0.06) + 's"' : "";
+
+    return (
+        '<div class="reqCard' + animation + (isUrgent ? " isUrgent" : "") + '"' + delay + '>' +
+            '<div class="accentBar"></div>' +
+            '<div class="reqHeader">' +
+                '<div>' +
+                    '<div class="reqTitle">' + esc(r.itemName) + '</div>' +
+                    '<div class="reqMeta">' +
+                        '<span>👤 ' + esc(r.requester) + '</span>' +
+                        '<span>🕐 ' + esc(formatTime(r.createdAt)) + '</span>' +
+                        (isUrgent ? '<span class="badge badgeUrgent">Urgent</span>' : "") +
+                    '</div>' +
+                '</div>' +
+                '<div class="reqReward">₹' + esc(r.reward) + '</div>' +
+            '</div>' +
+            (r.description ? '<p class="reqDescription">' + esc(r.description) + '</p>' : "") +
+            '<div class="reqRoute">' +
+                '<span class="loc">📍 ' + esc(r.pickup) + '</span>' +
+                '<span class="routeArrow" aria-hidden="true">&rarr;</span>' +
+                '<span class="loc">🏁 ' + esc(r.dropoff) + '</span>' +
+            '</div>' +
+            '<div class="reqFooter">' +
+                '<button type="button" class="btnPrimary btnSmall" data-accept-id="' + esc(r.id) + '">Accept Request</button>' +
+            '</div>' +
+        '</div>'
+    );
+}
+
 function renderCards() {
     const search = searchInput ? searchInput.value.toLowerCase() : "";
 
@@ -83,7 +115,7 @@ function renderCards() {
 
     if (list.length === 0) {
         grid.innerHTML =
-            '<div class="gridEmpty">' +
+            '<div class="gridEmpty" style="grid-column: 1 / -1;">' +
             '<div class="emptyIcon" aria-hidden="true">📭</div>' +
             '<h3>Nothing here right now</h3>' +
             '<p>Check back soon. New requests appear here automatically.</p>' +
@@ -92,38 +124,38 @@ function renderCards() {
         return;
     }
 
-    let html = "";
-    for (let i = 0; i < list.length; i++) {
-        const r = list[i];
-        const isUrgent = (r.urgency === "urgent");
-        const animation = firstRender ? " cardAnim" : "";
-        const delay = firstRender ? ' style="animation-delay:' + (i * 0.06) + 's"' : "";
+    const urgentList = list.filter(r => r.urgency === "urgent");
+    const standardList = list.filter(r => r.urgency !== "urgent");
 
-        html +=
-            '<div class="reqCard' + animation + (isUrgent ? " isUrgent" : "") + '"' + delay + '>' +
-                '<div class="accentBar"></div>' +
-                '<div class="reqHeader">' +
-                    '<div>' +
-                        '<div class="reqTitle">' + esc(r.itemName) + '</div>' +
-                        '<div class="reqMeta">' +
-                            '<span>👤 ' + esc(r.requester) + '</span>' +
-                            '<span>🕐 ' + esc(formatTime(r.createdAt)) + '</span>' +
-                            (isUrgent ? '<span class="badge badgeUrgent">Urgent</span>' : "") +
-                        '</div>' +
-                    '</div>' +
-                    '<div class="reqReward">₹' + esc(r.reward) + '</div>' +
-                '</div>' +
-                (r.description ? '<p class="reqDescription">' + esc(r.description) + '</p>' : "") +
-                '<div class="reqRoute">' +
-                    '<span class="loc">📍 ' + esc(r.pickup) + '</span>' +
-                    '<span class="routeArrow" aria-hidden="true">&rarr;</span>' +
-                    '<span class="loc">🏁 ' + esc(r.dropoff) + '</span>' +
-                '</div>' +
-                '<div class="reqFooter">' +
-                    '<button type="button" class="btnPrimary btnSmall" data-accept-id="' + esc(r.id) + '">Accept Request</button>' +
-                '</div>' +
-            '</div>';
+    let html = "";
+    let itemIdx = 0;
+
+    if (currentFilter === "urgent") {
+        html += '<div class="sectionHeading urgentHeading" style="grid-column: 1 / -1; margin: 8px 0 4px; font-size: 1.2rem; font-weight: 700; color: #dc2626; display: flex; align-items: center; gap: 8px;"><span>🔴</span> Urgent Deliveries (' + urgentList.length + ')</div>';
+        for (let i = 0; i < urgentList.length; i++) {
+            html += renderCardHtml(urgentList[i], itemIdx++);
+        }
+    } else {
+        if (urgentList.length > 0) {
+            html += '<div class="sectionHeading urgentHeading" style="grid-column: 1 / -1; margin: 8px 0 4px; font-size: 1.2rem; font-weight: 700; color: #dc2626; display: flex; align-items: center; gap: 8px;"><span>🔴</span> Urgent Deliveries (' + urgentList.length + ')</div>';
+            for (let i = 0; i < urgentList.length; i++) {
+                html += renderCardHtml(urgentList[i], itemIdx++);
+            }
+
+            if (standardList.length > 0) {
+                html += '<div class="sectionHeading standardHeading" style="grid-column: 1 / -1; margin: 24px 0 4px; font-size: 1.2rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;"><span>📦</span> Standard Deliveries (' + standardList.length + ')</div>';
+                for (let i = 0; i < standardList.length; i++) {
+                    html += renderCardHtml(standardList[i], itemIdx++);
+                }
+            }
+        } else {
+            html += '<div class="sectionHeading standardHeading" style="grid-column: 1 / -1; margin: 8px 0 4px; font-size: 1.2rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;"><span>📦</span> Standard Deliveries (' + standardList.length + ')</div>';
+            for (let i = 0; i < standardList.length; i++) {
+                html += renderCardHtml(standardList[i], itemIdx++);
+            }
+        }
     }
+
     grid.innerHTML = html;
     firstRender = false;
 }
