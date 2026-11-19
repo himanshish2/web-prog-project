@@ -1,4 +1,4 @@
-// profile.js - student profile page (plain JavaScript, localStorage only)
+// profile.js - student profile page (details from the backend; earnings history still in localStorage)
 
 const historyButton = document.getElementById("historyToggleBtn");
 const deliveryList = document.getElementById("deliveryList");
@@ -33,22 +33,29 @@ function updateClock() {
 }
 
 // ---------- Profile + earnings ----------
-function loadProfileAndEarnings() {
-    const profile = readStorage("studentProfile", null);
-    const user = readStorage("cc_user", null);     // the account that is signed in
-
-    // Name: the registered name if there is one, otherwise the name from sign-in.
-    const signedInName = user ? (user.name || user.email) : "";
-    document.getElementById("profileName").textContent =
-        (profile && profile.studentName) || signedInName || "Student";
+// The student's details come from the backend (MongoDB) via GET /api/auth/me.
+async function loadProfileAndEarnings() {
+    let profile = null;
+    try {
+        const user = await api.me();            // the server's answer is the truth
+        if (user) {
+            cacheUser(user);                    // refresh the display copy (layout.js)
+            profile = { studentName: user.name, enrollmentNo: user.enrollmentNo, courseName: user.course, batch: user.batch };
+        }
+    } catch (error) {
+        // Server unreachable: fall back to the display copy so the page is not empty.
+        profile = readStorage("studentProfile", null);
+    }
 
     if (profile) {
+        document.getElementById("profileName").textContent = profile.studentName || "Student";
         document.getElementById("profileEnrollment").textContent = profile.enrollmentNo;
         document.getElementById("profileCourse").textContent = profile.courseName;
         document.getElementById("profileBatch").textContent = profile.batch;
     } else {
-        // Signed in, but the student details have not been filled in yet.
-        document.getElementById("profileNotice").hidden = false;
+        const notice = document.getElementById("profileNotice");
+        notice.textContent = "Could not load your details. Check that the backend is running, then refresh.";
+        notice.hidden = false;
     }
 
     const completedDeliveries = readStorage("completedDeliveries", []);

@@ -12,7 +12,7 @@
 <body>
     <header id="siteHeader"></header>
 
-    <!-- Tab controller for Log In / Sign Up (pure CSS). login.html#signup opens the Sign Up tab.
+    <!-- Tab pills. The page is always on "Log In"; clicking "Sign Up" opens signup.html (login.js).
          These radios must stay siblings placed BEFORE <main>. -->
     <input type="radio" name="authTab" id="tabLogin" class="tabRadio" checked>
     <input type="radio" name="authTab" id="tabSignup" class="tabRadio">
@@ -56,18 +56,14 @@
                                aria-label="Password" autocomplete="current-password" required>
                     </div>
 
-                    <!-- Only visible in the Sign Up tab. Not "required" in the HTML because it is
-                         hidden on the Log In tab; login.js checks it when signing up. -->
-                    <div class="inputFieldGroup signupOnly">
-                        <input type="password" class="inputUnderline" id="authConfirm" placeholder="Confirm password"
-                               aria-label="Confirm password" autocomplete="new-password">
-                    </div>
-
                     <div class="forgotRow">
                         <a href="#" class="forgotLink">Forgot Password?</a>
                     </div>
 
                     <p class="authMessage" id="authMessage" role="status" aria-live="polite"></p>
+
+                    <!-- Shown by login.js when the email is not verified yet -->
+                    <button type="button" class="linkButton" id="resendButton" hidden>Resend verification email</button>
 
                     <button type="submit" class="btnPrimary submitBtn">
                         <span class="labelLogin">Log In</span>
@@ -103,7 +99,6 @@
     <div id="siteFooter"></div>
 
     <script src="layout.js"></script>
-    <script src="app.js"></script>
     <script src="login.js"></script>
 </body>
 </html>

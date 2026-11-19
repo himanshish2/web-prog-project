@@ -1,159 +1,200 @@
-// login.js - email + password log in / sign up (demo, browser only).
-//
-// Accounts live in this browser's localStorage. The password is never stored as
-// typed: only a salted PBKDF2 hash is kept. This is still NOT real security
-// (anyone with access to the browser can read or change localStorage), so the
-// real check must move to the backend in Phase 3.
-
-const ACCOUNTS_KEY = "campusCarryAccounts";
+// CampusCarry login and first stage of registration.
+// Login uses the backend session. Signup continues to signup.html.
 
 const authForm = document.getElementById("authForm");
-const tabSignup = document.getElementById("tabSignup");
 const tabLogin = document.getElementById("tabLogin");
+const tabSignup = document.getElementById("tabSignup");
 const emailInput = document.getElementById("authEmail");
 const passwordInput = document.getElementById("authPassword");
-const confirmInput = document.getElementById("authConfirm");
 const messageBox = document.getElementById("authMessage");
+const resendButton = document.getElementById("resendButton");
+const submitButton = authForm.querySelector('button[type="submit"]');
 
-// login.html#signup (the navbar "Sign Up" button) opens the Sign Up tab.
-if (window.location.hash === "#signup") {
-    tabSignup.checked = true;
-}
+const confirmGroup = document.createElement("div");
+confirmGroup.className = "inputFieldGroup";
+confirmGroup.hidden = true;
 
-function showMessage(text, isError) {
-    messageBox.textContent = text;
+const confirmInput = document.createElement("input");
+confirmInput.type = "password";
+confirmInput.className = "inputUnderline";
+confirmInput.id = "authConfirmPassword";
+confirmInput.placeholder = "Confirm password";
+confirmInput.setAttribute("aria-label", "Confirm password");
+confirmInput.autocomplete = "new-password";
+confirmGroup.appendChild(confirmInput);
+
+passwordInput.closest(".inputFieldGroup")
+    .insertAdjacentElement("afterend", confirmGroup);
+
+function showMessage(message, isError = true) {
+    messageBox.textContent = message;
     messageBox.classList.toggle("isError", isError);
 }
 
-// Clear the message when the visitor switches tab.
-tabLogin.addEventListener("change", function () { showMessage("", false); });
-tabSignup.addEventListener("change", function () { showMessage("", false); });
+function updateMode() {
+    const signupMode = tabSignup.checked;
 
-// ---------- Saved accounts ----------
-function readAccounts() {
+    confirmGroup.hidden = !signupMode;
+
+    const forgotRow = document.querySelector(".forgotRow");
+    if (forgotRow) forgotRow.hidden = signupMode;
+
+    resendButton.hidden = true;
+
+    passwordInput.autocomplete = signupMode
+        ? "new-password"
+        : "current-password";
+
+    submitButton.querySelector(".labelLogin").hidden = signupMode;
+    submitButton.querySelector(".labelSignup").hidden = !signupMode;
+
+    showMessage("");
+}
+
+tabLogin.addEventListener("change", updateMode);
+tabSignup.addEventListener("change", updateMode);
+
+// Open signup mode when redirected from the navbar/footer.
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("mode") === "signup") {
+    tabSignup.checked = true;
+}
+
+updateMode();
+
+// Verification messages
+if (params.get("verified") === "true") {
+    tabLogin.checked = true;
+    updateMode();
+    showMessage("Email verified! You can log in now.", false);
+} else if (params.get("verified") === "false") {
+    tabLogin.checked = true;
+    updateMode();
+    showMessage(
+        "That verification link is invalid or has expired. Enter your email and use Resend verification email.",
+        true
+    );
+    resendButton.hidden = false;
+} else if (params.get("reason") === "server") {
+    tabLogin.checked = true;
+    updateMode();
+    showMessage("Cannot reach the server. Is the backend running?", true);
+}
+
+// Resend verification email
+resendButton.addEventListener("click", async function () {
+    const email = emailInput.value.trim().toLowerCase();
+
+    if (!email) {
+        showMessage("Type your email address first.");
+        return;
+    }
+
+    resendButton.disabled = true;
+
     try {
-        const list = JSON.parse(localStorage.getItem(ACCOUNTS_KEY));
-        return Array.isArray(list) ? list : [];
+        await api.resendVerification(email);
+        showMessage(
+            "If this account needs verification, a new link has been sent. Check your inbox.",
+            false
+        );
     } catch (error) {
-        return [];
-    }
-}
-
-function saveAccounts(list) {
-    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
-}
-
-// ---------- Password hashing (salted PBKDF2, built into the browser) ----------
-function toHex(bytes) {
-    return Array.from(bytes).map(function (b) {
-        return b.toString(16).padStart(2, "0");
-    }).join("");
-}
-
-function fromHex(hex) {
-    const bytes = new Uint8Array(hex.length / 2);
-    for (let i = 0; i < bytes.length; i++) {
-        bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
-    }
-    return bytes;
-}
-
-function newSalt() {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    return toHex(bytes);
-}
-
-async function hashPassword(password, saltHex) {
-    const keyMaterial = await crypto.subtle.importKey(
-        "raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]
-    );
-    const bits = await crypto.subtle.deriveBits(
-        { name: "PBKDF2", salt: fromHex(saltHex), iterations: 100000, hash: "SHA-256" },
-        keyMaterial, 256
-    );
-    return toHex(new Uint8Array(bits));
-}
-
-// ---------- Helpers ----------
-function readProfileFor(email) {
-    try {
-        const profile = JSON.parse(localStorage.getItem("studentProfile"));
-        if (profile && String(profile.bmuEmail).toLowerCase() === email) return profile;
-    } catch (error) { /* ignore */ }
-    return null;
-}
-
-// ---------- Sign up ----------
-async function signUp(email, password, confirm) {
-    if (password.length < 6) {
-        showMessage("Password must be at least 6 characters.", true);
-        return;
-    }
-    if (password !== confirm) {
-        showMessage("Passwords do not match.", true);
-        return;
+        showMessage(api.describeError(error));
     }
 
-    const accounts = readAccounts();
-    const exists = accounts.some(function (a) { return a.email === email; });
-    if (exists) {
-        showMessage("An account with this email already exists. Please log in.", true);
-        return;
-    }
+    resendButton.disabled = false;
+});
 
-    const salt = newSalt();
-    accounts.push({ email: email, salt: salt, hash: await hashPassword(password, salt) });
-    saveAccounts(accounts);
-
-    // Signed in; signup.html collects the student details next.
-    CC.setUser({ name: email.split("@")[0], contact: "", email: email });
-    window.location.href = "signup.html";
-}
-
-// ---------- Log in ----------
+// Existing backend login
 async function logIn(email, password) {
-    const account = readAccounts().find(function (a) { return a.email === email; });
+    const user = await api.login(email, password);
+    const confirmed = await api.me();
 
-    if (!account || (await hashPassword(password, account.salt)) !== account.hash) {
-        showMessage("Incorrect email or password.", true);
+    if (!confirmed) {
+        showMessage(
+            "Login succeeded, but the session was not retained. Check your frontend and backend addresses."
+        );
         return;
     }
 
-    const profile = readProfileFor(email);
-    CC.setUser({
-        name: profile ? profile.studentName : email.split("@")[0],
-        contact: profile ? profile.mobileNo : "",
-        email: email
-    });
-    window.location.href = "dashboard.html";
+    cacheUser(confirmed || user);
+    navigate("dashboard.html");
 }
 
-// ---------- Form ----------
+// Form submission
 authForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
-    const confirm = confirmInput.value;
 
-    if (!window.crypto || !crypto.subtle) {
-        showMessage("Open this site with Live Server or localhost so passwords can be protected.", true);
-        return;
-    }
-    if (email === "" || !emailInput.checkValidity()) {
-        showMessage("Please enter a valid email address.", true);
-        return;
-    }
-    if (password === "") {
-        showMessage("A password is required.", true);
+    if (!email || !emailInput.checkValidity()) {
+        showMessage("Please enter a valid email address.");
         return;
     }
 
-    showMessage("", false);
+    if (!password) {
+        showMessage("Please enter a password.");
+        return;
+    }
+
+    // STAGE 1: SIGNUP
     if (tabSignup.checked) {
-        await signUp(email, password, confirm);
-    } else {
+        const confirmPassword = confirmInput.value;
+
+        if (password.length < 8 || password.length > 72) {
+            showMessage("Password must be between 8 and 72 characters.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showMessage("Passwords do not match.");
+            return;
+        }
+
+        try {
+            // Temporarily carry credentials to the registration page.
+            // This is cleared after the backend registration request.
+            sessionStorage.setItem(
+                "cc_pending_registration",
+                JSON.stringify({ email, password })
+            );
+
+            navigate("signup.html");
+
+        } catch (error) {
+            showMessage(
+                "Could not continue registration. Please enable session storage and try again."
+            );
+        }
+
+        return;
+    }
+
+    // STAGE 2: LOGIN
+    showMessage("");
+    resendButton.hidden = true;
+    submitButton.disabled = true;
+
+    try {
         await logIn(email, password);
+
+    } catch (error) {
+        if (error.code === "INVALID_CREDENTIALS") {
+            showMessage("Incorrect email or password.");
+
+        } else if (error.code === "EMAIL_NOT_VERIFIED") {
+            showMessage(
+                "Please verify your email before logging in. Check your inbox."
+            );
+            resendButton.hidden = false;
+
+        } else {
+            showMessage(api.describeError(error));
+        }
+
+    } finally {
+        submitButton.disabled = false;
     }
 });

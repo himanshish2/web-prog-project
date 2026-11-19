@@ -7,7 +7,7 @@
     <!-- Everything on this page (card, form fields, buttons) comes from h_style.css -->
     <link rel="stylesheet" href="h_style.css">
 </head>
-<body data-auth="required">
+<body>
 
     <header id="siteHeader"></header>
 
@@ -17,7 +17,7 @@
             <h1>Student Registration</h1>
             <p class="cardSubtitle">Set up your CampusCarry profile to start requesting and delivering parcels.</p>
 
-            <form class="formStack" id="studentSignupForm">
+            <form class="formStack" id="studentSignupForm" novalidate>
 
                 <div class="formRow">
                     <div class="formGroup">
@@ -42,8 +42,8 @@
                 </div>
 
                 <div class="formGroup">
-                    <label for="bmuEmail">Email ID</label>
-                    <input type="email" id="bmuEmail" placeholder="student@bmu.edu.in" required>
+                    <label for="bmuEmail">BMU Email ID</label>
+                    <input type="email" id="bmuEmail" placeholder="name@bmu.edu.in" autocomplete="email" required>
                 </div>
 
                 <div class="formRow">
@@ -66,10 +66,26 @@
                         <input type="tel" id="mobileNo" pattern="\d{10}" title="Must be 10 digits" placeholder="10-digit mobile number" required>
                     </div>
                 </div>
+                <p class="formNotice" id="signupMessage" role="status" aria-live="polite" hidden></p>
 
-                <button type="submit" class="btnPrimary btnFull">Complete Registration</button>
+                <button type="submit" class="btnPrimary btnFull" id="signupButton">Create Account</button>
+
+                <p class="formAltLink">Already registered? <a href="login.html">Log in</a></p>
 
             </form>
+
+            <!-- Shown after the account is created (see signup.js) -->
+            <section id="signupDone" hidden>
+                <h2 class="doneTitle">Check your email</h2>
+                <p class="cardSubtitle" id="signupDoneText"></p>
+
+                <p class="formNotice" id="resendMessage" role="status" aria-live="polite" hidden></p>
+
+                <div class="formStack">
+                    <button type="button" class="btnSecondary btnFull" id="resendButton">Resend verification email</button>
+                    <a href="login.html" class="btnPrimary btnFull">Go to Log In</a>
+                </div>
+            </section>
         </div>
 
     </main>

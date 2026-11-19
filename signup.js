@@ -1,80 +1,202 @@
-// signup.js - student registration: the details step after the account is created
-// on the login page (email + password live there). Plain JavaScript, localStorage only.
+// CampusCarry student registration - second stage.
 
 const signupForm = document.getElementById("studentSignupForm");
 const emailField = document.getElementById("bmuEmail");
+const signupMessage = document.getElementById("signupMessage");
+const signupButton = document.getElementById("signupButton");
 
-// The account email comes from the signed-in user and cannot be changed here.
-let currentUser = null;
+const signupDone = document.getElementById("signupDone");
+const signupDoneText = document.getElementById("signupDoneText");
+const resendButton = document.getElementById("resendButton");
+const resendMessage = document.getElementById("resendMessage");
+
+const PENDING_KEY = "cc_pending_registration";
+
+// Retrieve credentials from the first signup stage.
+let pendingRegistration = null;
+
 try {
-    currentUser = JSON.parse(localStorage.getItem("cc_user"));
+    pendingRegistration = JSON.parse(
+        sessionStorage.getItem(PENDING_KEY)
+    );
 } catch (error) {
-    currentUser = null;
+    pendingRegistration = null;
 }
-if (currentUser && currentUser.email) {
-    emailField.value = currentUser.email;
+
+// If someone opens signup.html directly, return them to stage one.
+if (
+    !pendingRegistration ||
+    !pendingRegistration.email ||
+    !pendingRegistration.password
+) {
+    navigate("login.html?mode=signup", true);
+}
+
+// Display the email from stage one.
+if (pendingRegistration) {
+    emailField.value = pendingRegistration.email;
     emailField.readOnly = true;
     emailField.classList.add("readonlyField");
 }
 
-// Download an object as a .json file.
-function downloadJSONFile(dataObj, filename) {
-    const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(link.href);
+// Remove any password fields left over from the previous signup.html.
+const oldPasswordField = document.getElementById("signupPassword");
+if (oldPasswordField) {
+    oldPasswordField.closest(".formRow")?.remove();
 }
 
-function handleSignupSubmit(event) {
+function showSignupMessage(message, isError = true) {
+    signupMessage.textContent = message;
+    signupMessage.hidden = !message;
+    signupMessage.classList.toggle("isError", isError);
+}
+
+function showResendMessage(message, isError = false) {
+    resendMessage.textContent = message;
+    resendMessage.hidden = !message;
+    resendMessage.classList.toggle("isError", isError);
+}
+
+function showRegistrationComplete(result) {
+    signupForm.hidden = true;
+    signupDone.hidden = false;
+
+    if (result.verificationRequired) {
+        signupDone.querySelector(".doneTitle").textContent =
+            "Check your email";
+
+        signupDoneText.textContent =
+            result.verificationEmailSent === false
+                ? "Your account was created, but the verification email could not be sent. Please try resending it."
+                : "Your account was created. Verify your BMU email using the link sent to your inbox.";
+
+        resendButton.hidden = false;
+
+    } else {
+        signupDone.querySelector(".doneTitle").textContent =
+            "Account created";
+
+        signupDoneText.textContent =
+            "Your account was created successfully. You can now log in.";
+
+        resendButton.hidden = true;
+    }
+}
+
+// Submit complete registration to backend.
+signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const studentName = document.getElementById("studentName").value.trim();
-    const enrollmentNo = document.getElementById("enrollmentNo").value.trim();
-    const courseName = document.getElementById("courseName").value.trim();
-    const batch = document.getElementById("batch").value.trim();
-    const bmuEmail = emailField.value.trim().toLowerCase();
-    const hostel = document.getElementById("hostel").value;
-    const mobileNo = document.getElementById("mobileNo").value.trim();
+    showSignupMessage("");
 
-    if (enrollmentNo.length !== 6 || isNaN(enrollmentNo)) {
-        alert("Enrollment number must be exactly 6 digits.");
+    if (!pendingRegistration) {
+        showSignupMessage("Registration details are missing. Please start again.");
         return;
     }
 
-    if (mobileNo.length !== 10 || isNaN(mobileNo)) {
-        alert("Mobile number must be exactly 10 digits.");
+    const name =
+        document.getElementById("studentName").value.trim();
+
+    const enrollmentNo =
+        document.getElementById("enrollmentNo").value.trim();
+
+    const course =
+        document.getElementById("courseName").value.trim();
+
+    const batch =
+        document.getElementById("batch").value.trim();
+
+    const email =
+        emailField.value.trim().toLowerCase();
+
+    const hostel =
+        document.getElementById("hostel").value;
+
+    const mobileNo =
+        document.getElementById("mobileNo").value.trim();
+
+    if (!signupForm.checkValidity()) {
+        signupForm.reportValidity();
         return;
     }
 
-    // No password here: it was set (and stored only as a hash) on the login page.
-    const profileData = {
-        studentName: studentName,
+    if (!/^\d{6}$/.test(enrollmentNo)) {
+        showSignupMessage("Enrollment number must contain exactly 6 digits.");
+        return;
+    }
+
+    if (!/^\d{10}$/.test(mobileNo)) {
+        showSignupMessage("Mobile number must contain exactly 10 digits.");
+        return;
+    }
+
+    // All fields expected by backend/routes/authRoutes.js
+    const registrationData = {
+        name: name,
         enrollmentNo: enrollmentNo,
-        courseName: courseName,
+        email: email,
+        course: course,
         batch: batch,
-        bmuEmail: bmuEmail,
         hostel: hostel,
         mobileNo: mobileNo,
-        earnings: 0,
-        completedDeliveriesCount: 0,
-        registeredAt: new Date().toISOString()
+        password: pendingRegistration.password
     };
 
-    // 1. Save to localStorage
-    localStorage.setItem("studentProfile", JSON.stringify(profileData));
+    signupButton.disabled = true;
+    signupButton.textContent = "Creating account...";
 
-    // 2. Update the signed-in user with the real name and number
-    localStorage.setItem("cc_user", JSON.stringify({ name: studentName, contact: mobileNo, email: bmuEmail }));
+    try {
+        const result = await api.register(registrationData);
 
-    // 3. Download a JSON file as proof of the saved data
-    downloadJSONFile(profileData, "student_profile_" + enrollmentNo + ".json");
+        // Registration request succeeded: remove temporary credentials.
+        sessionStorage.removeItem(PENDING_KEY);
+        pendingRegistration = null;
 
-    alert("Registration Successful! Default earnings set to \u20B90. Local JSON file downloaded.");
-    window.location.href = "profile.html";
-}
+        showRegistrationComplete(result || {});
 
-signupForm.addEventListener("submit", handleSignupSubmit);
+    } catch (error) {
+        if (
+            ["EMAIL_ALREADY_EXISTS", "DUPLICATE_EMAIL", "EMAIL_EXISTS"].includes(error.code)
+        ) {
+            showSignupMessage(
+                "This email is already registered. Please go to Log In."
+            );
+
+        } else if (
+            ["ENROLLMENT_ALREADY_EXISTS", "DUPLICATE_ENROLLMENT", "ENROLLMENT_EXISTS"].includes(error.code)
+        ) {
+            showSignupMessage(
+                "This enrollment number is already registered. Please check it."
+            );
+
+        } else {
+            showSignupMessage(api.describeError(error));
+        }
+
+    } finally {
+        signupButton.disabled = false;
+        signupButton.textContent = "Create Account";
+    }
+});
+
+// Resend verification email.
+resendButton.addEventListener("click", async function () {
+    const email = emailField.value.trim().toLowerCase();
+
+    resendButton.disabled = true;
+    showResendMessage("");
+
+    try {
+        await api.resendVerification(email);
+
+        showResendMessage(
+            "If your account needs verification, a new email has been sent. Check your inbox."
+        );
+
+    } catch (error) {
+        showResendMessage(api.describeError(error), true);
+
+    } finally {
+        resendButton.disabled = false;
+    }
+});

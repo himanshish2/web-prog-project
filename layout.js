@@ -1,35 +1,225 @@
-/* layout.js - one navbar + one footer for every page.
-   Edit the links here ONCE and every page updates.
-   Every page needs:  <header id="siteHeader"></header>  and  <div id="siteFooter"></div>
-   and this script loaded at the END of <body>.
 
-   Pages that need a signed-in user put  data-auth="required"  on <body>:
-   visitors who are not signed in are sent to login.html. */
+/* layout.js - shared across all CampusCarry pages */
 
-const NAV_LINKS = [
-    { href: "home.html",         text: "Home" },
-    { href: "h_about.html",        text: "About Us" },
-    { href: "how-it-works.html", text: "How It Works" },
-    { href: "request.html",      text: "Requests" },
-    { href: "tracking.html",     text: "Track Parcel" }
-];
+// ============================================================
+// 1. API HELPER
+// ============================================================
 
-// Where "Request Delivery" points. Use "#" to switch the link off while a page
-// is being built; the footer then shows it as "Coming soon".
-const CREATE_REQUEST_HREF = "create-request.html";
+function resolveApiBase() {
+    if (window.CC_API_BASE) {
+        return String(window.CC_API_BASE).replace(/\/+$/, "");
+    }
 
-// ---------- Signed-in user ----------
-// The signed-in pages save the user under "cc_user" (see app.js / login.js / signup.js).
-function getSignedInUser() {
+    const host = window.location.hostname;
+
+    if (host === "localhost" || host === "127.0.0.1") {
+        return "http://" + host + ":5000";
+    }
+
+    return "";
+}
+
+const API_BASE = resolveApiBase();
+
+class ApiError extends Error {
+    constructor(status, code, message, details) {
+        super(message);
+        this.status = status;
+        this.code = code;
+        this.details = details || [];
+    }
+}
+
+const api = {
+    async request(method, path, body) {
+        let response;
+
+        try {
+            response = await fetch(API_BASE + path, {
+                method: method,
+                credentials: "include",
+                headers: body === undefined
+                    ? {}
+                    : { "Content-Type": "application/json" },
+                body: body === undefined
+                    ? undefined
+                    : JSON.stringify(body)
+            });
+        } catch (error) {
+            throw new ApiError(
+                0,
+                "NETWORK_ERROR",
+                "Cannot reach the server. Is the backend running?"
+            );
+        }
+
+        let json = null;
+
+        try {
+            json = await response.json();
+        } catch (error) {
+            json = null;
+        }
+
+        if (!response.ok) {
+            const e =
+                (json && typeof json.error === "object" && json.error) ||
+                json ||
+                {};
+
+            const text =
+                json && typeof json.error === "string"
+                    ? json.error
+                    : "";
+
+            throw new ApiError(
+                response.status,
+                e.code || (json && json.code) || "ERROR",
+                e.message ||
+                    (json && json.message) ||
+                    text ||
+                    "Request failed (" + response.status + ").",
+                e.details ||
+                    e.errors ||
+                    (json && (json.details || json.errors)) ||
+                    []
+            );
+        }
+
+        return json && json.data !== undefined
+            ? json.data
+            : json;
+    },
+
+    get(path) {
+        return api.request("GET", path);
+    },
+
+    post(path, body) {
+        return api.request(
+            "POST",
+            path,
+            body === undefined ? {} : body
+        );
+    },
+
+    async me() {
+        try {
+            const data = await api.get("/api/auth/me");
+            return data.user;
+        } catch (error) {
+            if (error.status === 401) return null;
+            throw error;
+        }
+    },
+
+    async login(email, password) {
+        const data = await api.post("/api/auth/login", {
+            email: email,
+            password: password
+        });
+
+        return data.user;
+    },
+
+    register(fields) {
+        return api.post("/api/auth/register", fields);
+    },
+
+    resendVerification(email) {
+        return api.post("/api/auth/resend-verification", {
+            email: email
+        });
+    },
+
+    logout() {
+        return api.post("/api/auth/logout");
+    },
+
+    describeError(error) {
+        if (
+            error.code === "VALIDATION_ERROR" &&
+            Array.isArray(error.details) &&
+            error.details.length
+        ) {
+            return error.details
+                .map(function (d) {
+                    return d.message || d;
+                })
+                .join(". ") + ".";
+        }
+
+        return error.message;
+    }
+};
+
+
+// ============================================================
+// 2. SESSION MANAGEMENT
+// ============================================================
+
+const USER_CACHE_KEY = "cc_user";
+const PROFILE_CACHE_KEY = "studentProfile";
+
+function getCachedUser() {
     try {
-        return JSON.parse(localStorage.getItem("cc_user"));
+        return JSON.parse(localStorage.getItem(USER_CACHE_KEY));
     } catch (error) {
         return null;
     }
 }
 
-function isLoggedIn() {
-    return getSignedInUser() !== null;
+function cacheUser(user) {
+    try {
+        localStorage.setItem(
+            USER_CACHE_KEY,
+            JSON.stringify({
+                name: user.name,
+                contact: user.mobileNo || "",
+                email: user.email
+            })
+        );
+
+        localStorage.setItem(
+            PROFILE_CACHE_KEY,
+            JSON.stringify({
+                studentName: user.name,
+                enrollmentNo: user.enrollmentNo,
+                courseName: user.course,
+                batch: user.batch,
+                bmuEmail: user.email,
+                hostel: user.hostel,
+                mobileNo: user.mobileNo
+            })
+        );
+    } catch (error) {
+        // Storage unavailable.
+    }
+}
+
+function clearUserCache() {
+    try {
+        localStorage.removeItem(USER_CACHE_KEY);
+        localStorage.removeItem(PROFILE_CACHE_KEY);
+    } catch (error) {
+        // Ignore storage errors.
+    }
+}
+
+// Remove old browser-only authentication data.
+try {
+    localStorage.removeItem("campusCarryAccounts");
+    localStorage.removeItem("cc_token");
+} catch (error) {
+    // Ignore storage errors.
+}
+
+function navigate(url, replace) {
+    if (replace) {
+        window.location.replace(url);
+    } else {
+        window.location.href = url;
+    }
 }
 
 function escapeHtml(text) {
@@ -40,205 +230,389 @@ function escapeHtml(text) {
         .replace(/"/g, "&quot;");
 }
 
-// Guard: runs straight away, before the page is drawn.
-if (document.body && document.body.dataset.auth === "required" && !isLoggedIn()) {
-    window.location.replace("login.html");
+// Protected pages remain hidden until the server verifies the session.
+const pageNeedsLogin =
+    Boolean(document.body &&
+    document.body.dataset.auth === "required");
+
+if (pageNeedsLogin) {
+    document.body.style.visibility = "hidden";
 }
 
-// ---------- Navbar ----------
-function buildAccountArea() {
-    const user = getSignedInUser();
+async function verifySession() {
+    const before = localStorage.getItem(USER_CACHE_KEY);
 
-    // Signed out: the Sign Up button (opens the Sign Up tab on the login page).
-    if (user === null) {
-        return '<a href="login.html#signup" class="btnNav">Sign Up</a>';
+    let user;
+
+    try {
+        user = await api.me();
+    } catch (error) {
+        if (pageNeedsLogin) {
+            navigate("login.html?reason=server", true);
+        }
+        return;
     }
 
-    // Signed in: a profile icon with a small account menu.
+    if (user) {
+        cacheUser(user);
+    } else {
+        clearUserCache();
+    }
+
+    if (pageNeedsLogin && !user) {
+        navigate("login.html", true);
+        return;
+    }
+
+    if (pageNeedsLogin) {
+        document.body.style.visibility = "";
+    }
+
+    if (localStorage.getItem(USER_CACHE_KEY) !== before) {
+        renderChrome();
+    }
+}
+
+
+// ============================================================
+// 3. NAVBAR AND FOOTER
+// ============================================================
+
+const NAV_LINKS = [
+    { href: "home.html", text: "Home" },
+    { href: "about.html", text: "About Us" },
+    { href: "how-it-works.html", text: "How It Works" },
+    { href: "request.html", text: "Requests" },
+    { href: "tracking.html", text: "Track Parcel" }
+];
+
+const CREATE_REQUEST_HREF = "create-request.html";
+
+function buildAccountArea() {
+    const user = getCachedUser();
+
+    // Signed out: open the first signup stage.
+    if (user === null) {
+        return '<a href="login.html?mode=signup" class="btnNav">Sign Up</a>';
+    }
+
     const who = user.name || user.email || "Student";
+
     return `
         <div class="navProfile">
-            <button type="button" class="navProfileBtn" id="navProfileBtn"
-                    aria-expanded="false" aria-haspopup="true" aria-controls="navProfileMenu"
-                    aria-label="Account menu" title="${escapeHtml(who)}">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <button type="button" class="navProfileBtn"
+                    id="navProfileBtn"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-controls="navProfileMenu"
+                    aria-label="Account menu"
+                    title="${escapeHtml(who)}">
+
+                <svg width="22" height="22"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round"
+                     aria-hidden="true">
+
                     <circle cx="12" cy="8" r="4"/>
                     <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
                 </svg>
             </button>
+
             <ul class="navProfileMenu" id="navProfileMenu" hidden>
-                <li class="navProfileName">Signed in as<br><strong>${escapeHtml(who)}</strong></li>
+                <li class="navProfileName">
+                    Signed in as<br>
+                    <strong>${escapeHtml(who)}</strong>
+                </li>
+
                 <li><a href="dashboard.html">Dashboard</a></li>
                 <li><a href="profile.html">My Profile</a></li>
-                <li><button type="button" id="navLogout">Log out</button></li>
+
+                <li>
+                    <button type="button" id="navLogout">
+                        Log out
+                    </button>
+                </li>
             </ul>
         </div>`;
 }
 
 function buildNavbar(currentPage) {
     let linksHtml = "";
+
     for (const link of NAV_LINKS) {
-        const isActive = (link.href === currentPage);
-        linksHtml += `<li><a href="${link.href}"${isActive ? ' class="activeLink" aria-current="page"' : ""}>${link.text}</a></li>`;
+        const isActive = link.href === currentPage;
+
+        linksHtml += `
+            <li>
+                <a href="${link.href}"
+                   ${isActive
+                    ? 'class="activeLink" aria-current="page"'
+                    : ""}>
+                    ${link.text}
+                </a>
+            </li>`;
     }
 
     return `
-    <nav class="navbar" aria-label="Main navigation">
-        <div class="logo">
-            <a href="home.html"><b>CampusCarry</b></a>
-        </div>
+        <nav class="navbar" aria-label="Main navigation">
 
-        <button type="button" class="navToggle" id="navToggle"
-                aria-expanded="false" aria-controls="navMenu">
-            <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
-            <span id="navToggleText">Menu</span>
-        </button>
+            <div class="logo">
+                <a href="home.html"><b>CampusCarry</b></a>
+            </div>
 
-        <ul class="navLinks" id="navMenu">
-            ${linksHtml}
-        </ul>
+            <button type="button"
+                    class="navToggle"
+                    id="navToggle"
+                    aria-expanded="false"
+                    aria-controls="navMenu">
 
-        ${buildAccountArea()}
-    </nav>`;
+                <span id="navToggleIcon" aria-hidden="true">&#9776;</span>
+                <span id="navToggleText">Menu</span>
+            </button>
+
+            <ul class="navLinks" id="navMenu">
+                ${linksHtml}
+            </ul>
+
+            ${buildAccountArea()}
+
+        </nav>`;
 }
 
-// ---------- Footer ----------
 function buildFooter() {
     let platformHtml = "";
+
     for (const link of NAV_LINKS) {
-        platformHtml += `<a href="${link.href}">${link.text}</a>`;
+        platformHtml += `
+            <a href="${link.href}">${link.text}</a>`;
     }
 
-    // While CREATE_REQUEST_HREF is "#", mark the link as not available yet.
-    const comingSoon = (CREATE_REQUEST_HREF === "#") ? ' aria-disabled="true" title="Coming soon"' : "";
+    const comingSoon =
+        CREATE_REQUEST_HREF === "#"
+            ? ' aria-disabled="true" title="Coming soon"'
+            : "";
 
-    const accountLinks = isLoggedIn()
-        ? '<a href="dashboard.html">Dashboard</a><a href="profile.html">My Profile</a>'
-        : '<a href="login.html">Log In</a><a href="login.html#signup">Sign Up</a>';
+    const accountLinks = getCachedUser() !== null
+        ? `
+            <a href="dashboard.html">Dashboard</a>
+            <a href="profile.html">My Profile</a>
+          `
+        : `
+            <a href="login.html">Log In</a>
+            <a href="login.html?mode=signup">Sign Up</a>
+          `;
 
     return `
-    <footer class="siteFooter">
-        <div class="footerLayout">
-            <div class="footerCol footerBrand">
-                <h4><b>CampusCarry</b></h4>
-                <p>Student-to-student parcel delivery for the BML Munjal University community.</p>
+        <footer class="siteFooter">
+
+            <div class="footerLayout">
+
+                <div class="footerCol footerBrand">
+                    <h4><b>CampusCarry</b></h4>
+                    <p>
+                        Student-to-student parcel delivery
+                        for the BML Munjal University community.
+                    </p>
+                </div>
+
+                <div class="footerCol">
+                    <h4>PLATFORM</h4>
+                    ${platformHtml}
+                </div>
+
+                <div class="footerCol">
+                    <h4>GET STARTED</h4>
+
+                    <a href="${CREATE_REQUEST_HREF}"${comingSoon}>
+                        Request Delivery
+                    </a>
+
+                    ${accountLinks}
+                </div>
+
             </div>
 
-            <div class="footerCol">
-                <h4>PLATFORM</h4>
-                ${platformHtml}
+            <div class="footerBottom">
+                <p>
+                    &copy; 2026 CampusCarry. Web Programming Project.
+                </p>
             </div>
 
-            <div class="footerCol">
-                <h4>GET STARTED</h4>
-                <a href="${CREATE_REQUEST_HREF}"${comingSoon}>Request Delivery</a>
-                ${accountLinks}
-            </div>
-        </div>
-
-        <div class="footerBottom">
-            <p>&copy; 2026 CampusCarry. Web Programming Project.</p>
-        </div>
-    </footer>`;
+        </footer>`;
 }
 
-// ---------- Mobile menu ----------
-// Below 960px the links hide behind a "Menu" button.
-// The class names (navReady, menuOpen) are the ones h_style.css expects.
+
+// ============================================================
+// 4. MOBILE NAVIGATION
+// ============================================================
+
+function setMenuOpen(isOpen) {
+    const navbar = document.querySelector(".navbar");
+    const toggle = document.getElementById("navToggle");
+    const icon = document.getElementById("navToggleIcon");
+    const text = document.getElementById("navToggleText");
+
+    if (!navbar || !toggle) return;
+
+    navbar.classList.toggle("menuOpen", isOpen);
+
+    toggle.setAttribute("aria-expanded", String(isOpen));
+
+    text.textContent = isOpen ? "Close" : "Menu";
+    icon.textContent = isOpen ? "\u2715" : "\u2630";
+}
+
 function setupNavToggle() {
     const navbar = document.querySelector(".navbar");
     const toggle = document.getElementById("navToggle");
     const menu = document.getElementById("navMenu");
-    const icon = document.getElementById("navToggleIcon");
-    const text = document.getElementById("navToggleText");
+
     if (!navbar || !toggle || !menu) return;
 
-    function setMenuOpen(isOpen) {
-        navbar.classList.toggle("menuOpen", isOpen);
-        toggle.setAttribute("aria-expanded", String(isOpen));
-        text.textContent = isOpen ? "Close" : "Menu";
-        icon.textContent = isOpen ? "\u2715" : "\u2630";
-    }
-
-    // Tells the CSS that JavaScript is running, so it is safe to hide the links.
     navbar.classList.add("navReady");
+
     setMenuOpen(false);
 
-    // 1. Click the button: toggle the menu.
     toggle.addEventListener("click", function () {
         setMenuOpen(!navbar.classList.contains("menuOpen"));
     });
 
-    // 2. Click any link inside the menu: close it.
     menu.querySelectorAll("a").forEach(function (link) {
-        link.addEventListener("click", function () { setMenuOpen(false); });
-    });
-
-    // 3. Escape key: close the menu and return focus to the button.
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && navbar.classList.contains("menuOpen")) {
+        link.addEventListener("click", function () {
             setMenuOpen(false);
-            toggle.focus();
-        }
-    });
-
-    // 4. If the window grows to desktop size, reset the menu.
-    window.addEventListener("resize", function () {
-        if (window.innerWidth > 960) setMenuOpen(false);
+        });
     });
 }
 
-// ---------- Profile icon menu ----------
+
+// ============================================================
+// 5. PROFILE MENU AND LOGOUT
+// ============================================================
+
+function setProfileMenuOpen(isOpen) {
+    const button = document.getElementById("navProfileBtn");
+    const menu = document.getElementById("navProfileMenu");
+
+    if (!button || !menu) return;
+
+    menu.hidden = !isOpen;
+    button.setAttribute("aria-expanded", String(isOpen));
+}
+
 function setupProfileMenu() {
     const button = document.getElementById("navProfileBtn");
     const menu = document.getElementById("navProfileMenu");
+
     if (!button || !menu) return;
 
-    function setOpen(isOpen) {
-        menu.hidden = !isOpen;
-        button.setAttribute("aria-expanded", String(isOpen));
-    }
-
     button.addEventListener("click", function () {
-        setOpen(menu.hidden);
+        setProfileMenuOpen(menu.hidden);
     });
 
-    // Click anywhere else, or press Escape, to close.
-    document.addEventListener("click", function (event) {
-        if (!menu.hidden && !menu.contains(event.target) && !button.contains(event.target)) {
-            setOpen(false);
-        }
-    });
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && !menu.hidden) {
-            setOpen(false);
-            button.focus();
-        }
-    });
+    const logoutButton = document.getElementById("navLogout");
 
-    // Log out: forget the user and go back to the login page.
-    document.getElementById("navLogout").addEventListener("click", function () {
-        try { localStorage.removeItem("cc_user"); } catch (error) { /* ignore */ }
-        window.location.href = "login.html";
+    logoutButton.addEventListener("click", async function () {
+        try {
+            await api.logout();
+        } catch (error) {
+            alert("Could not log out: " + error.message);
+            return;
+        }
+
+        clearUserCache();
+        navigate("login.html");
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const currentPage = window.location.pathname.split("/").pop() || "home.html";
+
+// ============================================================
+// 6. DOCUMENT LISTENERS
+// ============================================================
+
+function setupDocumentListeners() {
+    document.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape") return;
+
+        const navbar = document.querySelector(".navbar");
+
+        if (navbar && navbar.classList.contains("menuOpen")) {
+            setMenuOpen(false);
+            document.getElementById("navToggle").focus();
+        }
+
+        const menu = document.getElementById("navProfileMenu");
+
+        if (menu && !menu.hidden) {
+            setProfileMenuOpen(false);
+            document.getElementById("navProfileBtn").focus();
+        }
+    });
+
+    document.addEventListener("click", function (event) {
+        const menu = document.getElementById("navProfileMenu");
+        const button = document.getElementById("navProfileBtn");
+
+        if (
+            menu &&
+            !menu.hidden &&
+            !menu.contains(event.target) &&
+            button &&
+            !button.contains(event.target)
+        ) {
+            setProfileMenuOpen(false);
+        }
+
+        const link =
+            event.target.closest &&
+            event.target.closest('a[aria-disabled="true"]');
+
+        if (link) {
+            event.preventDefault();
+        }
+    });
+
+    window.addEventListener("resize", function () {
+        if (window.innerWidth > 960) {
+            setMenuOpen(false);
+        }
+    });
+}
+
+
+// ============================================================
+// 7. RENDER NAVBAR AND FOOTER
+// ============================================================
+
+function renderChrome() {
+    const currentPage =
+        window.location.pathname.split("/").pop() || "home.html";
 
     const headerSlot = document.getElementById("siteHeader");
     const footerSlot = document.getElementById("siteFooter");
 
-    if (headerSlot) headerSlot.innerHTML = buildNavbar(currentPage);
-    if (footerSlot) footerSlot.innerHTML = buildFooter();
+    if (headerSlot) {
+        headerSlot.innerHTML = buildNavbar(currentPage);
+    }
+
+    if (footerSlot) {
+        footerSlot.innerHTML = buildFooter();
+    }
 
     setupNavToggle();
     setupProfileMenu();
+}
 
-    // Links marked aria-disabled="true" point to pages that are not built yet.
-    document.addEventListener("click", function (event) {
-        const link = event.target.closest('a[aria-disabled="true"]');
-        if (link) event.preventDefault();
-    });
+
+// ============================================================
+// 8. PAGE INITIALIZATION
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+    renderChrome();
+    setupDocumentListeners();
+    verifySession();
 });

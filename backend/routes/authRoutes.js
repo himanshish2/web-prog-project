@@ -184,16 +184,21 @@ router.post(
       throw new AppError(400, 'VALIDATION_ERROR', 'Email and password are required');
 
     const user = await User.findOne({ email }).select('+passwordHash');
+    console.log('[LOGIN DEBUG] User found:', !!user);
+    console.log('[LOGIN DEBUG] Password hash exists:', !!user?.passwordHash);
     const match = await bcrypt.compare(password, user ? user.passwordHash : DUMMY_HASH);
     if (!user || !match)
       throw new AppError(401, 'INVALID_CREDENTIALS', 'Incorrect email or password');
 
     if (config.requireEmailVerification && !user.isVerified)
       throw new AppError(403, 'EMAIL_NOT_VERIFIED', 'Please verify your email before logging in');
-
+    
+    console.log('[LOGIN DEBUG] Password matched. Regenerating session...');
     await regenerateSession(req); // prevents session fixation
+    console.log('[LOGIN DEBUG] Session regenerated successfully');
     req.session.userId = String(user._id);
     await saveSession(req);
+    console.log('[LOGIN DEBUG] Session saved successfully');
 
     return ok(res, { user: user.toJSON() });
   })

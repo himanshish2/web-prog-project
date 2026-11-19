@@ -790,6 +790,47 @@ a[aria-disabled="true"] {
     font-weight: 600;
 }
 
+.formNotice.isError {
+    background-color: var(--danger-soft);
+    color: var(--danger);
+    font-weight: 600;
+}
+
+.formNotice.isSuccess {
+    background-color: var(--success-soft);
+    color: var(--success);
+}
+
+.formAltLink {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.formAltLink a {
+    color: var(--purple);
+    font-weight: 600;
+}
+
+/* A button that looks like a link (for small actions such as "Resend email") */
+.linkButton {
+    align-self: flex-start;
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--purple);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.linkButton:disabled {
+    color: var(--muted);
+    cursor: not-allowed;
+}
+
 /* Forms */
 .formStack {
     display: flex;
