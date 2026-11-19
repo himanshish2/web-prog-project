@@ -6,7 +6,7 @@
 const ADMIN_USER = "admin";
 const ADMIN_PASS = "admin123";
 const BASIC_AUTH = "Basic " + btoa(ADMIN_USER + ":" + ADMIN_PASS);
-const API_BASE = "http://localhost:3001";
+const API_BASE = "https://campuscarry-backend-4p1n.onrender.com/api";
 
 const adminMessage = document.getElementById("adminMessage");
 
