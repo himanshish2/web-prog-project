@@ -1,6 +1,6 @@
 // Drop this into the frontend (e.g. js/api.js) and include it with <script src="js/api.js"></script>
 // It wraps fetch() so every page talks to the backend the same way.
-const API_BASE = 'http://localhost:5000/api'; // change to your deployed backend URL later
+const API_BASE = "https://campuscarry-backend-4p1n.onrender.com/api";
 
 async function api(path, { method = 'GET', body } = {}) {
   const res = await fetch(API_BASE + path, {

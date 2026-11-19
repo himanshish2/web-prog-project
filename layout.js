@@ -5,21 +5,7 @@
 // 1. API HELPER
 // ============================================================
 
-function resolveApiBase() {
-    if (window.CC_API_BASE) {
-        return String(window.CC_API_BASE).replace(/\/+$/, "");
-    }
-
-    const host = window.location.hostname;
-
-    if (host === "localhost" || host === "127.0.0.1") {
-        return "http://" + host + ":5000";
-    }
-
-    return "";
-}
-
-const API_BASE = resolveApiBase();
+const API_BASE = "https://campuscarry-backend-4p1n.onrender.com/api";
 
 class ApiError extends Error {
     constructor(status, code, message, details) {
@@ -33,9 +19,12 @@ class ApiError extends Error {
 const api = {
     async request(method, path, body) {
         let response;
+        const normalizedPath = (API_BASE.endsWith("/api") && path.startsWith("/api"))
+            ? path.slice(4)
+            : path;
 
         try {
-            response = await fetch(API_BASE + path, {
+            response = await fetch(API_BASE + normalizedPath, {
                 method: method,
                 credentials: "include",
                 headers: body === undefined
