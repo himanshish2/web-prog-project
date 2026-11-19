@@ -1,7 +1,4 @@
-// available-requests.js - browse and accept open requests (uses the CC data layer from app.js)
-
-// Not logged in: requireLogin() sends the visitor to login.html and we stop here.
-const user = CC.requireLogin() ? CC.getUser() : null;
+// available-requests.js - browse and accept open requests via live backend API
 
 const grid = document.getElementById("cardsGrid");
 const searchInput = document.getElementById("searchInput");
@@ -12,8 +9,23 @@ const filterButtons = document.querySelectorAll(".filterBtn");
 let currentFilter = "all";      // which urgency filter is active
 let pendingAcceptId = null;     // id of the request the user clicked "Accept" on
 let firstRender = true;         // only the first draw plays the entrance animation
-
 let availableRequests = [];
+
+function formatTime(iso) {
+    if (!iso) return "recently";
+    try {
+        const diff = Date.now() - new Date(iso).getTime();
+        if (Number.isNaN(diff)) return "recently";
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return "just now";
+        if (m < 60) return `${m}m ago`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `${h}h ago`;
+        return `${Math.floor(h / 24)}d ago`;
+    } catch (e) {
+        return "recently";
+    }
+}
 
 async function loadAvailableRequests() {
     try {
@@ -21,7 +33,7 @@ async function loadAvailableRequests() {
 
         availableRequests = requests.map((request) => ({
             id: request.id,
-            itemName: request.companyName + " parcel",
+            itemName: (request.companyName || "Courier") + " parcel",
             description: request.itemDescription,
             requester: request.requester?.name || "Student",
             pickup: request.pickupLocation,
@@ -52,9 +64,9 @@ function contains(field, search) {
 }
 
 function renderCards() {
-    const search = searchInput.value.toLowerCase();
+    const search = searchInput ? searchInput.value.toLowerCase() : "";
 
-    // Keep a request only if it is open, not the user's own, and matches filter + search.
+    // Keep a request only if it matches filter + search.
     const list = availableRequests.filter(function (r) {
         if (currentFilter === "urgent" && r.urgency !== "urgent") return false;
         if (search && !contains(r.itemName, search) && !contains(r.pickup, search) && !contains(r.dropoff, search)) {
@@ -63,9 +75,11 @@ function renderCards() {
         return true;
     });
 
-    countLabel.textContent = list.length === 0
-        ? "No requests match your search"
-        : list.length + " request" + (list.length !== 1 ? "s" : "") + " available";
+    if (countLabel) {
+        countLabel.textContent = list.length === 0
+            ? "No requests match your search"
+            : list.length + " request" + (list.length !== 1 ? "s" : "") + " available";
+    }
 
     if (list.length === 0) {
         grid.innerHTML =
@@ -93,7 +107,7 @@ function renderCards() {
                         '<div class="reqTitle">' + esc(r.itemName) + '</div>' +
                         '<div class="reqMeta">' +
                             '<span>👤 ' + esc(r.requester) + '</span>' +
-                            '<span>🕐 ' + esc(CC.timeAgo(r.createdAt)) + '</span>' +
+                            '<span>🕐 ' + esc(formatTime(r.createdAt)) + '</span>' +
                             (isUrgent ? '<span class="badge badgeUrgent">Urgent</span>' : "") +
                         '</div>' +
                     '</div>' +
@@ -117,11 +131,11 @@ function renderCards() {
 // ---------- Modal ----------
 function openModal(id) {
     pendingAcceptId = id;
-    modal.classList.add("open");
+    if (modal) modal.classList.add("open");
 }
 
 function closeModal() {
-    modal.classList.remove("open");
+    if (modal) modal.classList.remove("open");
     pendingAcceptId = null;
 }
 
@@ -131,7 +145,7 @@ async function confirmAccept() {
     const button = document.getElementById("confirmAccept");
     const id = encodeURIComponent(pendingAcceptId);
 
-    button.disabled = true;
+    if (button) button.disabled = true;
 
     try {
         const parcel = await api.request(
@@ -147,12 +161,21 @@ async function confirmAccept() {
         alert(api.describeError(error));
         await loadAvailableRequests();
     } finally {
-        button.disabled = false;
+        if (button) button.disabled = false;
     }
 }
 
-// ---------- Events (only when logged in) ----------
-if (user) {
+async function startAvailablePage() {
+    try {
+        const user = await api.me();
+        if (!user) {
+            window.location.replace("login.html");
+            return;
+        }
+    } catch (e) {
+        // layout.js handles unauthenticated redirects
+    }
+
     for (let i = 0; i < filterButtons.length; i++) {
         filterButtons[i].addEventListener("click", function () {
             for (let j = 0; j < filterButtons.length; j++) {
@@ -164,25 +187,32 @@ if (user) {
         });
     }
 
-    searchInput.addEventListener("input", renderCards);
+    if (searchInput) searchInput.addEventListener("input", renderCards);
 
-    // One listener for every Accept button (the cards are redrawn often).
-    grid.addEventListener("click", function (event) {
-        const button = event.target.closest("[data-accept-id]");
-        if (button) openModal(button.dataset.acceptId);
-    });
+    if (grid) {
+        grid.addEventListener("click", function (event) {
+            const button = event.target.closest("[data-accept-id]");
+            if (button) openModal(button.dataset.acceptId);
+        });
+    }
 
-    document.getElementById("cancelAccept").addEventListener("click", closeModal);
-    document.getElementById("confirmAccept").addEventListener("click", confirmAccept);
+    const cancelBtn = document.getElementById("cancelAccept");
+    if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
 
-    // Click the dark background or press Escape to close.
-    modal.addEventListener("click", function (event) {
-        if (event.target === modal) closeModal();
-    });
+    const confirmBtn = document.getElementById("confirmAccept");
+    if (confirmBtn) confirmBtn.addEventListener("click", confirmAccept);
+
+    if (modal) {
+        modal.addEventListener("click", function (event) {
+            if (event.target === modal) closeModal();
+        });
+    }
     document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && modal.classList.contains("open")) closeModal();
+        if (event.key === "Escape" && modal && modal.classList.contains("open")) closeModal();
     });
 
-    loadAvailableRequests();
-    setInterval(loadAvailableRequests, 10000);  // simulates real-time updates
+    await loadAvailableRequests();
+    setInterval(loadAvailableRequests, 10000);
 }
+
+startAvailablePage();

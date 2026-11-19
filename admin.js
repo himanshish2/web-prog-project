@@ -18,6 +18,7 @@ function showError(text) {
 // Generic fetch helper that adds the Authorization header.
 async function fetchJson(path) {
     const response = await fetch(API_BASE + path, {
+        credentials: "include",
         headers: { "Authorization": BASIC_AUTH }
     });
     if (!response.ok) throw new Error("Failed " + path + ": " + response.status);
@@ -60,6 +61,7 @@ async function loadOrders() {
 async function downloadExcel() {
     try {
         const response = await fetch(API_BASE + "/export", {
+            credentials: "include",
             headers: { "Authorization": BASIC_AUTH }
         });
         if (!response.ok) throw new Error("Export failed");

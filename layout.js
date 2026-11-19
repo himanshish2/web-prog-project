@@ -269,9 +269,9 @@ async function verifySession() {
 
 const NAV_LINKS = [
     { href: "home.html", text: "Home" },
-    { href: "about.html", text: "About Us" },
+    { href: "h_about.html", text: "About Us" },
     { href: "how-it-works.html", text: "How It Works" },
-    { href: "request.html", text: "Requests" },
+    { href: "available-requests.html", text: "Requests" },
     { href: "tracking.html", text: "Track Parcel" }
 ];
 
@@ -318,6 +318,8 @@ function buildAccountArea() {
                 </li>
 
                 <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="my-requests.html">My Activity</a></li>
+                <li><a href="available-requests.html">Available Requests</a></li>
                 <li><a href="profile.html">My Profile</a></li>
 
                 <li>
@@ -388,6 +390,8 @@ function buildFooter() {
     const accountLinks = getCachedUser() !== null
         ? `
             <a href="dashboard.html">Dashboard</a>
+            <a href="my-requests.html">My Activity</a>
+            <a href="available-requests.html">Available Requests</a>
             <a href="profile.html">My Profile</a>
           `
         : `

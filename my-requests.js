@@ -60,6 +60,22 @@ function escapeHtml(value) {
         .replace(/'/g, "&#39;");
 }
 
+function formatTime(iso) {
+    if (!iso) return "recently";
+    try {
+        const diff = Date.now() - new Date(iso).getTime();
+        if (Number.isNaN(diff)) return "recently";
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return "just now";
+        if (m < 60) return `${m}m ago`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `${h}h ago`;
+        return `${Math.floor(h / 24)}d ago`;
+    } catch (e) {
+        return "recently";
+    }
+}
+
 function switchTab(activeTab) {
     for (const [name, tab] of Object.entries(tabs)) {
         const isActive = name === activeTab;
@@ -89,6 +105,8 @@ function renderStepper(status) {
 }
 
 function renderRequesterDetails(request) {
+    const trackingUrl = `tracking.html?id=${encodeURIComponent(request.id)}`;
+
     if (request.deliveryPartnerId) {
         const acceptedUrl = `accepted.html?id=${encodeURIComponent(request.id)}`;
         return `
@@ -96,16 +114,24 @@ function renderRequesterDetails(request) {
                 <strong>Your Runner</strong>
                 ${escapeHtml(request.deliveryPartner?.name || "Assigned")}
             </div>
-            <a class="btnSecondary" href="${escapeHtml(acceptedUrl)}">
-                View Accepted Request
-            </a>`;
+            <div class="updateBtnRow">
+                <a class="btnSecondary" href="${escapeHtml(trackingUrl)}">Track Parcel</a>
+                <a class="btnSecondary" href="${escapeHtml(acceptedUrl)}">View Details &amp; Chat</a>
+            </div>`;
     }
 
     if (request.status === "pending") {
-        return '<p class="waitingNote">Waiting for a runner to accept your request…</p>';
+        return `
+            <p class="waitingNote">Waiting for a runner to accept your request…</p>
+            <div class="updateBtnRow">
+                <a class="btnSecondary" href="${escapeHtml(trackingUrl)}">Track / Manage</a>
+            </div>`;
     }
 
-    return "";
+    return `
+        <div class="updateBtnRow">
+            <a class="btnSecondary" href="${escapeHtml(trackingUrl)}">View Summary</a>
+        </div>`;
 }
 
 function renderDeliveryDetails(request) {
@@ -150,7 +176,7 @@ function renderCard(request, isDelivering) {
                         ${isDelivering
                             ? `<span>Requested by ${escapeHtml(request.requester?.name || "Student")}</span>`
                             : ""}
-                        <span>${escapeHtml(CC.timeAgo(request.createdAt))}</span>
+                        <span>${escapeHtml(formatTime(request.createdAt))}</span>
                         <span class="badge ${badgeClasses[request.status] || "badgeOpen"}">
                             ${escapeHtml(statusLabels[request.status] || request.status)}
                         </span>

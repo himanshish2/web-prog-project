@@ -17,7 +17,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const port = Number(process.env.PORT) || 5000;
 const clientOrigins = list(
   process.env.CLIENT_ORIGINS,
-  'http://localhost:5500,http://127.0.0.1:5500'
+  'http://localhost:5500,http://127.0.0.1:5500,https://web-prog-project-black.vercel.app'
 ).map((o) => o.replace(/\/+$/, ''));
 
 const sameSite = (process.env.COOKIE_SAMESITE || (isProd ? 'none' : 'lax')).toLowerCase();

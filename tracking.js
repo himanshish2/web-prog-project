@@ -104,9 +104,9 @@ function renderParcel() {
     addLine(details, `Reward: ₹${parcel.reward}`);
 
     if (parcel.itemDescription) addLine(details, parcel.itemDescription);
-    if (isPartner && parcel.agentName) addLine(details, `Courier agent: ${parcel.agentName}`);
-    if (isPartner && parcel.agentMobile) addLine(details, `Agent phone: ${parcel.agentMobile}`);
-    if (isPartner && parcel.pickupOtp) addLine(details, `Pickup code: ${parcel.pickupOtp}`);
+    if ((isPartner || isRequester) && parcel.agentName) addLine(details, `Courier agent: ${parcel.agentName}`);
+    if ((isPartner || isRequester) && parcel.agentMobile) addLine(details, `Agent phone: ${parcel.agentMobile}`);
+    if ((isPartner || isRequester) && parcel.pickupOtp) addLine(details, `Pickup code: ${parcel.pickupOtp}`);
 
     const timeline = document.getElementById("timelineList");
     const history = document.getElementById("historyList");

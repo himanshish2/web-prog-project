@@ -20,7 +20,8 @@ function createApp({ sessionStore } = {}) {
 
   app.use(
     cors({
-      origin: (origin, cb) => cb(null, !origin || allowedOrigins.has(origin)),
+      origin: (origin, cb) =>
+        cb(null, !origin || allowedOrigins.has(origin) || (typeof origin === 'string' && origin.endsWith('.vercel.app'))),
       credentials: true,
       methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     })
@@ -48,7 +49,7 @@ function createApp({ sessionStore } = {}) {
   app.use('/api', (req, res, next) => {
     if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return next();
     const origin = req.get('origin');
-    if (origin && !allowedOrigins.has(origin)) {
+    if (origin && !allowedOrigins.has(origin) && !origin.endsWith('.vercel.app')) {
       return fail(res, 403, 'ORIGIN_NOT_ALLOWED', 'Request origin is not allowed');
     }
     next();
